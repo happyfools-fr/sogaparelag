@@ -13,13 +13,15 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [12.x]
 
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
     - name: Install dependencies
       run: npm install
+    - name: Build
+      run: npm run build
     - name: Deploy to firebase
       uses: w9jds/firebase-action@master
       with:
