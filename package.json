@@ -11,8 +11,12 @@
     "react-scripts": "3.4.1"
   },
   "scripts": {
-      "postinstall": "npm run install-functions",
-      "install-functions": "cd functions && npm install"
+    "postinstall": "npm run install-functions",
+    "install-functions": "cd functions && npm install",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
