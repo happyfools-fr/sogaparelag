@@ -1,6 +1,7 @@
 name: Build and Deploy
 
 on:
+  # ceci est un test
   push:
     branches: [ master ]
   pull_request:
