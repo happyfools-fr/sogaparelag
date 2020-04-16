@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import * as firebase from 'firebase';
@@ -27,12 +26,5 @@ class Auth extends Component {
         );
     }
 }
-=======
-import React from 'react';
-
-function Auth() {
-    return "<input type='email' placeholder='Email'>" ;
-};
->>>>>>> a58c0ce22061d095041b20eb311d07e4b4f0cb0a
 
 export default Auth;
