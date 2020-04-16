@@ -6,27 +6,20 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "bootstrap": "^4.4.1",
     "firebase": "^7.14.0",
     "react": "^16.13.1",
+    "react-bootstrap": "^1.0.0",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1"
   },
   "scripts": {
-<<<<<<< HEAD
     "postinstall": "npm run install-functions",
     "install-functions": "cd functions && npm install",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-=======
-      "postinstall": "npm run install-functions",
-      "install-functions": "cd functions && npm install",
-      "start": "react-scripts start",
-      "build": "react-scripts build",
-      "test": "react-scripts test --env=jsdom",
-      "eject": "react-scripts eject"
->>>>>>> a58c0ce... Testing reaction Auth
   },
   "eslintConfig": {
     "extends": "react-app"
