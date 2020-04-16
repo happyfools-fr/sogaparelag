@@ -14,12 +14,21 @@
     "react-scripts": "3.4.1"
   },
   "scripts": {
+<<<<<<< HEAD
     "postinstall": "npm run install-functions",
     "install-functions": "cd functions && npm install",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+=======
+      "postinstall": "npm run install-functions",
+      "install-functions": "cd functions && npm install",
+      "start": "react-scripts start",
+      "build": "react-scripts build",
+      "test": "react-scripts test --env=jsdom",
+      "eject": "react-scripts eject"
+>>>>>>> a58c0ce22061d095041b20eb311d07e4b4f0cb0a
   },
   "eslintConfig": {
     "extends": "react-app"
