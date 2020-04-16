@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import logo from './assets/logo.svg';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Auth from './components/Auth';
 import * as firebase from 'firebase';
+import './css/style.css';
 
 class App extends Component {
 
@@ -33,6 +35,7 @@ class App extends Component {
           </p>
           <p> Coucou Nico ! </p>
           <h1>Speed = {this.state.speed}</h1>
+          <Auth />
         </header>
       </div>
     );
