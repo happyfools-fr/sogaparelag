@@ -9,6 +9,7 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           <b>Sogaparelag</b> project, a HappyFools.fr initiative
+          Coucou thomas
         </p>
       </header>
     </div>
