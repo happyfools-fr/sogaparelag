@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import logo from './assets/logo.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Auth from './components/Auth';
-import * as firebase from 'firebase';
 import './css/style.css';
+import * as firebase from 'firebase/app';
+import Auth from './components/Auth'
 
 class App extends Component {
 
@@ -33,13 +33,12 @@ class App extends Component {
           <p>
             <b>Sogaparelag</b> project, a HappyFools.fr initiative
           </p>
-          <p> Coucou Nico ! </p>
           <h1>Speed = {this.state.speed}</h1>
           <Auth />
         </header>
       </div>
     );
-  }
+  };
 }
 
 export default App;

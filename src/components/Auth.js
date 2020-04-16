@@ -1,30 +1,41 @@
 import React, { Component } from 'react';
-import Button from 'react-bootstrap/Button';
-// import * as firebase from 'firebase';
+import * as firebase from 'firebase';
+import firebaseApp from './firebaseApp';
+import withFirebaseAuth from 'react-with-firebase-auth';
 
-//var provider = new firebase.auth.GoogleAuthProvider();
+const firebaseAppAuth = firebaseApp.auth();
+const providers = {
+  googleProvider: new firebase.auth.GoogleAuthProvider(),
+};
+
+/** Create the FirebaseAuth component wrapper */
+const createComponentWithAuth = withFirebaseAuth({
+  providers,
+  firebaseAppAuth,
+});
 
 class Auth extends Component {
-
-    render() {
-        return (
-            <div>
-                <div>
-                     <input type='email' placeholder='Email' />
-                </div>
-                <div>
-                    <input type='password' placeholder='Password' />
-                </div>
-                <div>
-                    <Button variant="primary">Log in</Button>
-                    <Button variant="secondary">Sign up</Button>
-                </div>
-                <div>
-                    <Button variant="secondary"> Log in with Google</Button>
-                </div>
-            </div>
-        );
-    }
+  render() {
+    const {
+      user,
+      signOut,
+      signInWithGoogle,
+    } = this.props;
+    return (
+      <React.Fragment>
+        {
+          user
+            ? <h1>Hello, {user.displayName}</h1>
+            : <h1>Log in</h1>
+        }
+        {
+          user
+            ? <button onClick={signOut}>Sign out</button>
+            : <button onClick={signInWithGoogle}>Sign in with Google</button>
+        }
+      </React.Fragment>
+    );
+  };
 }
 
-export default Auth;
+export default createComponentWithAuth(Auth);
