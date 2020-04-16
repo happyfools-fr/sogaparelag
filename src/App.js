@@ -31,7 +31,7 @@ class App extends Component {
           <p>
             <b>Sogaparelag</b> project, a HappyFools.fr initiative
           </p>
-
+          <p> Coucou Nico ! </p>
           <h1>Speed = {this.state.speed}</h1>
         </header>
       </div>
