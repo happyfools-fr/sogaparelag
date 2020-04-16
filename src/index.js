@@ -7,7 +7,6 @@ import "./config.js";
 ReactDOM.render(
   <React.StrictMode>
     <App />
-    <Auth />
   </React.StrictMode>,
   document.getElementById('root')
 );
