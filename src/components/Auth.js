@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
-import * as firebase from 'firebase';
+// import * as firebase from 'firebase';
+
+//var provider = new firebase.auth.GoogleAuthProvider();
 
 class Auth extends Component {
-    
-    // auth = firebase.Auth();
 
     render() {
         return (
