@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import Auth from './components/Auth';
 import * as serviceWorker from './serviceWorker';
 import * as firebase from 'firebase';
 
@@ -20,6 +21,7 @@ firebase.initializeApp(firebaseConfig);
 ReactDOM.render(
   <React.StrictMode>
     <App />
+    <Auth />
   </React.StrictMode>,
   document.getElementById('root')
 );
