@@ -22,6 +22,17 @@ You will also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.<br />
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+#### Test functions
+
+Run the following to test cloud functions. Click on the geenrated URLs to test each of them.
+
+```
+export GOOGLE_APPLICATION_CREDENTIALS='/workspace/sogaparelag/HappyFoolsIsland-dd783609e030.json'
+firebase emulators:start --only functions
+```
+
+**WARNING: this may test on PRODUCTION databases**
+
 ### `npm run build`
 
 Builds the app for production to the `build` folder.<br />
