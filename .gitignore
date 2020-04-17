@@ -25,3 +25,8 @@ yarn-error.log*
 
 # Firebase cache files
 .firebase
+
+# google service account credentials
+# export GOOGLE_APPLICATION_CREDENTIALS=[PATH]
+# e.g. export GOOGLE_APPLICATION_CREDENTIALS='/workspace/sogaparelag/HappyFoolsIsland-dd783609e030.json'
+HappyFoolsIsland-dd783609e030.json
