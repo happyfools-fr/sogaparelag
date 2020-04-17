@@ -1,9 +1,24 @@
 import React, { Component } from 'react';
-import logo from './assets/logo.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/style.css';
-import * as firebase from 'firebase/app';
+
+import * as firebase from 'firebase';
+import firebaseApp from './components/firebaseApp';
+import withFirebaseAuth from 'react-with-firebase-auth';
 import Auth from './components/Auth'
+import GameMenu from './components/GameMenu'
+import LandingPage from './components/LandingPage'
+
+const firebaseAppAuth = firebaseApp.auth();
+const providers = {
+  googleProvider: new firebase.auth.GoogleAuthProvider(),
+};
+
+/** Create the FirebaseAuth component wrapper */
+const createComponentWithAuth = withFirebaseAuth({
+  providers,
+  firebaseAppAuth,
+});
 
 class App extends Component {
 
@@ -17,7 +32,6 @@ class App extends Component {
   componentDidMount() {
     const rootRef = firebase.database().ref();
     const speedRef = rootRef.child('speed');
-    // const xaxisRef = speedRef.child('xaxis');
     speedRef.on('value', snap => {
       this.setState({
         speed: snap.val()
@@ -26,19 +40,29 @@ class App extends Component {
   }
 
   render() {
+    const {
+      user,
+      signOut,
+      signInWithGoogle,
+    } = this.props;
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            <b>Sogaparelag</b> project, a HappyFools.fr initiative
-          </p>
-          <h1>Speed = {this.state.speed}</h1>
-          <Auth />
+          <LandingPage />
+          <Auth
+            user={user}
+            signOut={signOut}
+            signInWithGoogle={signInWithGoogle}
+          />
+          <GameMenu user={user}/>
         </header>
+
+        <footer>
+          <b>Sogaparelag</b> project, a HappyFools.fr initiative
+        </footer>
       </div>
     );
   };
 }
 
-export default App;
+export default createComponentWithAuth(App);
