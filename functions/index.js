@@ -11,10 +11,10 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
 
 exports.randomize = functions.https.onRequest(async (req, res) => {
   app.database().ref('speed').set(Math.random()).then(function() {
-    console.log("Element successfully written in 'speed'!");
+      console.log("Element successfully written in 'speed'!");
+      return res.status(200).send("Success");
     })
     .catch(function(error) {
         console.error("Error writing in 'speed': ", error);
     });
-    res.send(200, "Success")
 });
