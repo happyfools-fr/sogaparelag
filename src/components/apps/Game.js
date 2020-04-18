@@ -9,9 +9,9 @@ import Player from './Player';
 const db = firebase.firestore(firebaseApp);
 
 class Game {
-  constructor(slugname) {
+  constructor() {
     this._id = uuidv1();
-    this.slugname = 'GSlug-' + slugname;
+    this.slugname = createSlugname()
     this.players = [];
     this.playerOrder = [];
     this.history = [];
@@ -53,8 +53,7 @@ class Game {
 
 
   static createAndPushNewGame(user) {
-    const slugname = uuidv1();
-    const game = new Game(slugname);
+    const game = new Game();
     const playerStateInGame = PlayerStateInGame.getInitialPlayerStateInGame(game);
     const player = Player.createAndPushPlayerWithState(user, playerStateInGame);
     const updatedGame = Game.addPlayer(game, player);
@@ -87,5 +86,11 @@ class Game {
   };
 }
 
+function createSlugname() {
+    const json = require('../../assets/words.json');
+    const words = json["words"];
+    const random = Math.round(Math.random() * words.length / 2)
+    return words[random] + "-" + words[random * 2]
+}
 
 export default Game;
