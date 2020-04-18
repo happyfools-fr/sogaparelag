@@ -48,36 +48,20 @@ class GameApp extends Component {
 
     return (
       <React.Fragment>
+      {
+        game 
+        ? <h1 id='title'>Your game: {game.slugname}</h1>
+        : <div>No game info</div>
+      }
         {
           game
           ? <pre>Game: {JSON.stringify(game, undefined, 2)}</pre>
           : <div>No game info</div>
         }
         {
-          currentPlayerId === user.uid
-          ? (
-            true
-            ?  <h2 id='player-turn'>Your turn boo {user.displayName}!</h2>
-            : <h2 id='player-turn'>Not your turn {user.displayName}!</h2>
-          )
-          : <div></div>
-        }
-        {
-          currentState
-          ? (
-            currentPlayerId === user.uid
-            ?  (
-              <ActionApp game={game}/>
-            )
-            : <div></div>
-          )
-          : <div></div>
-        }
-        {
           game
           ? (
             <div>
-              <h1 id='title'>Your game: {game.slugname}</h1>
               <table id='current-game'>
                  <tbody>
                   <tr key='round-info '>
@@ -107,6 +91,26 @@ class GameApp extends Component {
             </div>
           )
           : <div>No game info</div>
+        }
+        {
+          currentPlayerId === user.uid
+          ? (
+            true
+            ?  <h2 id='player-turn'>Your turn boo {user.displayName}!</h2>
+            : <h2 id='player-turn'>Not your turn {user.displayName}!</h2>
+          )
+          : <div></div>
+        }
+        {
+          currentState
+          ? (
+            currentPlayerId === user.uid
+            ?  (
+              <ActionApp game={game}/>
+            )
+            : <div></div>
+          )
+          : <div></div>
         }
 
       </React.Fragment>

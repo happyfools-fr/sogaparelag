@@ -30,6 +30,11 @@ class Game {
     updatedGame.currentState = updatedCurrentState;
     return Game.pushOrUpdateRecord(updatedGame);
   };
+  
+  static async getGameSnapshotByGameId(gameId){
+    const gameSnapshot = await db.collection("game").doc(gameId).get();
+    return gameSnapshot;
+  }
 
   static pushOrUpdateRecord(game) {
     db.collection("game").doc(game._id).set({
