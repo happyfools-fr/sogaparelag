@@ -52,19 +52,24 @@ class GameMenu extends Component {
         currentGameId: gameId,
         currentGame: gameSnapshot.data(),
       });
+      return true;
     } else {
-      alert("Provided Gamed Id is not recognized! Please Amend...");
+      return false;
     }
   }
   
   async onJoinGame(){
-    await this.updateGameId();
-    const user = this.props.user;
-    const game = this.state.currentGame;
-    const playerStateInGame = PlayerStateInGame.getInitialPlayerStateInGame(game);
-    const player = Player.createAndPushPlayerWithState(user, playerStateInGame);
-    const updatedGame = Game.addPlayer(game, player);
-    return Game.pushOrUpdateRecord(updatedGame);
+    const updated = await this.updateGameId();
+    if (updated){
+      const user = this.props.user;
+      const game = this.state.currentGame;
+      const playerStateInGame = PlayerStateInGame.getInitialPlayerStateInGame(game);
+      const player = Player.createAndPushPlayerWithState(user, playerStateInGame);
+      const updatedGame = Game.addPlayer(game, player);
+      return Game.pushOrUpdateRecord(updatedGame);
+    } else {
+      alert("Provided Gamed Id is not recognized! Please Amend...");
+    }
   }
 
 
