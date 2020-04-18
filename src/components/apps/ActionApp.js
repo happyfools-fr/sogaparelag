@@ -3,10 +3,7 @@ import Game from './Game';
 class ActionApp extends Component {
   
   render() {
-    const game = this.props.game;
-    const currentState = game ? game.currentState : "No currentState";
-    const currentPlayerId = game ? currentState.currentPlayerId : "No currentPlayerId";
-
+    const game = this.props.game;    
     return (
       <React.Fragment>
         <button onClick={
