@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import firebaseApp from '../firebaseApp';
 import Game from './Game';
+import ActionApp from './ActionApp';
 
 const db = firebase.firestore(firebaseApp);
 
@@ -67,12 +68,7 @@ class GameApp extends Component {
           ? (
             currentPlayerId === user.uid
             ?  (
-              <button onClick={
-                () => {
-                Game.pushUpdateGameState(game);
-                alert("Game.updateGameState");
-              }
-            }>Action</button>
+              <ActionApp game={game}/>
             )
             : <div></div>
           )
