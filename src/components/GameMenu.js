@@ -2,40 +2,8 @@ import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import firebaseApp from './firebaseApp';
 import withFirebaseAuth from 'react-with-firebase-auth';
-import { v1 as uuidv1 } from 'uuid';
-import Game from './Game';
-
-const db = firebase.firestore(firebaseApp);
-
-function Player(user) {
-  this._id = user.uid;
-  this.knickname = user.displayName;
-  this.currentPlayerStateInGame = null;
-}
-
-function pushOrUpdateRecord(player) {
-  db.collection("player").doc(player._id).set({
-    _id: player._id,
-    knickname: player.knickname,
-    currentPlayerStateInGame: player.currentPlayerStateInGame,
-  })
-  .then(function() {
-      console.log("Player successfully written!");
-      // alert("Successfully added the Player to firestore!");
-      return player;
-  })
-  .catch(function(error) {
-      console.error("Error writing User: ", error);
-  });
-}
-
-
-function startNewGame(user) {
-  console.log(user.toString());
-  const player = new Player(user);
-  pushOrUpdateRecord(player);
-  return Game.createGameWithInitialPlayer(uuidv1(), player);
-}
+import Game from './apps/Game';
+import GameApp from './apps/GameApp';
 
 const firebaseAppAuth = firebaseApp.auth();
 const providers = {
@@ -51,13 +19,14 @@ const createComponentWithAuth = withFirebaseAuth({
 
 class GameMenu extends Component {
   
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state = {
       currentGame: null,
+      currentGameId: null,
     };
   }
-  
+
   render() {
     const user = this.props.user;
     return (
@@ -74,20 +43,20 @@ class GameMenu extends Component {
           ? (
             <button onClick={
               () => {
-              const game = startNewGame(user);
+              const game = Game.createAndPushNewGame(user);
               this.setState({
                 currentGame: game,
+                currentGameId: game._id,
               });
-              alert(game)
             }
           }>Start a Game</button>
           )
           : <div></div>
         }
         {
-          this.state.currentGame 
-          ? <pre>Created Game: {JSON.stringify(this.state.currentGame, undefined, 2)}</pre> 
-          : <div>No game yet ;-)</div>
+          this.state.currentGame
+          ? <GameApp gameId={this.state.currentGameId} user={user}/>
+          : <div></div>
         }
       </React.Fragment>
     );
