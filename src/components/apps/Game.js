@@ -89,7 +89,9 @@ class Game {
 function createSlugname() {
     const json = require('../../assets/words.json');
     const words = json["words"];
-    const random = Math.round(Math.random() * words.length() % 2)
+    console.log(words.length)
+    const random = Math.round(Math.random() * words.length / 2)
+    console.log(random)
     return words[random] + "-" + words[random * 2]
 }
 
