@@ -5,11 +5,7 @@ import Action from './components/Action';
 import GameStateTable from './components/GameStateTable';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-  Jumbotron, 
-  Table, 
-  Button
-}  from 'react-bootstrap';
+import { Jumbotron }  from 'react-bootstrap';
 
 const db = firebase.firestore(firebaseApp);
 
