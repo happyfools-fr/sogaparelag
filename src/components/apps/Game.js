@@ -36,6 +36,15 @@ class Game {
     return gameSnapshot;
   }
 
+  static async getGameIdBySlugname(gameSlugname) {
+    const query = db.collection("game").where("slugname", "==", gameSlugname).limit(1);
+    let gameId;
+    await query.get()
+        .then((querySnapshot) => {gameId = querySnapshot.docs[0].id})
+        .catch((e) => {console.log(e);});
+    return gameId
+  }
+
   static pushOrUpdateRecord(game) {
     db.collection("game").doc(game._id).set({
       _id: game._id,
