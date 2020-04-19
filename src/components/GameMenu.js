@@ -104,7 +104,7 @@ class GameMenu extends Component {
           user && game===null
           ? (
             <React.Fragment>
-            <form onSubmit={this.handleSubmitSlugname}>
+            <form onSubmit={this.handleSubmit}>
               <label>
                 Game Name: 
                 <input type="text" value={this.state.inputValueGameSlugname} onChange={this.handleChange} />
