@@ -113,7 +113,7 @@ render() {
 
         </Switch>
       </div>
-      <Navbar fixed="bottom">
+      <Navbar sticky="bottom">
         <b>Sogaparelag</b> project, a HappyFools.fr initiative
       </Navbar>
     </Router>
