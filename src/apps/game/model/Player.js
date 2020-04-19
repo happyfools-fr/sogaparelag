@@ -29,6 +29,7 @@ class Player {
     )
     return Player.pushOrUpdateRecord(player);
   }
+  
 }
 
 
