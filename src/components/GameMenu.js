@@ -12,10 +12,10 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
 // Relative imports
-import Game from './apps/Game';
-import GameApp from './apps/GameApp';
-import PlayerStateInGame from './apps/PlayerStateInGame';
-import Player from './apps/Player';
+import Game from './apps/game/model/Game';
+import GameApp from './apps/game/GameApp';
+import PlayerStateInGame from './apps/game/model/PlayerStateInGame';
+import Player from './apps/game/model/Player';
 
 const firebaseAppAuth = firebaseApp.auth();
 const providers = {

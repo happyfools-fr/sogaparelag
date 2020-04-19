@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
-import firebaseApp from '../../firebaseApp';
-import ActionApp from './ActionApp';
+import firebaseApp from '../../../firebaseApp';
+import Action from './components/Action';
 
 const db = firebase.firestore(firebaseApp);
 
@@ -96,8 +96,8 @@ class GameApp extends Component {
           currentPlayerId === user.uid
           ? (
             true
-            ?  <h2 id='player-turn'>Your turn boo {user.displayName}!</h2>
-            : <h2 id='player-turn'>Not your turn {user.displayName}!</h2>
+            ?  <h2 id='player-turn'>Your turn : {user.displayName}!</h2>
+            : <h2 id='player-turn'>Not your turn : {user.displayName}!</h2>
           )
           : <div></div>
         }
@@ -106,7 +106,7 @@ class GameApp extends Component {
           ? (
             currentPlayerId === user.uid
             ?  (
-              <ActionApp game={game}/>
+              <Action game={game}/>
             )
             : <div></div>
           )
