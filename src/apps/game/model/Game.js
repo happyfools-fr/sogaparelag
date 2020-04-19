@@ -1,7 +1,7 @@
 
 import { v1 as uuidv1 } from 'uuid';
 import * as firebase from 'firebase';
-import firebaseApp from '../../../../firebaseApp';
+import firebaseApp from '../../../firebaseApp';
 
 
 import GameState from './GameState';
@@ -103,7 +103,7 @@ class Game {
 }
 
 function createSlugname() {
-    const json = require('../../../../assets/words.json');
+    const json = require('../../../assets/words.json');
     const words = json["words"];
     const random = Math.round(Math.random() * words.length / 2)
     return words[random] + "-" + words[random * 2]

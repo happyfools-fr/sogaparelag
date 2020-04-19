@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 
 // Firebase imports
 import * as firebase from 'firebase';
-import firebaseApp from '../../../firebaseApp';
+import firebaseApp from '../../firebaseApp';
 import withFirebaseAuth from 'react-with-firebase-auth';
 
 // Styles imports
