@@ -1,7 +1,7 @@
 
 import { v1 as uuidv1 } from 'uuid';
 import * as firebase from 'firebase';
-import firebaseApp from '../firebaseApp';
+import firebaseApp from '../../firebaseApp';
 import GameState from './GameState';
 import PlayerStateInGame from './PlayerStateInGame';
 import Player from './Player';

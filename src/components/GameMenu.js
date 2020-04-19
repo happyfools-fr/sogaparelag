@@ -1,7 +1,17 @@
+// React imports
 import React, { Component } from 'react';
+
+// Firebase imports
 import * as firebase from 'firebase';
-import firebaseApp from './firebaseApp';
+import firebaseApp from '../firebaseApp';
 import withFirebaseAuth from 'react-with-firebase-auth';
+
+// Styles imports
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+
+// Relative imports
 import Game from './apps/Game';
 import GameApp from './apps/GameApp';
 import PlayerStateInGame from './apps/PlayerStateInGame';
@@ -42,6 +52,15 @@ class GameMenu extends Component {
     this.onJoinGame();
     alert('The name of a active game was submitted: ' + this.state.inputValueGameSlugname);
   }
+
+  handleClick(click, user) {
+    const game = Game.createAndPushNewGame(user);
+    this.setState({
+    currentGame: game,
+    currentGameId: game._id,
+    });
+    alert('New game create, share this : ' + game.gameSlugname)
+  }
   
   async updateGameId(gameId) {
     const gameSnapshot = await Game.getGameSnapshotByGameId(gameId);
@@ -79,64 +98,47 @@ class GameMenu extends Component {
     }
   }
 
-
-  // {
-  //   user && game===null
-  //   ? (
-  //     <React.Fragment>
-  //     <form>
-  //       <label for="gameid">Game ID to join:
-  //       <input type='text' name='gameid' value={this.state.currentGameId} onChange={evt => this.onJoinGame(evt)}/>
-  //       </label>
-  //     </form>
-  //     </React.Fragment>
-  //   )
-  //   : <div></div>
-  // }
-  
-
   render() {
     const user = this.props.user;
     const game = this.state.currentGame;
-    return (
-      <React.Fragment>
-        {
-          user && game===null
-          ? (
-            <React.Fragment>
-            <form onSubmit={this.handleSubmit}>
-              <label>
-                Game Name: 
-                <input type="text" value={this.state.inputValueGameSlugname} onChange={this.handleChange} />
-              </label>
-              <input type="submit" value="Submit" />
-            </form>
-            </React.Fragment>
-          )
-          : <div></div>
+    if (user && game === null) {
+        return (
+            <div>
+                <Form onSubmit={this.handleSubmit}>
+                <Form.Group>
+                    <Form.Label>Join a game</Form.Label>
+                    <Form.Control size="lg" type="text" placeholder="Enter game name" 
+                        value={this.state.inputValueGameSlugname}
+                        onChange={this.handleChange}
+                    />
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                    Join
+                </Button>
+                </Form>
+                <Button onClick={(click) => {this.handleClick(click,user)}}>Start a new game</Button>
+                {
+                this.state.currentGameId || this.state.currentGame
+                    ? <GameApp gameId={this.state.currentGameId} user={user}/>
+                    : <div></div>
+                }
+            </div>
+        );
+    } else {
+        if (game !== null) {
+            return(
+                <div>
+                    {
+                    this.state.currentGameId || this.state.currentGame
+                    ? <GameApp gameId={this.state.currentGameId} user={user}/>
+                    : <div></div>
+                    }
+                </div>
+            )
+        } else {
+            return (<div></div>);
         }
-        {
-          user && game===null
-          ? (
-            <button onClick={
-              () => {
-              const game = Game.createAndPushNewGame(user);
-              this.setState({
-                currentGame: game,
-                currentGameId: game._id,
-              });
-            }
-          }>Start a Game</button>
-          )
-          : <div></div>
-        }
-        {
-          this.state.currentGameId || this.state.currentGame
-          ? <GameApp gameId={this.state.currentGameId} user={user}/>
-          : <div></div>
-        }
-      </React.Fragment>
-    );
+    }
   };
 }
 
