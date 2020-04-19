@@ -3,34 +3,29 @@ import firebaseApp from '../../../firebaseApp';
 
 const db = firebase.firestore(firebaseApp);
 
-class Player {
+export default class Player {
   
-  constructor (uid, nickname, currentPlayerStateInGame) {
+  constructor (uid, nickname) {
     this._id = uid;
     this.nickname = nickname;
-    this.currentPlayerStateInGame = currentPlayerStateInGame;
   }
 
   static pushOrUpdateRecord(player) {
     db.collection("player").doc(player._id).set({
-      _id: player._id,
-      nickname: player.nickname,
-      currentPlayerStateInGame: player.currentPlayerStateInGame,
-    });
+      ...player
+    },
+    {
+      merge: true,
+    }
+  );
     return player;
   }
   
-  static createAndPushPlayerWithState(user, playerStateInGame) {
-    const stateInGame = playerStateInGame ? playerStateInGame._id : null;
+  static createAndPushPlayer(user) {
     const player = new Player(
       user.uid,
       user.displayName,
-      stateInGame,
     )
     return Player.pushOrUpdateRecord(player);
-  }
-  
+  }  
 }
-
-
-export default Player;
