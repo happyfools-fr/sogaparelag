@@ -1,24 +1,23 @@
-class GameTable {
+import PlayerOnTable from './PlayerOnTable'
+
+export class GameTable {
     constructor(playerIds) {
-        this._countOfPlayer = playerIds.lenght
-        this._playingPlayer = new PlayerOnTable();
+        this._playersCount = playerIds.length
+        this._playingPlayer = new PlayerOnTable(playerIds[0]);
         this._fillTable(playerIds);
     }
-    
-    fillTable(playerIds) {
-        //cas 0
-        this._playingPlayer._previousPlayer = playerIds[playerIds.lenght - 1];
-        this._playingPlayer._playerId = playerIds[0];
+
+    _fillTable(playerIds) {
         let previousCreatedPlayerOnTable = this._playingPlayer;
-        //0 .. N-1
-        for (let i = 0; i < playerIds.lenght - 1; i++) {
-            let player = new PlayerOnTable();
-            this.previousCreatedPlayerOnTable._nextPlayer = player;
-            this.player._previousPlayer = previousCreatedPlayerOnTable;
-            this.player._playerId = playerIds[i];
+        //1 .. N-1
+        for (let i = 1; i < playerIds.length; i++) {
+            let player = new PlayerOnTable(playerIds[i]);
+            previousCreatedPlayerOnTable._nextPlayer = player;
+            player._previousPlayer = previousCreatedPlayerOnTable;
             previousCreatedPlayerOnTable = player;
         }
         //cas N-1
+        this._playingPlayer._previousPlayer = previousCreatedPlayerOnTable;
         previousCreatedPlayerOnTable._nextPlayer = this._playingPlayer;
     }
 
@@ -26,7 +25,7 @@ class GameTable {
     {
         let checkedPlayerCount = 0;
         let playerFound = false;
-        while (checkedPlayerCount < this._countOfPlayer)
+        while (checkedPlayerCount < this._playersCount)
         {
             checkedPlayerCount++
             if (this._playingPlayer._playerId == playerId)
@@ -36,7 +35,7 @@ class GameTable {
                 let nextPlayer = this._playingPlayer._nextPlayer
                 previousPlayer._nextPlayer = nextPlayer
                 nextPlayer._previousPlayer = previousPlayer
-                this._countOfPlayer --
+                this._playersCount --
                 break
             }
             this._playingPlayer = this._playingPlayer._nextPlayer
@@ -44,4 +43,19 @@ class GameTable {
  
         return playerFound;
     }
+
+    switchHeadPlayer(playerId)
+    {
+        let checkedPlayerCount = 0;
+        while (checkedPlayerCount < this._countOfPlayer)
+        {
+            checkedPlayerCount++
+            if (this._playingPlayer._playerId == playerId)
+                return true
+        }
+ 
+        return false;
+    }
 }
+
+export default GameTable;
