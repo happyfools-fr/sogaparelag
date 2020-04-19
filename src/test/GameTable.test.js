@@ -20,18 +20,8 @@ describe('GameTable', function() {
         assert.equal(firstPlayer._playerId, 1)
         assert.equal(firstPlayer._nextPlayer._playerId, 1)
         assert.equal(firstPlayer._previousPlayer._playerId, 1)
-
-        let secondPlayer = firstPlayer._nextPlayer
-        assert.equal(secondPlayer._playerId, 2)
-        assert.equal(secondPlayer._nextPlayer._playerId, 3)
-        assert.equal(secondPlayer._previousPlayer._playerId, 1)
-
-        let thirdPlayer = secondPlayer._nextPlayer
-        assert.equal(thirdPlayer._playerId, 3)
-        assert.equal(thirdPlayer._nextPlayer._playerId, 1)
-        assert.equal(thirdPlayer._previousPlayer._playerId, 2)
     });
-
+    
     it('init 3 players game without crashing', () => 
     {
         let player1Id = 1;
