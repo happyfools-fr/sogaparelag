@@ -106,6 +106,26 @@ class Game {
         console.error("Error writing: ", error);
     });
   };
+  
+  static startFirstRound(game) {
+    const updatedGame = JSON.parse(JSON.stringify(game));
+    updatedGame.currentState.isStarted = !updatedGame.currentState.isStarted;
+    db.collection("game").doc(game._id).set({
+      _id: game._id,
+      slugname: updatedGame.slugname,
+      players: updatedGame.players,
+      playerOrder: updatedGame.playerOrder,
+      history: updatedGame.history,
+      currentState: updatedGame.currentState,
+    })
+    .then(function() {
+        console.log("Successfully written!");
+        return updatedGame;
+    })
+    .catch(function(error) {
+        console.error("Error writing: ", error);
+    });
+  };
 }
 
 function createSlugname() {

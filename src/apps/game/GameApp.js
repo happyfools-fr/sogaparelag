@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import firebaseApp from '../../firebaseApp';
 import Action from './components/Action';
+import GameStateTable from './components/GameStateTable';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Jumbotron }  from 'react-bootstrap';
 
 const db = firebase.firestore(firebaseApp);
 
@@ -40,77 +44,43 @@ class GameApp extends Component {
     this.unsubscribe();
   }
 
+  createActionApp(game, user){
+    const currentState = game ? game.currentState : "No currentState";
+    const currentPlayerId = game ? currentState.currentPlayerId : "No currentPlayerId";
+    if (currentState && currentPlayerId === user.uid){
+      return(
+        <React.Fragment>
+          <Jumbotron>
+            <h1 id='player-turn'>Your turn boo!</h1>
+            <Action game={game}/>
+          </Jumbotron>
+        </React.Fragment>
+      );
+    } else {
+      return(
+      <React.Fragment>
+        <Jumbotron>
+          <h1 id='player-turn'>Not your turn Babe! Wait for it...</h1>
+        </Jumbotron>
+      </React.Fragment>
+    );
+    }
+  }
+
   render() {
     const user = this.props.user;
     const game = this.state.game;
-    const currentState = game ? game.currentState : "No currentState";
-    const currentPlayerId = game ? currentState.currentPlayerId : "No currentPlayerId";
+
 
     return (
       <React.Fragment>
-      {
-        game 
-        ? <h1 id='title'>Your game: {game.slugname}</h1>
-        : <div>No game info</div>
-      }
         {
           game
-          ? <pre>Game: {JSON.stringify(game, undefined, 2)}</pre>
-          : <div>No game info</div>
+          ? <GameStateTable game={game}/>
+          : <div>No GameStateTable</div>
         }
         {
-          game
-          ? (
-            <div>
-              <table id='current-game'>
-                 <tbody>
-                  <tr key='round-info '>
-                    <td>Round #{currentState.roundNumber}</td>
-                  </tr>
-                  <tr key='actions-info '>
-                   <td>Total nb of moves #{game.history.length}</td>
-                  </tr>
-                  <tr key='total-player-info'>
-                    <td>Nb players: {game.players.length}</td>
-                  </tr>
-                  <tr key='current-player-id-info'>
-                    <td>Current player ID: {currentPlayerId}</td>
-                  </tr>
-                  <tr key='current-player-nickname-info'>
-                     <td>Current player user name: {user.displayName}</td>
-                  </tr>
-                  <tr key='water-supply-info'>
-                    <td>Water supply: {currentState.waterSupply}</td>
-                  </tr>
-                  <tr key='food-supply-info'>
-                    <td>Food supply: {currentState.foodSupply}</td>
-                  </tr>
-                 </tbody>
-              </table>
-
-            </div>
-          )
-          : <div>No game info</div>
-        }
-        {
-          currentPlayerId === user.uid
-          ? (
-            true
-            ?  <h2 id='player-turn'>Your turn : {user.displayName}!</h2>
-            : <h2 id='player-turn'>Not your turn : {user.displayName}!</h2>
-          )
-          : <div></div>
-        }
-        {
-          currentState
-          ? (
-            currentPlayerId === user.uid
-            ?  (
-              <Action game={game}/>
-            )
-            : <div></div>
-          )
-          : <div></div>
+          this.createActionApp(game, user)
         }
 
       </React.Fragment>
