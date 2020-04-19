@@ -2,13 +2,14 @@ import PlayerOnTable from './PlayerOnTable'
 
 export class GameTable {
     constructor(playerIds) {
+        this._playerIds = playerIds
         this._playersCount = playerIds.length
         this._headPlayer = new PlayerOnTable(playerIds[0]);
         this._headPlayer = this._headPlayer;
-        this._fillTable(playerIds);
+        this._initTable(playerIds);
     }
 
-    _fillTable(playerIds) {
+    _initTable(playerIds) {
         let previousCreatedPlayerOnTable = this._headPlayer;
         //1 .. N-1
         for (let i = 1; i < playerIds.length; i++) {
