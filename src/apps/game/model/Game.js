@@ -3,7 +3,6 @@ import { v1 as uuidv1 } from 'uuid';
 import * as firebase from 'firebase';
 import firebaseApp from '../../../firebaseApp';
 
-
 import GameState from './GameState';
 import Player from './Player';
 import PlayerStateInGame from './PlayerStateInGame';
@@ -13,24 +12,28 @@ const db = firebase.firestore(firebaseApp);
 class Game {
   constructor() {
     this._id = uuidv1();
-    this.slugname = createSlugname()
+    this.slugname = createSlugname();
     this.players = [];
     this.playerOrder = [];
     this.history = [];
     this.currentState = GameState.getInitialGameState();
   }
 
-  static addPlayer(game, player) {
-    // const players = game.players.slice();
+  static addNewPlayer(game, player, playerState) {
     if (!game.players.includes(player._id)) {
-      const updatedGame = JSON.parse(JSON.stringify(game));
-      const updatedPlayers = updatedGame.players.slice().concat([player._id])
-      updatedGame.players = updatedPlayers;
-      const updatedPlayerOrder = updatedGame.playerOrder.slice().concat([player._id])
-      updatedGame.playerOrder = updatedPlayerOrder;
-      const updatedCurrentState = JSON.parse(JSON.stringify(updatedGame.currentState));
-      updatedCurrentState.playerStatesInGame = updatedGame.currentState.playerStatesInGame.slice().concat([player.currentPlayerStateInGame]);
-      updatedCurrentState.currentPlayerId = updatedPlayerOrder[0];
+        const updatedGame = JSON.parse(JSON.stringify(game));
+        const updatedPlayers = updatedGame.players.slice().concat([player._id])
+        updatedGame.players = updatedPlayers;
+        const updatedPlayerOrder = updatedGame.playerOrder.slice().concat([player._id])
+        updatedGame.playerOrder = updatedPlayerOrder;
+        const updatedCurrentState = JSON.parse(JSON.stringify(updatedGame.currentState));
+        updatedCurrentState.playerStatesInGame = updatedGame.currentState.playerStatesInGame.slice().concat([{...playerState}]);
+        updatedCurrentState.currentPlayerId = updatedPlayerOrder[0];
+        if (game.players.length === 0){
+          updatedCurrentState.nextPlayerId = updatedPlayerOrder[0];
+        } else {
+          updatedCurrentState.nextPlayerId = updatedPlayerOrder[1];
+        }
       updatedGame.currentState = updatedCurrentState;
       return Game.pushOrUpdateRecord(updatedGame);
     } else {
@@ -55,13 +58,12 @@ class Game {
 
   static pushOrUpdateRecord(game) {
     db.collection("game").doc(game._id).set({
-      _id: game._id,
-      slugname: game.slugname,
-      players: game.players,
-      playerOrder: game.playerOrder,
-      history: game.history,
-      currentState: game.currentState,
-    });
+      ...game
+    },
+    {
+      merge: true,
+    }
+  );
     // .then(function() {
     //     console.log("Successfully written!");
     //     alert("Game added to firestore: " + JSON.stringify(game));
@@ -76,9 +78,9 @@ class Game {
 
   static createAndPushNewGame(user) {
     const game = new Game();
-    const playerStateInGame = PlayerStateInGame.getInitialPlayerStateInGame(game);
-    const player = Player.createAndPushPlayerWithState(user, playerStateInGame);
-    const updatedGame = Game.addPlayer(game, player);
+    const player = Player.createAndPushPlayer(user);
+    const playerStateInGame = PlayerStateInGame.getInitialPlayerStateInGame(player);
+    const updatedGame = Game.addNewPlayer(game, player, playerStateInGame);
     return Game.pushOrUpdateRecord(updatedGame);
   }
   
@@ -89,17 +91,13 @@ class Game {
     const updatedGame = JSON.parse(JSON.stringify(game));
     updatedGame.history = updatedHistory;
     db.collection("game").doc(game._id).set({
-      _id: game._id,
-      slugname: updatedGame.slugname,
-      players: updatedGame.players,
-      playerOrder: updatedGame.playerOrder,
       history: updatedGame.history,
-      currentState: updatedGame.currentState,
+    }, 
+    { 
+      merge: true 
     })
     .then(function() {
         console.log("Successfully written!");
-        // alert("Previous Game to firestore: " + JSON.stringify(game));
-        // alert("Updated Game to firestore: " + JSON.stringify(updatedGame));
         return updatedGame;
     })
     .catch(function(error) {
@@ -111,13 +109,12 @@ class Game {
     const updatedGame = JSON.parse(JSON.stringify(game));
     updatedGame.currentState.isStarted = !updatedGame.currentState.isStarted;
     db.collection("game").doc(game._id).set({
-      _id: game._id,
-      slugname: updatedGame.slugname,
-      players: updatedGame.players,
-      playerOrder: updatedGame.playerOrder,
-      history: updatedGame.history,
       currentState: updatedGame.currentState,
-    })
+    }, 
+    { 
+      merge: true 
+    }
+  )
     .then(function() {
         console.log("Successfully written!");
         return updatedGame;

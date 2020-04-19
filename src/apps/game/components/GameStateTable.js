@@ -73,7 +73,6 @@ export default class GameStateTable extends Component {
   }
   
   createJumbotron(game) {
-    // const currentPlayerNickname = Player.fetchPlayerNickname(game.currentState.currentPlayerId);
     if (!game.currentState.isStarted){
       return (
         <Jumbotron>
