@@ -56,10 +56,10 @@ class GameMenu extends Component {
   handleClick(click, user) {
     const game = Game.createAndPushNewGame(user);
     this.setState({
-    currentGame: game,
-    currentGameId: game._id,
+      currentGame: game,
+      currentGameId: game._id,
     });
-    alert('New game create, share this : ' + game.gameSlugname)
+    alert('New game created, share this : ' + game.slugname)
   }
   
   async updateGameId(gameId) {
@@ -79,7 +79,12 @@ class GameMenu extends Component {
   async updateGameSlugname() {
     const gameSlugname = this.state.inputValueGameSlugname;
     const gameId = await Game.getGameIdBySlugname(gameSlugname);
-    const updated = await this.updateGameId(gameId);
+    let updated;
+    if (gameId){
+      updated = await this.updateGameId(gameId);
+    } else {
+      updated = false;
+    }
     return updated;
   }
   
