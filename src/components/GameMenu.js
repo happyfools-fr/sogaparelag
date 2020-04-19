@@ -24,7 +24,7 @@ class GameMenu extends Component {
   constructor(props){
     super(props);
     this.state = {
-      inputValueGameId: '',
+      inputValueGameSlugname: '',
       currentGame: null,
       currentGameId: null,
     };
@@ -33,22 +33,21 @@ class GameMenu extends Component {
 
   }
 
-  handleChange(event) {
-    this.setState({inputValueGameId: event.target.value});
+  handleChange(change) {
+    this.setState({inputValueGameSlugname: change.target.value});
   }
   
-  handleSubmit(event) {
-    event.preventDefault();
+  handleSubmit(submit) {
+    submit.preventDefault();
     this.onJoinGame();
-    alert('A current GameId was submitted: ' + this.state.inputValueGameId);
+    alert('The name of a active game was submitted: ' + this.state.inputValueGameSlugname);
   }
   
-  async updateGameId() {
-    const gameId = this.state.inputValueGameId;
+  async updateGameId(gameId) {
     const gameSnapshot = await Game.getGameSnapshotByGameId(gameId);
     if(gameSnapshot.exists) {
       this.setState({
-        inputValueGameId: gameId,
+        inputValueGameSlugname: this.inputValueGameSlugname,
         currentGameId: gameId,
         currentGame: gameSnapshot.data(),
       });
@@ -57,9 +56,17 @@ class GameMenu extends Component {
       return false;
     }
   }
+
+  async updateGameSlugname() {
+    const gameSlugname = this.state.inputValueGameSlugname;
+    const gameId = await Game.getGameIdBySlugname(gameSlugname);
+    const updated = await this.updateGameId(gameId);
+    return updated;
+  }
   
   async onJoinGame(){
-    const updated = await this.updateGameId();
+    const updated = await this.updateGameSlugname();
+    console.log(updated);
     if (updated){
       const user = this.props.user;
       const game = this.state.currentGame;
@@ -99,8 +106,8 @@ class GameMenu extends Component {
             <React.Fragment>
             <form onSubmit={this.handleSubmit}>
               <label>
-                Game ID: 
-                <input type="text" value={this.state.inputValueGameId} onChange={this.handleChange} />
+                Game Name: 
+                <input type="text" value={this.state.inputValueGameSlugname} onChange={this.handleChange} />
               </label>
               <input type="submit" value="Submit" />
             </form>
