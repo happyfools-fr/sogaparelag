@@ -19,10 +19,10 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 
 // Relative imports
-import Auth from './components/Auth'
-import GameMenu from './components/GameMenu'
-import LandingPage from './components/LandingPage'
-import About from './components/About'
+import Auth from './components/apps/auth/Auth'
+import GameMenu from './components/apps/game/GameMenu'
+import LandingPage from './components/apps/home/LandingPage'
+import About from './components/apps/about/About'
 
 const firebaseAppAuth = firebaseApp.auth();
 const providers = {

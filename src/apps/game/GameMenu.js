@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 
 // Firebase imports
 import * as firebase from 'firebase';
-import firebaseApp from '../firebaseApp';
+import firebaseApp from '../../../firebaseApp';
 import withFirebaseAuth from 'react-with-firebase-auth';
 
 // Styles imports
@@ -12,10 +12,10 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
 // Relative imports
-import Game from './apps/game/model/Game';
-import GameApp from './apps/game/GameApp';
-import PlayerStateInGame from './apps/game/model/PlayerStateInGame';
-import Player from './apps/game/model/Player';
+import Game from './model/Game';
+import GameApp from './GameApp';
+import PlayerStateInGame from './model/PlayerStateInGame';
+import Player from './model/Player';
 
 const firebaseAppAuth = firebaseApp.auth();
 const providers = {

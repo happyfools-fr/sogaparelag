@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Auth from "./Auth"
+import Auth from "../auth/Auth"
 
 class LandingPage extends Component {
 
