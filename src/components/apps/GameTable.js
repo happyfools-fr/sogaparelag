@@ -4,6 +4,7 @@ export class GameTable {
     constructor(playerIds) {
         this._playersCount = playerIds.length
         this._playingPlayer = new PlayerOnTable(playerIds[0]);
+        this._headPlayer = this._playingPlayer;
         this._fillTable(playerIds);
     }
 
@@ -24,37 +25,27 @@ export class GameTable {
     killPlayer(playerId)
     {
         let checkedPlayerCount = 0;
-        let playerFound = false;
         while (checkedPlayerCount < this._playersCount)
         {
             checkedPlayerCount++
             if (this._playingPlayer._playerId == playerId)
             {
-                playerFound = true
                 let previousPlayer = this._playingPlayer._previousPlayer
                 let nextPlayer = this._playingPlayer._nextPlayer
                 previousPlayer._nextPlayer = nextPlayer
                 nextPlayer._previousPlayer = previousPlayer
                 this._playersCount --
-                break
+                this._playingPlayer = this._playingPlayer._nextPlayer
+                return true;
             }
             this._playingPlayer = this._playingPlayer._nextPlayer
         }
- 
-        return playerFound;
+        return false;
     }
 
-    switchHeadPlayer(playerId)
+    assignNextHeadPlayer()
     {
-        let checkedPlayerCount = 0;
-        while (checkedPlayerCount < this._countOfPlayer)
-        {
-            checkedPlayerCount++
-            if (this._playingPlayer._playerId == playerId)
-                return true
-        }
- 
-        return false;
+        this._headPlayer = this._headPlayer._previousPlayer;
     }
 }
 
