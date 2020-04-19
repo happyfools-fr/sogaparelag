@@ -24,44 +24,30 @@ class GameMenu extends Component {
   constructor(props){
     super(props);
     this.state = {
-      inputValueGameId: '',
       inputValueGameSlugname: '',
       currentGame: null,
       currentGameId: null,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmitSlugname = this.handleSubmitSlugname.bind(this);
-    this.handleChangeSlugname = this.handleChangeSlugname.bind(this);
 
   }
 
   handleChange(change) {
-    this.setState({inputValueGameId: change.target.value});
-  }
-
-  handleChangeSlugname(change) {
     this.setState({inputValueGameSlugname: change.target.value});
   }
   
   handleSubmit(submit) {
     submit.preventDefault();
-    this.onJoinGame("id");
-    alert('A current GameId was submitted: ' + this.state.inputValueGameId);
-  }
-
-  handleSubmitSlugname(submit) {
-    submit.preventDefault();
-    this.onJoinGame("slugname");
+    this.onJoinGame();
     alert('The name of a active game was submitted: ' + this.state.inputValueGameSlugname);
   }
   
-  async updateGameId() {
-    const gameId = this.state.inputValueGameId;
+  async updateGameId(gameId) {
     const gameSnapshot = await Game.getGameSnapshotByGameId(gameId);
     if(gameSnapshot.exists) {
       this.setState({
-        inputValueGameId: gameId,
+        inputValueGameSlugname: this.inputValueGameSlugname,
         currentGameId: gameId,
         currentGame: gameSnapshot.data(),
       });
@@ -74,15 +60,13 @@ class GameMenu extends Component {
   async updateGameSlugname() {
     const gameSlugname = this.state.inputValueGameSlugname;
     const gameId = await Game.getGameIdBySlugname(gameSlugname);
-    this.setState({inputValueGameId: gameId});
-    console.log(gameId);
-    return await this.updateGameId()
+    const updated = await this.updateGameId(gameId);
+    return updated;
   }
   
-  async onJoinGame(input_type){
-    let updated;
-    if (input_type === "id") { updated = await this.updateGameId();}
-    else {updated = await this.updateGameSlugname();}
+  async onJoinGame(){
+    const updated = await this.updateGameSlugname();
+    console.log(updated);
     if (updated){
       const user = this.props.user;
       const game = this.state.currentGame;
@@ -120,17 +104,10 @@ class GameMenu extends Component {
           user && game===null
           ? (
             <React.Fragment>
-            <form onSubmit={this.handleSubmit}>
-              <label>
-                Game ID: 
-                <input type="text" value={this.state.inputValueGameId} onChange={this.handleChange} />
-              </label>
-              <input type="submit" value="Submit" />
-            </form>
             <form onSubmit={this.handleSubmitSlugname}>
               <label>
                 Game Name: 
-                <input type="text" value={this.state.inputValueGameSlugname} onChange={this.handleChangeSlugname} />
+                <input type="text" value={this.state.inputValueGameSlugname} onChange={this.handleChange} />
               </label>
               <input type="submit" value="Submit" />
             </form>
