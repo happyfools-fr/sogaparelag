@@ -16,7 +16,7 @@ describe('GameTable', function() {
         const gameTable = new GameTable([player1Id])
         assert.equal(gameTable._playersCount, 1)
 
-        let firstPlayer = gameTable._playingPlayer
+        let firstPlayer = gameTable._headPlayer
         assert.equal(firstPlayer._playerId, 1)
         assert.equal(firstPlayer._nextPlayer._playerId, 1)
         assert.equal(firstPlayer._previousPlayer._playerId, 1)
@@ -38,7 +38,7 @@ describe('GameTable', function() {
         const gameTable = new GameTable([player1Id, player2Id, player3Id])
         assert.equal(gameTable._playersCount, 3)
 
-        let firstPlayer = gameTable._playingPlayer
+        let firstPlayer = gameTable._headPlayer
         assert.equal(firstPlayer._playerId, 1)
         assert.equal(firstPlayer._nextPlayer._playerId, 2)
         assert.equal(firstPlayer._previousPlayer._playerId, 3)
@@ -52,6 +52,25 @@ describe('GameTable', function() {
         assert.equal(thirdPlayer._playerId, 3)
         assert.equal(thirdPlayer._nextPlayer._playerId, 1)
         assert.equal(thirdPlayer._previousPlayer._playerId, 2)
+    });
+
+    it('should correctly enumerate over players', () => 
+    {
+        let player1Id = 1;
+        let player2Id = 2;
+        let player3Id = 3;
+        const gameTable = new GameTable([player1Id, player2Id, player3Id])
+        
+        let enumerator = gameTable.getPlayerEnumerator()
+        let expectedId = 1
+        while (true)
+        {
+            let currentPlayerId = enumerator.next()
+            if (currentPlayerId.done)
+                break
+            assert.equal(currentPlayerId.value._playerId, expectedId)
+            expectedId++
+        }
     });
 
     it('head player should be first in array at init', () => 
@@ -92,7 +111,7 @@ describe('GameTable', function() {
         gameTable.killPlayer(1)
         assert.equal(gameTable._playersCount, 2)
 
-        let firstPlayer = gameTable._playingPlayer
+        let firstPlayer = gameTable._headPlayer
         assert.equal(firstPlayer._playerId, 2)
         assert.equal(firstPlayer._nextPlayer._playerId, 3)
         assert.equal(firstPlayer._previousPlayer._playerId, 3)
@@ -101,6 +120,26 @@ describe('GameTable', function() {
         assert.equal(secondPlayer._playerId, 3)
         assert.equal(secondPlayer._nextPlayer._playerId, 2)
         assert.equal(secondPlayer._previousPlayer._playerId, 2)
+    });
+
+    it('kill player 2 should adjust game relations and do not change HeadPlayer', () => 
+    {
+        let player1Id = 1;
+        let player2Id = 2;
+        let player3Id = 3;
+        const gameTable = new GameTable([player1Id, player2Id, player3Id])
+        gameTable.killPlayer(2)
+        assert.equal(gameTable._playersCount, 2)
+
+        let firstPlayer = gameTable._headPlayer
+        assert.equal(firstPlayer._playerId, 1)
+        assert.equal(firstPlayer._nextPlayer._playerId, 3)
+        assert.equal(firstPlayer._previousPlayer._playerId, 3)
+
+        let secondPlayer = firstPlayer._nextPlayer
+        assert.equal(secondPlayer._playerId, 3)
+        assert.equal(secondPlayer._nextPlayer._playerId, 1)
+        assert.equal(secondPlayer._previousPlayer._playerId, 1)
     });
 
     it('kill unknown player should answer false and nothing has changed', () => 
@@ -112,7 +151,7 @@ describe('GameTable', function() {
         assert.equal(gameTable.killPlayer(4), false)
         assert.equal(gameTable._playersCount, 3)
 
-        let firstPlayer = gameTable._playingPlayer
+        let firstPlayer = gameTable._headPlayer
         assert.equal(firstPlayer._playerId, 1)
         assert.equal(firstPlayer._nextPlayer._playerId, 2)
         assert.equal(firstPlayer._previousPlayer._playerId, 3)
