@@ -13,6 +13,7 @@ import Button from 'react-bootstrap/Button'
 
 // Relative imports
 import Game from './model/Game';
+import PlayerGameList from './components/PlayerGameList';
 import GameApp from './GameApp';
 import PlayerStateInGame from './model/PlayerStateInGame';
 import Player from './model/Player';
@@ -127,6 +128,7 @@ class GameMenu extends Component {
                     ? <GameApp gameId={this.state.currentGameId} user={user}/>
                     : <div></div>
                 }
+                <PlayerGameList user={user}/>
             </div>
         );
     } else {

@@ -21,16 +21,22 @@ class Game {
   }
 
   static addPlayer(game, player) {
-    const updatedGame = JSON.parse(JSON.stringify(game));
-    const updatedPlayers = updatedGame.players.slice().concat([player._id])
-    updatedGame.players = updatedPlayers;
-    const updatedPlayerOrder = updatedGame.playerOrder.slice().concat([player._id])
-    updatedGame.players = updatedPlayerOrder;
-    const updatedCurrentState = JSON.parse(JSON.stringify(updatedGame.currentState));
-    updatedCurrentState.playerStatesInGame = updatedGame.currentState.playerStatesInGame.slice().concat([player.currentPlayerStateInGame]);
-    updatedCurrentState.currentPlayerId = updatedPlayerOrder[0];
-    updatedGame.currentState = updatedCurrentState;
-    return Game.pushOrUpdateRecord(updatedGame);
+    // const players = game.players.slice();
+    if (!game.players.includes(player._id)) {
+      const updatedGame = JSON.parse(JSON.stringify(game));
+      const updatedPlayers = updatedGame.players.slice().concat([player._id])
+      updatedGame.players = updatedPlayers;
+      const updatedPlayerOrder = updatedGame.playerOrder.slice().concat([player._id])
+      updatedGame.playerOrder = updatedPlayerOrder;
+      const updatedCurrentState = JSON.parse(JSON.stringify(updatedGame.currentState));
+      updatedCurrentState.playerStatesInGame = updatedGame.currentState.playerStatesInGame.slice().concat([player.currentPlayerStateInGame]);
+      updatedCurrentState.currentPlayerId = updatedPlayerOrder[0];
+      updatedGame.currentState = updatedCurrentState;
+      return Game.pushOrUpdateRecord(updatedGame);
+    } else {
+      alert("You are already a player in this game");
+      return game;
+    }
   };
   
   static async getGameSnapshotByGameId(gameId){
@@ -44,7 +50,7 @@ class Game {
     await query.get()
         .then((querySnapshot) => {gameId = querySnapshot.docs[0].id})
         .catch((e) => {console.log(e);});
-    return gameId
+    return gameId;
   }
 
   static pushOrUpdateRecord(game) {
