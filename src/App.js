@@ -9,7 +9,7 @@ import {
 
 // Firebase imports
 import * as firebase from 'firebase';
-import firebaseApp from './components/firebaseApp';
+import firebaseApp from './firebaseApp';
 import withFirebaseAuth from 'react-with-firebase-auth';
 
 // Styles imports
@@ -64,16 +64,13 @@ render() {
   return (
     <Router>
         <Navbar sticky="top" bg="light" expand="lg">
-            <Navbar.Brand href="#home">Happy Fools</Navbar.Brand>
+            <Navbar.Brand href="/">Happy Fools</Navbar.Brand>
             <Nav justify classname="mr-auto">
                 <Nav.Link>
                     <Link to="/">Home</Link>
                 </Nav.Link>
                 <Nav.Link>
                     <Link to="/about">About</Link>
-                </Nav.Link>               
-                <Nav.Link disabled={!user}>
-                    <Link to="/game" >Game</Link>
                 </Nav.Link>
             </Nav>
             <Nav className="justify-content-end ml-auto">
@@ -90,7 +87,17 @@ render() {
       <div>
         <Switch>
           <Route exact path="/">
-            <LandingPage />
+            {
+                user
+                ? (<GameMenu user={user} />)
+                : (
+                    <LandingPage 
+                        user={user}
+                        signOut={signOut}
+                        signInWithGoogle={signInWithGoogle}
+                    />
+                )
+            }
           </Route>
           <Route path="/about">
             <About />
@@ -102,15 +109,8 @@ render() {
               signInWithGoogle={signInWithGoogle}
             />
           </Route>
-          {
-            user
-            ? (
-              <Route path="/game">
-                <GameMenu user={user} />
-              </Route>
-            )
-            : (<div></div>)
-          }
+
+
         </Switch>
       </div>
       <Navbar fixed="bottom">

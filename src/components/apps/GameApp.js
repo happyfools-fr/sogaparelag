@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
-import firebaseApp from '../firebaseApp';
+import firebaseApp from '../../firebaseApp';
 import ActionApp from './ActionApp';
 
 const db = firebase.firestore(firebaseApp);

@@ -8,20 +8,23 @@ class Auth extends Component {
       signOut,
       signInWithGoogle,
     } = this.props;
-    return (
-      <React.Fragment>
-        {
-          user
-            ? <h1>Hello {user.displayName}!</h1>
-            : <h1>Log in</h1>
-        }
-        {
-          user
-            ? <Button onClick={signOut}>Sign out</Button>
-            : <Button onClick={signInWithGoogle}>Sign in with Google</Button>
-        }
-      </React.Fragment>
-    );
+    if (user) {
+        return (
+            <div>
+                <h1>Hello {user.displayName}!</h1>
+                <Button onClick={signOut}>Sign out</Button>
+            </div>
+        );
+
+    } else {
+        return (
+            <div>
+                <h1>Log in</h1>
+                <Button onClick={signInWithGoogle}>Sign in with Google</Button>
+            </div>
+        )
+        
+    };
   };
 }
 
