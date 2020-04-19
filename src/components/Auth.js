@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Button from 'react-bootstrap/Button';
 
 class Auth extends Component {
   render() {
@@ -16,8 +17,8 @@ class Auth extends Component {
         }
         {
           user
-            ? <button onClick={signOut}>Sign out</button>
-            : <button onClick={signInWithGoogle}>Sign in with Google</button>
+            ? <Button onClick={signOut}>Sign out</Button>
+            : <Button onClick={signInWithGoogle}>Sign in with Google</Button>
         }
       </React.Fragment>
     );
