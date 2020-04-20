@@ -49,8 +49,7 @@ export default class PlayerStateTable extends Component {
     const player = this.state.player;
     const playerStateInGame = game && player ? game.currentState.playerStatesInGame.filter(
       playerStateInGame => playerStateInGame.playerId === player._id)[0] : "No playerStateInGame";
-
-    if (!game.currentState.isStarted){
+    if (!game.currentState.isStarted || !player){
       return (
           <Jumbotron>
             <h1>Your Current State as a Player</h1>
@@ -61,45 +60,45 @@ export default class PlayerStateTable extends Component {
         </Jumbotron>
        );
     } else {
-    return (
-        <Jumbotron>
-          <h1>Your Current State as a Player</h1>
-          <p>
-            A simple jumbotron-style component to display the player's state info.
-          </p>
+      return (
+          <Jumbotron>
+            <h1>Your Current State as a Player</h1>
+            <p>
+              A simple jumbotron-style component to display the player's state info.
+            </p>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Player ID</th>
+                  <th>Player Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{player ? player._id : "" }</td>
+                  <td>{player ? player.nickname.toUpperCase() : ""}</td>
+                </tr>
+              </tbody>
+          </Table>
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th>Player ID</th>
-                <th>Player Name</th>
+                <th>Sick</th>
+                <th>Dead</th>
+                <th>Hand</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>{player ? player._id : "" }</td>
-                <td>{player ? player.nickname.toUpperCase() : ""}</td>
+                <td>{playerStateInGame ? playerStateInGame.isSick.toString() : ""}</td>
+                <td>{playerStateInGame ? playerStateInGame.isDead.toString() : ""}</td>
+                <td>{playerStateInGame ? playerStateInGame.currentHand : ""}</td>
               </tr>
             </tbody>
-        </Table>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Sick</th>
-              <th>Dead</th>
-              <th>Hand</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{playerStateInGame ? playerStateInGame.isSick.toString() : ""}</td>
-              <td>{playerStateInGame ? playerStateInGame.isDead.toString() : ""}</td>
-              <td>{playerStateInGame ? playerStateInGame.currentHand : ""}</td>
-            </tr>
-          </tbody>
-        </Table>
-      </Jumbotron>
-     );
- }
+          </Table>
+        </Jumbotron>
+       );
+     }
  }
  
   render() {

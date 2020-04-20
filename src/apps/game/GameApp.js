@@ -46,23 +46,31 @@ class GameApp extends Component {
   }
 
   createActionApp(game, user){
-    const currentState = game ? game.currentState : "No currentState";
-    const currentPlayerId = game ? currentState.currentPlayerId : "No currentPlayerId";
-    if (currentState && currentPlayerId === user.uid){
-      return(
+    if (game && game.currentState.isStarted) {
+      const currentState = game ? game.currentState : "No currentState";
+      const currentPlayerId = game ? currentState.currentPlayerId : "No currentPlayerId";
+      if (currentState && currentPlayerId === user.uid) {
+        return(
+          <React.Fragment>
+            <Jumbotron>
+              <h1 id='player-turn'>Your turn boo!</h1>
+              <Action game={game}/>
+            </Jumbotron>
+          </React.Fragment>
+        );
+      } else {
+        return(
         <React.Fragment>
           <Jumbotron>
-            <h1 id='player-turn'>Your turn boo!</h1>
-            <Action game={game}/>
+            <h1 id='player-turn'>Not your turn Babe! Wait for it...</h1>
           </Jumbotron>
         </React.Fragment>
       );
+      }
     } else {
       return(
       <React.Fragment>
-        <Jumbotron>
-          <h1 id='player-turn'>Not your turn Babe! Wait for it...</h1>
-        </Jumbotron>
+        <div></div>
       </React.Fragment>
     );
     }
