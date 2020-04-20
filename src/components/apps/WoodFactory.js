@@ -12,8 +12,13 @@ export class WoodFactory {
             throw RangeError();
         shuffle(this._woods)
         
+        return WoodFactory._collectSumary(this._woods, additionalRequest)
+    }
+    
+    static _collectSumary(shuffledWoods, additionalRequest)
+    {
         for (let i = 0; i < additionalRequest; i++) {
-            if (this._woods[i])
+            if (shuffledWoods[i])
                 continue;
             return null;
         }
