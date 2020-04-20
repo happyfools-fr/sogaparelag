@@ -89,3 +89,5 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 npm run build
 firebase deploy
 ```
+
+## With Github-Discord integration
