@@ -1,5 +1,5 @@
-import shuffle from '../../node_modules/shuffle-array'
-import {WoodFactory} from '../components/apps/WoodFactory'
+import shuffle from '../../../../node_modules/shuffle-array'
+import {WoodFactory} from '../model/WoodFactory'
 
 const _woodFactory = new WoodFactory()
 const assert = require('assert');
