@@ -6,6 +6,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ListGroup from 'react-bootstrap/ListGroup'
 import { Jumbotron } from 'react-bootstrap';
 
+// Firebase imports
+import * as firebase from 'firebase';
+import firebaseApp from '../../../firebaseApp';
+
+const db = firebase.firestore(firebaseApp);
+
 export default class GameLogSidebar extends Component {
     
     constructor(props) {
@@ -17,11 +23,24 @@ export default class GameLogSidebar extends Component {
     }
 
     componentDidMount() {
-        this.onListenForGames();
+        this.onListenForGame();
     }
 
-    onListenForGames() {
+    onListenForGame() {
         this.setState({ loading: true });
+        this.unsubscribe = db.doc(`game/${this.props.game._id}`)
+        .onSnapshot(snapshot => {
+            if (snapshot) {
+            let game = [];
+            game = snapshot.data();
+            this.setState({
+                game: game,
+                loading: false,
+            });
+            } else {
+            this.setState({ game: null, loading: false });
+            }
+        });
     };
 
     componentWillUnmount() {
@@ -30,15 +49,17 @@ export default class GameLogSidebar extends Component {
     
     render() {
         return (
-            <Jumbotron> 
-                <ListGroup>
-                    {
-                        this.state.game.history.map(state => {
-                            return (<ListGroup.Item>{state._id}</ListGroup.Item>);
-                        })
-                    }
-                </ListGroup>
-            </Jumbotron>
+            <div>
+            <h3>Game log</h3>
+            <ListGroup>
+                {
+                    this.state.game.history.map(state => {
+                        return (<ListGroup.Item>{state._id}</ListGroup.Item>);
+                    })
+                }
+            </ListGroup>
+            </div>
+
         )
     }
 }
