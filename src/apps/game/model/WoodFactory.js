@@ -5,13 +5,15 @@ export class WoodFactory {
         this._woods = [false, true, true, true, true, true];
     }
 
-     collect(additionalRequest) {
+     collect(additionalRequest) 
+     {
         if (additionalRequest === 0)
             return 0;
+
         if (additionalRequest > this._woods.length)
             throw RangeError();
+
         shuffle(this._woods)
-        
         return WoodFactory._collectSumary(this._woods, additionalRequest)
     }
     
@@ -20,6 +22,7 @@ export class WoodFactory {
         for (let i = 0; i < additionalRequest; i++) {
             if (shuffledWoods[i])
                 continue;
+                
             return null;
         }
         

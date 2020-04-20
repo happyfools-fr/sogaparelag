@@ -7,8 +7,9 @@ export class PollingSystem
     
     vote()
     {
-        votesByPlayerId = this._initVotingPolls()
+        let votesByPlayerId = this._initVotingPolls()
         let playerEnumerator = this._gameTable.getPlayerEnumerator()
+
         while (true)
         {
             let currentPlayer = playerEnumerator.next()
@@ -19,6 +20,7 @@ export class PollingSystem
             votesByPlayerId[chosenPlayerId] ++
         }
         let playersWithMaxVote = _getPlayersWithMaxVote(votesByPlayerId)
+
         if (playersWithMaxVote.length > 1)
             return this._gameTable.headPlayer.chooseFinalPlayerToVoteAgainst(this._gameTable.players)
         return playersWithMaxVote[0]
@@ -55,6 +57,7 @@ export class PollingSystem
                 playerIdsWithMax.push(playerId)
             }
         }
+        
         return playerIdsWithMax
     }
 };

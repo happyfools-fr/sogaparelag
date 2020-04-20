@@ -18,15 +18,19 @@ export class GameTable {
         return this._headPlayer.player
     }
 
-    _initTable(players) {
+    _initTable(players) 
+    {
         let previousCreatedPlayerOnTable = this._headPlayer;
+
         //1 .. N-1
-        for (let i = 1; i < players.length; i++) {
+        for (let i = 1; i < players.length; i++) 
+        {
             let player = new PlayerOnTable(players[i]);
             previousCreatedPlayerOnTable.next = player;
             player.previous = previousCreatedPlayerOnTable;
             previousCreatedPlayerOnTable = player;
         }
+
         //cas N-1
         this._headPlayer.previous = previousCreatedPlayerOnTable;
         previousCreatedPlayerOnTable.next = this._headPlayer;
@@ -36,6 +40,7 @@ export class GameTable {
     {
         let checkedPlayerCount = 0;
         let playerEnumerator = this.getPlayerEnumerator()
+
         while (true)
         {
             let currentPlayer = playerEnumerator.next()
@@ -67,6 +72,7 @@ export class GameTable {
     {
         yield this._headPlayer;
         let currentPlayer = this._headPlayer.next;
+        
         while (currentPlayer.player != this._headPlayer.player)
         {
             yield currentPlayer;
