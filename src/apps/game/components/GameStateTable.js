@@ -67,10 +67,11 @@ export default class GameStateTable extends Component {
         }
       });
   };
+
   componentWillUnmount() {
     this.unsubscribeForCurrentPlayer();
     this.unsubscribeForNextPlayer();
-  }
+  };
   
   createJumbotron(game) {
     if (!game.currentState.isStarted){
