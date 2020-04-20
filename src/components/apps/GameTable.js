@@ -1,18 +1,28 @@
 import PlayerOnTable from './PlayerOnTable'
 
 export class GameTable {
-    constructor(playerIds) {
-        this._playerIds = playerIds
-        this._playersCount = playerIds.length
-        this._headPlayer = new PlayerOnTable(playerIds[0]);
-        this._initTable(playerIds);
+    constructor(players) {
+        this._players = players
+        this._playersCount = players.length
+        this._headPlayer = new PlayerOnTable(players[0]);
+        this._initTable(players);
     }
 
-    _initTable(playerIds) {
+    get players()
+    {
+        return this._players
+    }
+
+    get headPlayer()
+    {
+        return this._headPlayer.player
+    }
+
+    _initTable(players) {
         let previousCreatedPlayerOnTable = this._headPlayer;
         //1 .. N-1
-        for (let i = 1; i < playerIds.length; i++) {
-            let player = new PlayerOnTable(playerIds[i]);
+        for (let i = 1; i < players.length; i++) {
+            let player = new PlayerOnTable(players[i]);
             previousCreatedPlayerOnTable.next = player;
             player.previous = previousCreatedPlayerOnTable;
             previousCreatedPlayerOnTable = player;
@@ -22,7 +32,7 @@ export class GameTable {
         previousCreatedPlayerOnTable.next = this._headPlayer;
     }
 
-    killPlayer(playerId)
+    killPlayer(playerIdToKill)
     {
         let checkedPlayerCount = 0;
         let playerEnumerator = this.getPlayerEnumerator()
@@ -32,7 +42,7 @@ export class GameTable {
             if (currentPlayer.done)
                 return false
 
-            if (currentPlayer.value._playerId == playerId)
+            if (currentPlayer.value.id == playerIdToKill)
             {
                 let previousPlayer = currentPlayer.value.previous
                 let nextPlayer = currentPlayer.value.next
@@ -40,7 +50,7 @@ export class GameTable {
                 nextPlayer.previous = previousPlayer
                 this._playersCount --
 
-                if (this._headPlayer._playerId == currentPlayer.value._playerId)
+                if (this._headPlayer.player == currentPlayer.value.player)
                     this._headPlayer = this._headPlayer.next
 
                 return true;
@@ -57,7 +67,7 @@ export class GameTable {
     {
         yield this._headPlayer;
         let currentPlayer = this._headPlayer.next;
-        while (currentPlayer._playerId != this._headPlayer._playerId)
+        while (currentPlayer.player != this._headPlayer.player)
         {
             yield currentPlayer;
             currentPlayer = currentPlayer.next

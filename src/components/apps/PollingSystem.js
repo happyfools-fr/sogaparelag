@@ -15,12 +15,12 @@ export class PollingSystem
             if (currentPlayer.done)
                 break   
                 
-            let chosenPlayerId = currentPlayer.value.choosePlayerToVoteAgainst(this._gameTable._playerIds)
+            let chosenPlayerId = currentPlayer.value.choosePlayerToVoteAgainst(this._gameTable.players)
             votesByPlayerId[chosenPlayerId] ++
         }
         let playersWithMaxVote = _getPlayersWithMaxVote(votesByPlayerId)
         if (playersWithMaxVote.length > 1)
-            return this._gameTable._headPlayer.chooseFinalPlayerToVoteAgainst(this._gameTable._playerIds)
+            return this._gameTable.headPlayer.chooseFinalPlayerToVoteAgainst(this._gameTable.players)
         return playersWithMaxVote[0]
     }
 
@@ -34,7 +34,7 @@ export class PollingSystem
             if (currentPlayer.done)
                 break   
                 
-            votesByPlayerId[currentPlayer.value._playerId] = 0
+            votesByPlayerId[currentPlayer.value.id] = 0
         }
         return votesByPlayerId;
     }

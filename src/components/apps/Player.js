@@ -37,6 +37,16 @@ class Player {
     )
     return Player.pushOrUpdateRecord(player);
   }
+
+  choosePlayerToVoteAgainst(players)
+  {
+      return players[0]
+  }
+
+  chooseFinalPlayerToVoteAgainst(players)
+  {
+      return players[0]
+  }
   
   // static async fetchNickname(id){
   //   const docRef = await db.collection("player").doc(id).get();

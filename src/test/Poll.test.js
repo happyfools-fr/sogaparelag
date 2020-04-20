@@ -1,13 +1,14 @@
 import {PollingSystem} from '../components/apps/PollingSystem'
 import {GameTable} from '../components/apps/GameTable'
+import Player from '../components/apps/Player'
 
 
 const assert = require('assert');
-const _player1Id = 1;
-const _player2Id = 2;
-const _player3Id = 3;
-const _gameTable = new GameTable([_player1Id, _player2Id, _player3Id])
-const _poll = new PollingSystem(_gameTable)
+let player1 = new Player(1, 'toto', null)
+let player2 = new Player(2, 'tata', null)
+let player3 = new Player(3, 'titi', null)
+const gameTable = new GameTable([player1, player2, player3])
+const _poll = new PollingSystem(gameTable)
 
 describe('GameTable', function() 
 {
@@ -16,22 +17,22 @@ describe('GameTable', function()
         let initialPolls = _poll._initVotingPolls()
         assert.equal(Object.keys(initialPolls).length, 3)
 
-        assert.equal(_player1Id in initialPolls, true)
-        assert.equal(initialPolls[_player1Id], 0)
+        assert.equal(1 in initialPolls, true)
+        assert.equal(initialPolls[1], 0)
 
-        assert.equal(_player2Id in initialPolls, true)
-        assert.equal(initialPolls[_player2Id], 0)
+        assert.equal(2 in initialPolls, true)
+        assert.equal(initialPolls[2], 0)
 
-        assert.equal(_player3Id in initialPolls, true)
-        assert.equal(initialPolls[_player3Id], 0)
+        assert.equal(3 in initialPolls, true)
+        assert.equal(initialPolls[3], 0)
     });
 
     it('get unique player with max votes', () => 
     {
         let votes = {}
-        votes[_player1Id] =  2
-        votes[_player2Id] =  1
-        votes[_player3Id] =  0
+        votes[1] =  2
+        votes[2] =  1
+        votes[3] =  0
         let playerWithMaxVote = _poll._getPlayersWithMaxVote(votes)
         assert.equal(playerWithMaxVote.length, 1)
         assert.equal(playerWithMaxVote[0], 1)
@@ -40,9 +41,9 @@ describe('GameTable', function()
     it('get multiple players with max votes', () => 
     {
         let votes = {}
-        votes[_player1Id] =  1
-        votes[_player2Id] =  1
-        votes[_player3Id] =  0
+        votes[1] =  1
+        votes[2] =  1
+        votes[3] =  0
         let playerWithMaxVote = _poll._getPlayersWithMaxVote(votes)
         assert.equal(playerWithMaxVote.length, 2)
         assert.equal(playerWithMaxVote[0], 1)
