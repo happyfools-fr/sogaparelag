@@ -1,4 +1,4 @@
-import shuffle from '../../../node_modules/shuffle-array'
+import shuffle from '../../../../node_modules/shuffle-array'
 
 export class FoodFactory {
     constructor() {
@@ -10,4 +10,3 @@ export class FoodFactory {
         return this._foods[0];
     }
 }
-
