@@ -1,4 +1,4 @@
-import {WoodFactory} from '../components/apps/WoodFactory'
+import {WoodFactory} from '../model/WoodFactory'
 
 const _woodFactory = new WoodFactory()
 const assert = require('assert');
