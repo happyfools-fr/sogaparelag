@@ -1,5 +1,5 @@
-import {GameTable} from '../components/apps/GameTable'
-import Player from '../components/apps/Player';
+import {GameTable} from '../model/GameTable'
+import Player from '../model/Player';
 
 const assert = require('assert');
     

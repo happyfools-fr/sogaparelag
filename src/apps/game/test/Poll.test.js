@@ -1,6 +1,6 @@
-import {PollingSystem} from '../components/apps/PollingSystem'
-import {GameTable} from '../components/apps/GameTable'
-import Player from '../components/apps/Player'
+import {PollingSystem} from '../model/PollingSystem'
+import {GameTable} from '../model/GameTable'
+import Player from '../model/Player'
 
 
 const assert = require('assert');
