@@ -6,8 +6,10 @@ class GameState {
     _id,
     roundNumber,
     currentPlayerId,
+    nextPlayerId,
     waterSupply,
     foodSupply,
+    woodSupply,
     isStarted,
     isPlaying,
     playerStatesInGame,
@@ -17,8 +19,10 @@ class GameState {
     this._id = _id;
     this.roundNumber = roundNumber;
     this.currentPlayerId = currentPlayerId;
+    this.nextPlayerId = nextPlayerId;
     this.waterSupply = waterSupply;
     this.foodSupply = foodSupply;
+    this.woodSupply = woodSupply;
     this.isStarted = isStarted;
     this.isPlaying = isPlaying;
     this.playerStatesInGame = playerStatesInGame;
@@ -31,8 +35,10 @@ class GameState {
       uuidv1(),
       game.currentState.roundNumber,
       game.currentState.currentPlayerId,
+      game.currentState.nextPlayerId,
       game.currentState.waterSupply,
       game.currentState.foodSupply,
+      game.currentState.woodSupply,
       game.currentState.isStarted,
       game.currentState.isPlaying,
       game.currentState.playerStatesInGame,
@@ -46,8 +52,10 @@ class GameState {
       uuidv1(),
       0,
       'unknown-user-id',
+      'unknown-user-id',
       6,
       5,
+      "unknown inital wood supply",
       false,
       false,
       [],

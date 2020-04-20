@@ -1,5 +1,9 @@
+<<<<<<< HEAD:src/test/WoodFactory.test.js
 import shuffle from '../../node_modules/shuffle-array'
 import {WoodFactory} from '../components/apps/WoodFactory'
+=======
+import {WoodFactory} from '../model/WoodFactory'
+>>>>>>> 6f8e9721b15238b693ed373d220003f2484d1af0:src/apps/game/test/WoodFactory.test.js
 
 const _woodFactory = new WoodFactory()
 const assert = require('assert');

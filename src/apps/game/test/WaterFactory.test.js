@@ -1,4 +1,4 @@
-import {WaterFactory} from '../components/apps/WaterFactory'
+import {WaterFactory} from '../model/WaterFactory'
 
 const _waterFactory = new WaterFactory()
 const assert = require('assert');

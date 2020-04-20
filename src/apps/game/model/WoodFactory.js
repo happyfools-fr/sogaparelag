@@ -1,4 +1,4 @@
-import shuffle from '../../../node_modules/shuffle-array'
+import shuffle from '../../../../node_modules/shuffle-array'
 
 export class WoodFactory {
     constructor() {
