@@ -1,12 +1,19 @@
+// React imports
 import React, { Component } from 'react';
+
+// Firebase imports
 import * as firebase from 'firebase';
 import firebaseApp from '../../firebaseApp';
+
+// Style imports
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Jumbotron }  from 'react-bootstrap';
+import {Container, Row, Col} from 'react-bootstrap';
+
+// Relative imports
 import Action from './components/Action';
 import GameStateTable from './components/GameStateTable';
 import PlayerStateTable from './components/PlayerStateTable';
-
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Jumbotron }  from 'react-bootstrap';
 
 const db = firebase.firestore(firebaseApp);
 
@@ -80,22 +87,28 @@ class GameApp extends Component {
     const user = this.props.user;
     const game = this.state.game;
     return (
-      <React.Fragment>
-        {
-          game
-          ? <GameStateTable game={game}/>
-          : <div>No GameStateTable</div>
-        }
-        {
-          game && user
-          ? <PlayerStateTable game={game} user={user}/>
-          : <div>No PlayerStateTable</div>
-        }
-        {
-          this.createActionApp(game, user)
-        }
-
-      </React.Fragment>
+      <Container>
+        <Row>
+            <Col>
+                {
+                game
+                ? <GameStateTable game={game}/>
+                : <div>No GameStateTable</div>
+                }
+                {
+                game && user
+                ? <PlayerStateTable game={game} user={user}/>
+                : <div>No PlayerStateTable</div>
+                }
+                {
+                this.createActionApp(game, user)
+                }
+            </Col>
+            <Col sm={3}>
+                <Jumbotron />
+            </Col>
+        </Row>
+      </Container>
     );
   };
 }

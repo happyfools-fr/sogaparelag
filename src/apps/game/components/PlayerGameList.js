@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 // Styles imports
-import 'bootstrap/dist/css/bootstrap.min.css';
 import ListGroup from 'react-bootstrap/ListGroup'
 
 import * as firebase from 'firebase';
