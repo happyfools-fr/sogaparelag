@@ -22,10 +22,10 @@ export default class User {
   }
   
   static createAndPushUser(user) {
-    const user = new User(
+    const newUser = new User(
       user.uid,
       user.displayName,
     )
-    return User.pushOrUpdateRecord(user);
+    return User.pushOrUpdateRecord(newUser);
   }  
 }
