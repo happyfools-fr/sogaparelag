@@ -1,82 +1,93 @@
-import PlayerOnTable from './PlayerOnTable'
+import SittingPlayer from './SittingPlayer'
 
 export class GameTable {
     constructor(players) {
-        this._players = players
         this._playersCount = players.length
-        this._headPlayer = new PlayerOnTable(players[0]);
+        this._headSittingPlayer = new SittingPlayer(players[0]);
         this._initTable(players);
     }
 
-    get players()
+    get headSittingPlayer()
     {
-        return this._players
+        return this._headSittingPlayer
     }
-
-    get headPlayer()
-    {
-        return this._headPlayer.player
-    }
+    
 
     _initTable(players) 
     {
-        let previousCreatedPlayerOnTable = this._headPlayer;
+        let previousCreatedSittingPlayerOnTable = this._headSittingPlayer;
 
         //1 .. N-1
         for (let i = 1; i < players.length; i++) 
         {
-            let player = new PlayerOnTable(players[i]);
-            previousCreatedPlayerOnTable.next = player;
-            player.previous = previousCreatedPlayerOnTable;
-            previousCreatedPlayerOnTable = player;
+            let sittingPlayer = new SittingPlayer(players[i]);
+            previousCreatedSittingPlayerOnTable.next = sittingPlayer;
+            sittingPlayer.previous = previousCreatedSittingPlayerOnTable;
+            previousCreatedSittingPlayerOnTable = sittingPlayer;
         }
 
         //cas N-1
-        this._headPlayer.previous = previousCreatedPlayerOnTable;
-        previousCreatedPlayerOnTable.next = this._headPlayer;
+        this._headSittingPlayer.previous = previousCreatedSittingPlayerOnTable;
+        previousCreatedSittingPlayerOnTable.next = this._headSittingPlayer;
     }
 
-    killPlayer(playerIdToKill)
+    killSittingPlayer(sittingPlayerToKill)
     {
         let checkedPlayerCount = 0;
-        let playerEnumerator = this.getPlayerEnumerator()
+        let sittingPlayerEnumerator = this.getSittingPlayerEnumerator()
 
         while (true)
         {
-            let currentPlayer = playerEnumerator.next()
-            if (currentPlayer.done)
+            let currentSittingPlayer = sittingPlayerEnumerator.next()
+            if (currentSittingPlayer.done)
                 return false
 
-            if (currentPlayer.value.id == playerIdToKill)
+            if (currentSittingPlayer.value.id == sittingPlayerToKill)
             {
-                let previousPlayer = currentPlayer.value.previous
-                let nextPlayer = currentPlayer.value.next
-                previousPlayer.next = nextPlayer
-                nextPlayer.previous = previousPlayer
+                let previousSittingPlayer = currentSittingPlayer.value.previous
+                let nextSittingPlayer = currentSittingPlayer.value.next
+                previousSittingPlayer.next = nextSittingPlayer
+                nextSittingPlayer.previous = previousSittingPlayer
                 this._playersCount --
 
-                if (this._headPlayer.player == currentPlayer.value.player)
-                    this._headPlayer = this._headPlayer.next
+                if (this._headSittingPlayer.player == currentSittingPlayer.value.player)
+                    this._headSittingPlayer = this._headSittingPlayer.next
 
                 return true;
             }
         }
     }
 
-    assignNextHeadPlayer()
+    assignNextHeadSittingPlayer()
     {
-        this._headPlayer = this._headPlayer.previous;
+        this._headSittingPlayer = this._headSittingPlayer.previous;
     }
 
-    * getPlayerEnumerator()
+    * getSittingPlayerEnumerator()
     {
-        yield this._headPlayer;
-        let currentPlayer = this._headPlayer.next;
+        yield this._headSittingPlayer;
+        let currentPlayer = this._headSittingPlayer.next;
         
-        while (currentPlayer.player != this._headPlayer.player)
+        while (currentPlayer.player != this._headSittingPlayer.player)
         {
             yield currentPlayer;
             currentPlayer = currentPlayer.next
+        }
+    }
+
+    * getHealthySittingPlayerEnumerator()
+    {
+        if (!this._headSittingPlayer.player.isSick)
+            yield this._headSittingPlayer;
+
+        let currentSittingPlayer = this._headSittingPlayer.next;
+        
+        while (currentSittingPlayer.player != this._headSittingPlayer.player)
+        {
+            if (!currentSittingPlayer.player.isSick)
+                yield currentSittingPlayer;
+
+            currentSittingPlayer = currentSittingPlayer.next
         }
     }
 }

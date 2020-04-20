@@ -4,8 +4,8 @@ import * as firebase from 'firebase';
 import firebaseApp from '../../../firebaseApp';
 
 import GameState from './GameState';
-import Player from './Player';
-import PlayerStateInGame from './PlayerStateInGame';
+import Player from './User';
+import PlayerStateInGame from './Player';
 
 const db = firebase.firestore(firebaseApp);
 

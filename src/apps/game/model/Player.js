@@ -1,31 +1,22 @@
-import * as firebase from 'firebase';
-import firebaseApp from '../../../firebaseApp';
 
-const db = firebase.firestore(firebaseApp);
-
-export default class Player {
+class Player {
   
-  constructor (uid, nickname) {
-    this._id = uid;
-    this.nickname = nickname;
+  constructor(playerId, isSick, isDead, currentHand) {
+    this.playerId = playerId;
+    this.isSick = isSick;
+    this.isDead = isDead;
+    this.currentHand = currentHand;
   }
 
-  static pushOrUpdateRecord(player) {
-    db.collection("player").doc(player._id).set({
-      ...player
-    },
-    {
-      merge: true,
-    }
-  );
-    return player;
-  }
-  
-  static createAndPushPlayer(user) {
-    const player = new Player(
-      user.uid,
-      user.displayName,
+  static getInitialPlayer(player) {
+    const Player = new Player(
+      player._id,
+      false,
+      false,
+      "4 cards in hand"
     )
-    return Player.pushOrUpdateRecord(player);
-  }  
+    return Player;
+  }
 }
+
+export default Player;

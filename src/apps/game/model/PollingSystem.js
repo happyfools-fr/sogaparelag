@@ -7,59 +7,60 @@ export class PollingSystem
     
     vote()
     {
-        let votesByPlayerId = this._initVotingPolls()
-        let playerEnumerator = this._gameTable.getPlayerEnumerator()
+        let votesBySittingPlayerId = this._initVotingPolls()
+        let sittingHealthyPlayerEnumerator = this._gameTable.getHealthySittingPlayerEnumerator()
 
         while (true)
         {
-            let currentPlayer = playerEnumerator.next()
-            if (currentPlayer.done)
+            let currentSittingPlayer = sittingHealthyPlayerEnumerator.next()
+            if (currentSittingPlayer.done)
                 break   
                 
-            let chosenPlayerId = currentPlayer.value.choosePlayerToVoteAgainst(this._gameTable.players)
-            votesByPlayerId[chosenPlayerId] ++
+            let chosenPlayerId = currentSittingPlayer.value.choosePlayerToVoteAgainst(this._gameTable.players)
+            votesBySittingPlayerId[chosenPlayerId] ++
         }
-        let playersWithMaxVote = _getPlayersWithMaxVote(votesByPlayerId)
+        let sittingPlayersWithMaxVote = PollingSystem._getSittingPlayersWithMaxVote(votesBySittingPlayerId)
 
-        if (playersWithMaxVote.length > 1)
-            return this._gameTable.headPlayer.chooseFinalPlayerToVoteAgainst(this._gameTable.players)
-        return playersWithMaxVote[0]
+        if (sittingPlayersWithMaxVote.length > 1)
+            return this._gameTable.headSittingPlayer.chooseFinalPlayerToVoteAgainst(this._gameTable.getSittingPlayers)
+        return sittingPlayersWithMaxVote[0]
     }
 
     _initVotingPolls()
     {
-        let votesByPlayerId = {};
-        let playerEnumerator = this._gameTable.getPlayerEnumerator()
+        let votesBySittingPlayerId = {};
+        let sittingPlayerEnumerator = this._gameTable.getSittingPlayerEnumerator()
         while (true)
         {
-            let currentPlayer = playerEnumerator.next()
-            if (currentPlayer.done)
+            let currentSittingPlayer = sittingPlayerEnumerator.next()
+            if (currentSittingPlayer.done)
                 break   
-                
-            votesByPlayerId[currentPlayer.value.id] = 0
+            
+            votesBySittingPlayerId[currentSittingPlayer.value.id] = 0
         }
-        return votesByPlayerId;
+        return votesBySittingPlayerId;
     }
 
-    _getPlayersWithMaxVote(votesByPlayerId)
+    static _getSittingPlayersWithMaxVote(votesBySittingPlayerId)
     {
         let max = -1
-        let playerIdsWithMax = []
-        for(let playerId in votesByPlayerId)
+        let sittingPlayerIdsWithMax = []
+        for(let sittingPlayerId in votesBySittingPlayerId)
         {
-            if (votesByPlayerId[playerId] > max)
+            if (votesBySittingPlayerId[sittingPlayerId] > max)
             {
-                max = votesByPlayerId[playerId];
-                playerIdsWithMax = [playerId]
+                max = votesBySittingPlayerId[sittingPlayerId];
+                sittingPlayerIdsWithMax = [sittingPlayerId]
             }
-            else if (votesByPlayerId[playerId] == max)
+            else if (votesBySittingPlayerId[sittingPlayerId] == max)
             {            
-                playerIdsWithMax.push(playerId)
+                sittingPlayerIdsWithMax.push(sittingPlayerId)
             }
         }
         
-        return playerIdsWithMax
+        return sittingPlayerIdsWithMax
     }
 };
+
 
 export default PollingSystem;

@@ -1,4 +1,4 @@
-export class PlayerOnTable {
+export class SittingPlayer {
     constructor(player)
     {
         this._previous = null;
@@ -13,7 +13,7 @@ export class PlayerOnTable {
 
     get id()
     {
-        return this._player._id
+        return this._player.playerId
     }
 
     get previous()
@@ -35,4 +35,4 @@ export class PlayerOnTable {
     }
 }
 
-export default PlayerOnTable;
+export default SittingPlayer;
