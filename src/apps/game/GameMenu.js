@@ -15,8 +15,6 @@ import Button from 'react-bootstrap/Button'
 import Game from './model/Game';
 import PlayerGameList from './components/PlayerGameList';
 import GameApp from './GameApp';
-import PlayerStateInGame from './model/PlayerStateInGame';
-import Player from './model/Player';
 
 const firebaseAppAuth = firebaseApp.auth();
 const providers = {
@@ -51,16 +49,16 @@ class GameMenu extends Component {
   handleSubmit(submit) {
     submit.preventDefault();
     this.onJoinGame();
-    alert('The name of a active game was submitted: ' + this.state.inputValueGameSlugname);
+    alert('The name of the active game was submitted: ' + this.state.inputValueGameSlugname);
   }
 
   handleClick(click, user) {
-    const game = Game.createAndPushNewGame(user);
+      const game = Game.createAndPushNewGame(user);
     this.setState({
       currentGame: game,
       currentGameId: game._id,
     });
-    alert('New game created, share this : ' + game.slugname)
+    alert('New game created, share this: ' + game.slugname)
   }
   
   async updateGameId(gameId) {
@@ -95,9 +93,7 @@ class GameMenu extends Component {
     if (updated){
       const user = this.props.user;
       const game = this.state.currentGame;
-      const playerStateInGame = PlayerStateInGame.getInitialPlayerStateInGame(game);
-      const player = Player.createAndPushPlayerWithState(user, playerStateInGame);
-      const updatedGame = Game.addPlayer(game, player);
+      const updatedGame = Game.createAndAddPlayerToGame(game, user);
       return Game.pushOrUpdateRecord(updatedGame);
     } else {
       alert("Provided Gamed Id is not recognized! Please Amend...");

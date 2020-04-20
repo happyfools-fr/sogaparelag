@@ -75,12 +75,16 @@ class Game {
     return game;
   };
 
-
-  static createAndPushNewGame(user) {
-    const game = new Game();
+  static createAndAddPlayerToGame(game, user){
     const player = Player.createAndPushPlayer(user);
     const playerStateInGame = PlayerStateInGame.getInitialPlayerStateInGame(player);
     const updatedGame = Game.addNewPlayer(game, player, playerStateInGame);
+    return updatedGame;
+  }
+
+  static createAndPushNewGame(user) {
+    const game = new Game();
+    const updatedGame = Game.createAndAddPlayerToGame(game, user);
     return Game.pushOrUpdateRecord(updatedGame);
   }
   
