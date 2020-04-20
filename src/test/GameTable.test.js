@@ -3,7 +3,8 @@ import {GameTable} from '../components/apps/GameTable'
 const assert = require('assert');
     
 
-describe('GameTable', function() {
+describe('GameTable', function() 
+{
     it('init 1 player game without crashing', () => 
     {
         let player1Id = 1;
@@ -18,8 +19,8 @@ describe('GameTable', function() {
 
         let firstPlayer = gameTable._headPlayer
         assert.equal(firstPlayer._playerId, 1)
-        assert.equal(firstPlayer._nextPlayer._playerId, 1)
-        assert.equal(firstPlayer._previousPlayer._playerId, 1)
+        assert.equal(firstPlayer.next._playerId, 1)
+        assert.equal(firstPlayer.previous._playerId, 1)
     });
     
     it('init 3 players game without crashing', () => 
@@ -40,18 +41,18 @@ describe('GameTable', function() {
 
         let firstPlayer = gameTable._headPlayer
         assert.equal(firstPlayer._playerId, 1)
-        assert.equal(firstPlayer._nextPlayer._playerId, 2)
-        assert.equal(firstPlayer._previousPlayer._playerId, 3)
+        assert.equal(firstPlayer.next._playerId, 2)
+        assert.equal(firstPlayer.previous._playerId, 3)
 
-        let secondPlayer = firstPlayer._nextPlayer
+        let secondPlayer = firstPlayer.next
         assert.equal(secondPlayer._playerId, 2)
-        assert.equal(secondPlayer._nextPlayer._playerId, 3)
-        assert.equal(secondPlayer._previousPlayer._playerId, 1)
+        assert.equal(secondPlayer.next._playerId, 3)
+        assert.equal(secondPlayer.previous._playerId, 1)
 
-        let thirdPlayer = secondPlayer._nextPlayer
+        let thirdPlayer = secondPlayer.next
         assert.equal(thirdPlayer._playerId, 3)
-        assert.equal(thirdPlayer._nextPlayer._playerId, 1)
-        assert.equal(thirdPlayer._previousPlayer._playerId, 2)
+        assert.equal(thirdPlayer.next._playerId, 1)
+        assert.equal(thirdPlayer.previous._playerId, 2)
     });
 
     it('should correctly enumerate over players', () => 
@@ -113,13 +114,13 @@ describe('GameTable', function() {
 
         let firstPlayer = gameTable._headPlayer
         assert.equal(firstPlayer._playerId, 2)
-        assert.equal(firstPlayer._nextPlayer._playerId, 3)
-        assert.equal(firstPlayer._previousPlayer._playerId, 3)
+        assert.equal(firstPlayer.next._playerId, 3)
+        assert.equal(firstPlayer.previous._playerId, 3)
 
-        let secondPlayer = firstPlayer._nextPlayer
+        let secondPlayer = firstPlayer.next
         assert.equal(secondPlayer._playerId, 3)
-        assert.equal(secondPlayer._nextPlayer._playerId, 2)
-        assert.equal(secondPlayer._previousPlayer._playerId, 2)
+        assert.equal(secondPlayer.next._playerId, 2)
+        assert.equal(secondPlayer.previous._playerId, 2)
     });
 
     it('kill player 2 should adjust game relations and do not change HeadPlayer', () => 
@@ -133,13 +134,13 @@ describe('GameTable', function() {
 
         let firstPlayer = gameTable._headPlayer
         assert.equal(firstPlayer._playerId, 1)
-        assert.equal(firstPlayer._nextPlayer._playerId, 3)
-        assert.equal(firstPlayer._previousPlayer._playerId, 3)
+        assert.equal(firstPlayer.next._playerId, 3)
+        assert.equal(firstPlayer.previous._playerId, 3)
 
-        let secondPlayer = firstPlayer._nextPlayer
+        let secondPlayer = firstPlayer.next
         assert.equal(secondPlayer._playerId, 3)
-        assert.equal(secondPlayer._nextPlayer._playerId, 1)
-        assert.equal(secondPlayer._previousPlayer._playerId, 1)
+        assert.equal(secondPlayer.next._playerId, 1)
+        assert.equal(secondPlayer.previous._playerId, 1)
     });
 
     it('kill unknown player should answer false and nothing has changed', () => 
@@ -153,17 +154,17 @@ describe('GameTable', function() {
 
         let firstPlayer = gameTable._headPlayer
         assert.equal(firstPlayer._playerId, 1)
-        assert.equal(firstPlayer._nextPlayer._playerId, 2)
-        assert.equal(firstPlayer._previousPlayer._playerId, 3)
+        assert.equal(firstPlayer.next._playerId, 2)
+        assert.equal(firstPlayer.previous._playerId, 3)
 
-        let secondPlayer = firstPlayer._nextPlayer
+        let secondPlayer = firstPlayer.next
         assert.equal(secondPlayer._playerId, 2)
-        assert.equal(secondPlayer._nextPlayer._playerId, 3)
-        assert.equal(secondPlayer._previousPlayer._playerId, 1)
+        assert.equal(secondPlayer.next._playerId, 3)
+        assert.equal(secondPlayer.previous._playerId, 1)
 
-        let thirdPlayer = secondPlayer._nextPlayer
+        let thirdPlayer = secondPlayer.next
         assert.equal(thirdPlayer._playerId, 3)
-        assert.equal(thirdPlayer._nextPlayer._playerId, 1)
-        assert.equal(thirdPlayer._previousPlayer._playerId, 2)
+        assert.equal(thirdPlayer.next._playerId, 1)
+        assert.equal(thirdPlayer.previous._playerId, 2)
     });
 });

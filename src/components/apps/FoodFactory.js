@@ -5,7 +5,8 @@ export class FoodFactory {
         this._foods = [1, 1, 1, 2, 2, 3];
     }
 
-     collect() {
+     collect() 
+     {
         shuffle(this._foods)
         return this._foods[0];
     }

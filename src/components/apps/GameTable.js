@@ -5,7 +5,6 @@ export class GameTable {
         this._playerIds = playerIds
         this._playersCount = playerIds.length
         this._headPlayer = new PlayerOnTable(playerIds[0]);
-        this._headPlayer = this._headPlayer;
         this._initTable(playerIds);
     }
 
@@ -14,13 +13,13 @@ export class GameTable {
         //1 .. N-1
         for (let i = 1; i < playerIds.length; i++) {
             let player = new PlayerOnTable(playerIds[i]);
-            previousCreatedPlayerOnTable._nextPlayer = player;
-            player._previousPlayer = previousCreatedPlayerOnTable;
+            previousCreatedPlayerOnTable.next = player;
+            player.previous = previousCreatedPlayerOnTable;
             previousCreatedPlayerOnTable = player;
         }
         //cas N-1
-        this._headPlayer._previousPlayer = previousCreatedPlayerOnTable;
-        previousCreatedPlayerOnTable._nextPlayer = this._headPlayer;
+        this._headPlayer.previous = previousCreatedPlayerOnTable;
+        previousCreatedPlayerOnTable.next = this._headPlayer;
     }
 
     killPlayer(playerId)
@@ -35,14 +34,14 @@ export class GameTable {
 
             if (currentPlayer.value._playerId == playerId)
             {
-                let previousPlayer = currentPlayer.value._previousPlayer
-                let nextPlayer = currentPlayer.value._nextPlayer
-                previousPlayer._nextPlayer = nextPlayer
-                nextPlayer._previousPlayer = previousPlayer
+                let previousPlayer = currentPlayer.value.previous
+                let nextPlayer = currentPlayer.value.next
+                previousPlayer.next = nextPlayer
+                nextPlayer.previous = previousPlayer
                 this._playersCount --
 
                 if (this._headPlayer._playerId == currentPlayer.value._playerId)
-                    this._headPlayer = this._headPlayer._nextPlayer
+                    this._headPlayer = this._headPlayer.next
 
                 return true;
             }
@@ -51,17 +50,17 @@ export class GameTable {
 
     assignNextHeadPlayer()
     {
-        this._headPlayer = this._headPlayer._previousPlayer;
+        this._headPlayer = this._headPlayer.previous;
     }
 
     * getPlayerEnumerator()
     {
         yield this._headPlayer;
-        let currentPlayer = this._headPlayer._nextPlayer;
+        let currentPlayer = this._headPlayer.next;
         while (currentPlayer._playerId != this._headPlayer._playerId)
         {
             yield currentPlayer;
-            currentPlayer = currentPlayer._nextPlayer
+            currentPlayer = currentPlayer.next
         }
     }
 }

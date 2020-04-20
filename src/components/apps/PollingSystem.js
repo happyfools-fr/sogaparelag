@@ -1,6 +1,5 @@
-class Polling
+export class PollingSystem
 {
-    //should assert playerIds unique + headPlayerId in playerIds
     constructor(gameTable)
     {
         this._gameTable = gameTable;
@@ -21,13 +20,13 @@ class Polling
         }
         let playersWithMaxVote = _getPlayersWithMaxVote(votesByPlayerId)
         if (playersWithMaxVote.length > 1)
-            return this._gameTable._headPlayer.choosePlayerToVoteAgainst(this._gameTable._playerIds)
+            return this._gameTable._headPlayer.chooseFinalPlayerToVoteAgainst(this._gameTable._playerIds)
         return playersWithMaxVote[0]
     }
 
     _initVotingPolls()
     {
-        votesByPlayerId = {};
+        let votesByPlayerId = {};
         let playerEnumerator = this._gameTable.getPlayerEnumerator()
         while (true)
         {
@@ -35,7 +34,7 @@ class Polling
             if (currentPlayer.done)
                 break   
                 
-            votesByPlayerId[currentPlayer._playerId] = 0
+            votesByPlayerId[currentPlayer.value._playerId] = 0
         }
         return votesByPlayerId;
     }
@@ -44,22 +43,20 @@ class Polling
     {
         let max = -1
         let playerIdsWithMax = []
-        foreach(voteByPlayerId in votesByPlayerId)
+        for(let playerId in votesByPlayerId)
         {
-            if (voteByPlayerId.value > max)
+            if (votesByPlayerId[playerId] > max)
             {
-                max = voteByPlayerId.value;
-                playerIdsWithMax = [voteByPlayerId.key]
+                max = votesByPlayerId[playerId];
+                playerIdsWithMax = [playerId]
             }
-
-            if (voteByPlayerId.value < max)
-                continue
-            
-            //voteByPlayerId.value == max
-            playerIdsWithMax.add(voteByPlayerId.key)
+            else if (votesByPlayerId[playerId] == max)
+            {            
+                playerIdsWithMax.push(playerId)
+            }
         }
         return playerIdsWithMax
     }
-
-
 };
+
+export default PollingSystem;

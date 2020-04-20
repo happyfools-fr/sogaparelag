@@ -5,7 +5,8 @@ const _woodFactory = new WoodFactory()
 const assert = require('assert');
     
 
-describe('WoodFactory', function() {
+describe('WoodFactory', function() 
+{
     it('collect 0 wood if ask as so', () => 
     {
         assert.equal(_woodFactory.collect(0), 0)

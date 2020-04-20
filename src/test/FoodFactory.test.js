@@ -4,7 +4,8 @@ const _foodFactory = new FoodFactory()
 const assert = require('assert');
     
 
-describe('FoodFactory', function() {
+describe('FoodFactory', function() 
+{
     it('collect food gets value in 1-2-3', () => 
     {
         assert(_foodFactory.collect() >= 1)

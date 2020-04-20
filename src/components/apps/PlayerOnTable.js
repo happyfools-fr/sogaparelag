@@ -1,19 +1,27 @@
 export class PlayerOnTable {
     constructor(playerId)
     {
-        this._previousPlayer = null;
+        this._previous = null;
         this._playerId = playerId; //immutable
-        this._nextPlayer = null;
+        this._next = null;
     }
 
-    set previousPlayer(value)
+    get previous()
     {
-        this._previousPlayer = value;
+        return this._previous;
+    }
+    set previous(value)
+    {
+        this._previous = value;
     }
 
-    set nextPlayer(value)
+    get next()
     {
-        this._nextPlayer = value;
+        return this._next;
+    }
+    set next(value)
+    {
+        this._next = value;
     }
 }
 
