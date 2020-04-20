@@ -51,7 +51,7 @@ export default class PlayerGameList extends Component {
         {
           listData.map(element => {
           return (
-            <ListGroup.Item variant="light" action href={element}>{element}</ListGroup.Item>
+            <ListGroup.Item variant="light" action href={"/game/"+ element}>{element}</ListGroup.Item>
           );
         })
       }

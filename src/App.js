@@ -23,6 +23,7 @@ import Auth from './apps/auth/Auth'
 import GameMenu from './apps/game/GameMenu'
 import LandingPage from './apps/home/LandingPage'
 import About from './apps/about/About'
+import RouteRedirectionToGame from './apps/game/components/RouteRedirectionToGame'
 
 const firebaseAppAuth = firebaseApp.auth();
 const providers = {
@@ -109,8 +110,9 @@ render() {
               signInWithGoogle={signInWithGoogle}
             />
           </Route>
-
-
+          <Route path="/:gameSlugname" component={RouteRedirectionToGame}>
+          </Route>
+            {/* <Route path="/:gameSlugname" component={props => <RouteRedirectionToGame gameSlugname={props.match.params.gameSlugname} user={props.user}/>}/> */}
         </Switch>
       </div>
       <Navbar sticky="bottom">
