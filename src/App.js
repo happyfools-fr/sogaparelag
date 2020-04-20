@@ -14,7 +14,6 @@ import withFirebaseAuth from 'react-with-firebase-auth';
 
 // Styles imports
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './css/style.css';
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 
