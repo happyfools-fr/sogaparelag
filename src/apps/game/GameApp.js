@@ -14,6 +14,7 @@ import {Container, Row, Col} from 'react-bootstrap';
 import Action from './components/Action';
 import GameStateTable from './components/GameStateTable';
 import PlayerStateTable from './components/PlayerStateTable';
+import GameLogSidebar from './components/GameLogSidebar';
 
 const db = firebase.firestore(firebaseApp);
 
@@ -83,6 +84,14 @@ class GameApp extends Component {
     }
   }
 
+  createGameLogSidebar(game) {
+    if (game) {
+        return (<GameLogSidebar game={game} />)
+    } else {
+        return (<div />)
+    }
+  };
+
   render() {
     const user = this.props.user;
     const game = this.state.game;
@@ -100,12 +109,10 @@ class GameApp extends Component {
                 ? <PlayerStateTable game={game} user={user}/>
                 : <div>No PlayerStateTable</div>
                 }
-                {
-                this.createActionApp(game, user)
-                }
+                {this.createActionApp(game, user)}
             </Col>
             <Col sm={3}>
-                <Jumbotron />
+                {this.createGameLogSidebar(game)}
             </Col>
         </Row>
       </Container>
