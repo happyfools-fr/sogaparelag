@@ -10,6 +10,8 @@ import { Jumbotron } from 'react-bootstrap';
 import * as firebase from 'firebase';
 import firebaseApp from '../../../firebaseApp';
 
+import LogItem from './LogItem';
+
 const db = firebase.firestore(firebaseApp);
 
 export default class GameLogSidebar extends Component {
@@ -49,16 +51,16 @@ export default class GameLogSidebar extends Component {
     
     render() {
         return (
-            <Jumbotron>
+            <div>
             <h3>Game Log</h3>
             <ListGroup>
                 {
                     this.state.game.history.map(state => {
-                        return (<ListGroup.Item>{state._id}</ListGroup.Item>);
+                        return (<LogItem icon="fa-info-circle" value={state._id} />);
                     })
                 }
             </ListGroup>
-            </Jumbotron>
+            </div>
         )
     }
 }

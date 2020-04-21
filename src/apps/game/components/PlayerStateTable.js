@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 // Styles imports
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
-  Jumbotron, 
-  Table, 
+  Jumbotron
 }  from 'react-bootstrap';
 import * as firebase from 'firebase';
 import firebaseApp from '../../../firebaseApp';
+
+import PlayerView from './PlayerView';
 
 const db = firebase.firestore(firebaseApp);
 
@@ -52,51 +53,12 @@ export default class PlayerStateTable extends Component {
     if (!game.currentState.isStarted || !player){
       return (
           <Jumbotron>
-            <h1>Your Current State as a Player</h1>
-            <p>
-              A simple jumbotron-style component to display the player's state info.
-            </p>
             <h2>Game has not started yet!</h2>
         </Jumbotron>
        );
     } else {
       return (
-          <Jumbotron>
-            <h1>Your Current State as a Player</h1>
-            <p>
-              A simple jumbotron-style component to display the player's state info.
-            </p>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Player ID</th>
-                  <th>Player Name</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{player ? player._id : "" }</td>
-                  <td>{player ? player.nickname.toUpperCase() : ""}</td>
-                </tr>
-              </tbody>
-          </Table>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>Sick</th>
-                <th>Dead</th>
-                <th>Hand</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{playerStateInGame ? playerStateInGame.isSick.toString() : ""}</td>
-                <td>{playerStateInGame ? playerStateInGame.isDead.toString() : ""}</td>
-                <td>{playerStateInGame ? playerStateInGame.currentHand : ""}</td>
-              </tr>
-            </tbody>
-          </Table>
-        </Jumbotron>
+          <PlayerView player={player} playerStateInGame={playerStateInGame} />
        );
      }
  }
