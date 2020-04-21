@@ -103,7 +103,11 @@ class GameView extends Component {
                                     ? <PlayerStateTable game={game} user={user} />
                                     : <div>No PlayerStateTable</div>
                             }
-                            {this.createActionApp(game, user)}
+                            { 
+                                game && user
+                                ? this.createActionApp(game, user)
+                                : <div>No ActionApp</div>
+                            }
                         </Col>
                         <Col sm={3}>
                             {this.createGameLogSidebar(game)}
