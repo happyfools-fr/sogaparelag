@@ -4,8 +4,8 @@ import * as firebase from 'firebase';
 import firebaseApp from '../../../firebaseApp';
 
 import GameState from './GameState';
+import LoggedInUser from './LoggedInUser';
 import Player from './Player';
-import PlayerStateInGame from './PlayerStateInGame';
 
 const db = firebase.firestore(firebaseApp);
 
@@ -77,7 +77,7 @@ class Game {
 
     static createAndAddPlayerToGame(game, user) {
         const player = Player.createAndPushPlayer(user);
-        const playerStateInGame = PlayerStateInGame.getInitialPlayerStateInGame(player);
+        const playerStateInGame = Player.getInitialPlayerStateInGame(player);
         const updatedGame = Game.addNewPlayer(game, player, playerStateInGame);
         return updatedGame;
     }

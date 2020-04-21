@@ -1,10 +1,12 @@
-import PlayerOnTable from './PlayerOnTable'
+import SittingPlayer from './SittingPlayer'
 
-export class GameTable {
-    constructor(players) {
+export class GameTable 
+{
+    constructor(players) 
+    {
         this._players = players
         this._playersCount = players.length
-        this._headPlayer = new PlayerOnTable(players[0]);
+        this._headPlayer = new SittingPlayer(players[0]);
         this._initTable(players);
     }
 
@@ -22,7 +24,7 @@ export class GameTable {
         let previousCreatedPlayerOnTable = this._headPlayer;
         //1 .. N-1
         for (let i = 1; i < players.length; i++) {
-            let player = new PlayerOnTable(players[i]);
+            let player = new SittingPlayer(players[i]);
             previousCreatedPlayerOnTable.next = player;
             player.previous = previousCreatedPlayerOnTable;
             previousCreatedPlayerOnTable = player;
@@ -70,6 +72,20 @@ export class GameTable {
         while (currentPlayer.player != this._headPlayer.player)
         {
             yield currentPlayer;
+            currentPlayer = currentPlayer.next
+        }
+    }
+
+    * getHealthyPlayerEnumerator()
+    {
+        if (!this._headPlayer.player.isSick)
+            yield this._headPlayer;
+
+        let currentPlayer = this._headPlayer.next;
+        while (currentPlayer.player != this._headPlayer.player)
+        {
+            if (!currentPlayer.player.isSick)
+                yield currentPlayer;
             currentPlayer = currentPlayer.next
         }
     }

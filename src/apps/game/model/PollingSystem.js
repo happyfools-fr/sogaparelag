@@ -1,3 +1,5 @@
+import GameTable from './GameTable'
+
 export class PollingSystem
 {
     constructor(gameTable)
@@ -8,10 +10,10 @@ export class PollingSystem
     vote()
     {
         votesByPlayerId = this._initVotingPolls()
-        let playerEnumerator = this._gameTable.getPlayerEnumerator()
+        let healthyPlayerEnumerator = this._gameTable.getHealthyPlayerEnumerator()
         while (true)
         {
-            let currentPlayer = playerEnumerator.next()
+            let currentPlayer = healthyPlayerEnumerator.next()
             if (currentPlayer.done)
                 break   
                 

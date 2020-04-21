@@ -4,9 +4,9 @@ import Player from '../model/Player'
 
 
 const assert = require('assert');
-let player1 = new Player(1, 'toto', null)
-let player2 = new Player(2, 'tata', null)
-let player3 = new Player(3, 'titi', null)
+let player1 = new Player(1, false, false, null)
+let player2 = new Player(2, false, false, null)
+let player3 = new Player(3, false, false, null)
 const gameTable = new GameTable([player1, player2, player3])
 const _poll = new PollingSystem(gameTable)
 
