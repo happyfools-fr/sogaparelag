@@ -64,7 +64,11 @@ class App extends Component {
         return (
             <Router>
                 <Navbar sticky="top" bg="light" expand="lg">
-                    <Navbar.Brand href="/">Happy Fools</Navbar.Brand>
+                    <Navbar.Brand href="/">
+                        <i class="fas fa-laugh-beam" />
+                        &nbsp;
+                        Happy Fools
+                    </Navbar.Brand>
                     <Nav justify classname="mr-auto">
                         <Nav.Link>
                             <Link to="/">Home</Link>
