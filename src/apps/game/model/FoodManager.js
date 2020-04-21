@@ -22,4 +22,14 @@ export class FoodManager
         shuffle(this._foods)
         this._inventory = this._foods[0]
     }
+
+    eat(playersCount)
+    {
+        this.inventory -= playersCount
+    }
+
+    authorizeLeaving(playersCount)
+    {
+        return this.inventory >= 2 * playersCount;
+    }
 }

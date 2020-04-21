@@ -3,34 +3,51 @@ import firebaseApp from '../../../firebaseApp';
 
 const db = firebase.firestore(firebaseApp);
 
-export default class LoggedInUser {
+
+/** 
+ * Features:
+ * - connect to a GamingRoom by slugname
+ */
+export default class LoggedInUser 
+{
   
-  constructor (uid, nickname) {
+  constructor (uid, nickname) 
+  {
     this._id = uid;
     this.nickname = nickname;
   }
+
 
   get id()
   { 
       return this._id
   }
 
-  static pushOrUpdateRecord(player) {
-    db.collection("player").doc(player._id).set({
-      ...player
-    },
-    {
-      merge: true,
-    }
-  );
-    return player;
+  connectToGameRoom(slugname){
+
+
+      //todo
+      return true;
   }
+
+//   static pushOrUpdateRecord(player) 
+//   {
+//     db.collection("player").doc(player._id).set({
+//       ...player
+//     },
+//     {
+//       merge: true,
+//     }
+//   );
+//     return player;
+//   }
   
-  static createAndPushPlayer(user) {
-    const player = new LoggedInUser(
-      user.uid,
-      user.displayName,
-    )
-    return LoggedInUser.pushOrUpdateRecord(player);
-  }  
+// //   static createAndPushLoggedInUser(user) 
+// //   {
+// //     const player = new LoggedInUser(
+// //       user.uid,
+// //       user.displayName,
+// //     )
+// //     return LoggedInUser.pushOrUpdateRecord(player);
+// //   }  
 }

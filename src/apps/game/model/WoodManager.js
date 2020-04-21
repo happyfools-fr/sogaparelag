@@ -44,5 +44,10 @@ export class WoodManager {
         
         return additionalRequest;
     }
+
+    authorizeLeaving(playersCount)
+    {
+        return this.inventory >= 6 * playersCount;
+    }
 }
 

@@ -4,15 +4,10 @@ export class GameTable
 {
     constructor(players) 
     {
-        this._players = players
-        this._playersCount = players.length
+        this.players = players
+        this.playersCount = players.length
         this._headPlayer = new SittingPlayer(players[0]);
         this._initTable(players);
-    }
-
-    get players()
-    {
-        return this._players
     }
 
     get headPlayer()
@@ -50,7 +45,7 @@ export class GameTable
                 let nextPlayer = currentPlayer.value.next
                 previousPlayer.next = nextPlayer
                 nextPlayer.previous = previousPlayer
-                this._playersCount --
+                this.playersCount --
 
                 if (this._headPlayer.player == currentPlayer.value.player)
                     this._headPlayer = this._headPlayer.next

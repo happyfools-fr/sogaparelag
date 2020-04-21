@@ -1,6 +1,6 @@
 import GameTable from './GameTable'
 
-export class PollingSystem
+export class PollManager
 {
     constructor(gameTable)
     {
@@ -17,12 +17,12 @@ export class PollingSystem
             if (currentPlayer.done)
                 break   
                 
-            let chosenPlayerId = currentPlayer.value.choosePlayerToVoteAgainst(this._gameTable.players)
+            let chosenPlayerId = currentPlayer.value.choosePlayerIdToVoteAgainst(this._gameTable.players)
             votesByPlayerId[chosenPlayerId] ++
         }
-        let playersWithMaxVote = _getPlayersWithMaxVote(votesByPlayerId)
+        let playersWithMaxVote = this._getPlayersWithMaxVote(votesByPlayerId)
         if (playersWithMaxVote.length > 1)
-            return this._gameTable.headPlayer.chooseFinalPlayerToVoteAgainst(this._gameTable.players)
+            return this._gameTable.headPlayer.chooseFinalPlayerIdToVoteAgainst(this._gameTable.players)
         return playersWithMaxVote[0]
     }
 
@@ -34,14 +34,14 @@ export class PollingSystem
         {
             let currentPlayer = playerEnumerator.next()
             if (currentPlayer.done)
-                break   
-                
+                break 
+                  
             votesByPlayerId[currentPlayer.value.id] = 0
         }
         return votesByPlayerId;
     }
 
-    _getPlayersWithMaxVote(votesByPlayerId)
+    _getPlayerIdsWithMaxVote(votesByPlayerId)
     {
         let max = -1
         let playerIdsWithMax = []
@@ -61,4 +61,4 @@ export class PollingSystem
     }
 };
 
-export default PollingSystem;
+export default PollManager;

@@ -2,8 +2,11 @@ import Game2 from './Game2'
 
 /** 
  * GamingRoom
- * - Can add loggedInPlayer only game has not started
+ * - Can add loggedInPlayer only if game has not started (if !this_currentGame)
  * - Can start game only if this._loggedInUsers.length >= 3 && <= 12
+ * 
+ * Features:
+ * - create GamingRoom collection
  */
 class GamingRoom
 {

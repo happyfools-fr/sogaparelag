@@ -13,7 +13,7 @@ export class SittingPlayer
     }
     get id()
     {
-        return this._player.userId
+        return this._player.id
     }
 
     get previous()

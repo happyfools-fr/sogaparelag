@@ -1,14 +1,16 @@
-import {PollingSystem} from '../model/PollingSystem'
+import {PollManager} from '../model/PollManager'
 import {GameTable} from '../model/GameTable'
-import Player from '../model/Player'
+import {Player} from '../model/Player'
+import {MockLoggedInUser} from './MockLoggedInUser'
 
+let player1 = new Player(new MockLoggedInUser(1, 'toto'))
+let player2 = new Player(new MockLoggedInUser(2, 'tata'))
+let player3 = new Player(new MockLoggedInUser(3, 'titi'))
+const gameTable = new GameTable([player1, player2, player3])
+const _poll = new PollManager(gameTable)
 
 const assert = require('assert');
-let player1 = new Player(1, false, false, null)
-let player2 = new Player(2, false, false, null)
-let player3 = new Player(3, false, false, null)
-const gameTable = new GameTable([player1, player2, player3])
-const _poll = new PollingSystem(gameTable)
+
 
 describe('GameTable', function() 
 {
@@ -33,7 +35,7 @@ describe('GameTable', function()
         votes[1] =  2
         votes[2] =  1
         votes[3] =  0
-        let playerWithMaxVote = _poll._getPlayersWithMaxVote(votes)
+        let playerWithMaxVote = _poll._getPlayerIdsWithMaxVote(votes)
         assert.equal(playerWithMaxVote.length, 1)
         assert.equal(playerWithMaxVote[0], 1)
     });
@@ -44,7 +46,7 @@ describe('GameTable', function()
         votes[1] =  1
         votes[2] =  1
         votes[3] =  0
-        let playerWithMaxVote = _poll._getPlayersWithMaxVote(votes)
+        let playerWithMaxVote = _poll._getPlayerIdsWithMaxVote(votes)
         assert.equal(playerWithMaxVote.length, 2)
         assert.equal(playerWithMaxVote[0], 1)
         assert.equal(playerWithMaxVote[1], 2)
