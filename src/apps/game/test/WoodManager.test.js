@@ -1,25 +1,31 @@
-import shuffle from '../../../../node_modules/shuffle-array'
-import {WoodFactory} from '../model/WoodFactory'
+import shuffle from 'shuffle-array'
+import {WoodManager} from '../model/WoodManager'
 
-const _woodFactory = new WoodFactory()
+const _woodManager = new WoodManager()
 const assert = require('assert');
     
 
-describe('WoodFactory', function() 
+describe('WoodManager', function() 
 {
     it('collect 0 wood if ask as so', () => 
     {
-        assert.equal(_woodFactory.collect(0), 0)
+        assert.equal(_woodManager.inventory, 0)
+        let sick =_woodManager.tryCollect(0)
+        assert.equal(_woodManager.inventory, 0)
+        assert.equal(sick, false)
     });
 
     it('collect 6 woods will get you sick', () => 
     {
-        assert.equal(_woodFactory.collect(6), null)
+        assert.equal(_woodManager.inventory, 0)
+        let sick = _woodManager.tryCollect(6)
+        assert.equal(_woodManager.inventory, 0)
+        assert.equal(sick, true)
     });
 
     it('collect more than 6 woods throws', () => 
     {
-        assert.throws(() => { _woodFactory.collect(7) })
+        assert.throws(() => { _woodManager.tryCollect(7) })
     });
     
     it('collect summary returns additionalRequest if asked under or equal 3', () => 
@@ -28,7 +34,7 @@ describe('WoodFactory', function()
         for (let additionalRequest = 0; additionalRequest <= 6 ; additionalRequest++) 
         {
             if (additionalRequest <= 3)
-                assert.equal(WoodFactory._collectSumary(woods, additionalRequest), additionalRequest)
+                assert.equal(WoodManager._collectSumary(woods, additionalRequest), additionalRequest)
         }
         
     });
@@ -39,7 +45,7 @@ describe('WoodFactory', function()
         for (let additionalRequest = 0; additionalRequest <= 6 ; additionalRequest++) 
         {
             if (additionalRequest > 3)
-                assert.equal(WoodFactory._collectSumary(woods, additionalRequest), null)
+                assert.equal(WoodManager._collectSumary(woods, additionalRequest), null)
         }
         
     });

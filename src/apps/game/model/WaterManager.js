@@ -1,10 +1,20 @@
 import { isTSExpressionWithTypeArguments } from "@babel/types";
 
-export class WaterFactory
+export class WaterManager
 {
     constructor(value)
     {
+        this._inventory = 0
         this._value = value;
+    }
+
+    get inventory()
+    {
+        return this._inventory
+    }
+    set inventory(value)
+    {
+        this._inventory = value
     }
 
     set value(newValue)
@@ -14,6 +24,6 @@ export class WaterFactory
 
     collect()
     {
-        return this._value;
+        this._inventory += this._value;
     }
 }
