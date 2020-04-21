@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import Button from 'react-bootstrap/Button';
+import {
+  Jumbotron, 
+  Button
+}  from 'react-bootstrap';
 
 class Auth extends Component {
   render() {
@@ -10,18 +13,17 @@ class Auth extends Component {
     } = this.props;
     if (user) {
         return (
-            <div>
-                <h1>Hello {user.displayName}!</h1>
+            <Jumbotron>
+                <h2>Hello {user.displayName}!</h2>
                 <Button onClick={signOut}>Sign out</Button>
-            </div>
+            </Jumbotron>
         );
-
     } else {
         return (
-            <div>
-                <h1>Log in</h1>
+            <Jumbotron>
+                <h2>Log in</h2>
                 <Button onClick={signInWithGoogle}>Sign in with Google</Button>
-            </div>
+            </Jumbotron>
         )
         
     };

@@ -1,148 +1,68 @@
 // React imports
 import React, { Component } from 'react';
 
-// Firebase imports
-import * as firebase from 'firebase';
-import firebaseApp from '../../firebaseApp';
-import withFirebaseAuth from 'react-with-firebase-auth';
-
 // Styles imports
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
+import {
+    Jumbotron,
+    Button,
+} from 'react-bootstrap';
 
 // Relative imports
-import Game from './model/Game';
 import PlayerGameList from './components/PlayerGameList';
-import GameApp from './GameApp';
 
-const firebaseAppAuth = firebaseApp.auth();
-const providers = {
-  googleProvider: new firebase.auth.GoogleAuthProvider(),
-};
-
-/** Create the FirebaseAuth component wrapper */
-const createComponentWithAuth = withFirebaseAuth({
-  providers,
-  firebaseAppAuth,
-});
+export default class GameMenu extends Component {
 
 
-class GameMenu extends Component {
-
-  constructor(props){
-    super(props);
-    this.state = {
-      inputValueGameSlugname: '',
-      currentGame: null,
-      currentGameId: null,
-    };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-
-  }
-
-  handleChange(change) {
-    this.setState({inputValueGameSlugname: change.target.value});
-  }
-  
-  handleSubmit(submit) {
-    submit.preventDefault();
-    this.onJoinGame();
-    alert('The name of the active game was submitted: ' + this.state.inputValueGameSlugname);
-  }
-
-  handleClick(click, user) {
-      const game = Game.createAndPushNewGame(user);
-    this.setState({
-      currentGame: game,
-      currentGameId: game._id,
-    });
-    alert('New game created, share this: ' + game.slugname)
-  }
-  
-  async updateGameId(gameId) {
-    const gameSnapshot = await Game.getGameSnapshotByGameId(gameId);
-    if(gameSnapshot.exists) {
-      this.setState({
-        inputValueGameSlugname: this.inputValueGameSlugname,
-        currentGameId: gameId,
-        currentGame: gameSnapshot.data(),
-      });
-      return true;
-    } else {
-      return false;
+    constructor(props) {
+        super(props);
+        this.state = {
+            inputValueGameSlugname: '',
+            currentGame: null,
+        };
+        this.handleJoinGameChange = this.handleJoinGameChange.bind(this);
     }
-  }
 
-  async updateGameSlugname() {
-    const gameSlugname = this.state.inputValueGameSlugname;
-    const gameId = await Game.getGameIdBySlugname(gameSlugname);
-    let updated;
-    if (gameId){
-      updated = await this.updateGameId(gameId);
-    } else {
-      updated = false;
+    handleJoinGameChange(change) {
+        this.setState({ inputValueGameSlugname: change.target.value });
     }
-    return updated;
-  }
-  
-  async onJoinGame(){
-    const updated = await this.updateGameSlugname();
-    console.log(updated);
-    if (updated){
-      const user = this.props.user;
-      const game = this.state.currentGame;
-      const updatedGame = Game.createAndAddPlayerToGame(game, user);
-      return Game.pushOrUpdateRecord(updatedGame);
-    } else {
-      alert("Provided Gamed Id is not recognized! Please Amend...");
-    }
-  }
 
-  render() {
-    const user = this.props.user;
-    const game = this.state.currentGame;
-    if (user && game === null) {
-        return (
-            <div>
-                <Form onSubmit={this.handleSubmit}>
-                <Form.Group>
-                    <Form.Label>Join a game</Form.Label>
-                    <Form.Control size="lg" type="text" placeholder="Enter game name" 
-                        value={this.state.inputValueGameSlugname}
-                        onChange={this.handleChange}
-                    />
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                    Join
+    render() {
+        const user = this.props.user;
+        const game = this.state.currentGame;
+        if (user && game === null) {
+            return (
+                <Jumbotron>
+                    <Button onClick={(click) => { this.props.handleClickCreateNewGame(click, user) }}>Create a New Game</Button>
+                    <p></p>
+                    <p></p>
+                    <h3>Or</h3>
+                    <p></p>
+                    <p></p>
+                    <h2>Join another Game</h2>
+                    <Form onSubmit={(submit) => this.props.handleJoinGameSubmit(this.state.inputValueGameSlugname, submit)}>
+                        <Form.Group>
+                            <Form.Control size="lg" type="text" placeholder="Enter game name"
+                                value={this.state.inputValueGameSlugname}
+                                onChange={this.handleJoinGameChange}
+                            />
+                        </Form.Group>
+                        <Button variant="primary" type="submit">
+                            Join
                 </Button>
-                </Form>
-                <Button onClick={(click) => {this.handleClick(click,user)}}>Start a new game</Button>
-                {
-                this.state.currentGameId || this.state.currentGame
-                    ? <GameApp gameId={this.state.currentGameId} user={user}/>
-                    : <div></div>
-                }
-                <PlayerGameList user={user}/>
-            </div>
-        );
-    } else {
-        if (game !== null) {
-            return(
-                <div>
-                    {
-                    this.state.currentGameId || this.state.currentGame
-                    ? <GameApp gameId={this.state.currentGameId} user={user}/>
-                    : <div></div>
-                    }
-                </div>
-            )
+                    </Form>
+                    <p></p>
+                    <p></p>
+                    <h3>Or</h3>
+                    <p></p>
+                    <p></p>
+                    <h2>Join a Game you are registered in</h2>
+                    <PlayerGameList user={user} />
+                </Jumbotron>
+            );
         } else {
-            return (<div></div>);
+            return (<div>Null game...</div>);
         }
-    }
-  };
+    };
 }
-
-export default createComponentWithAuth(GameMenu);

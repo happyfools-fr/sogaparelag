@@ -49,8 +49,8 @@ export default class GameLogSidebar extends Component {
     
     render() {
         return (
-            <div>
-            <h3>Game log</h3>
+            <Jumbotron>
+            <h3>Game Log</h3>
             <ListGroup>
                 {
                     this.state.game.history.map(state => {
@@ -58,8 +58,7 @@ export default class GameLogSidebar extends Component {
                     })
                 }
             </ListGroup>
-            </div>
-
+            </Jumbotron>
         )
     }
 }

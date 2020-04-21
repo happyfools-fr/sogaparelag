@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import {
+  Jumbotron, 
+}  from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Auth from "../auth/Auth"
 
@@ -6,14 +9,15 @@ class LandingPage extends Component {
 
   render() {
     return (
-      <React.Fragment>
+      <Jumbotron>
           <h1>Wanna play games?</h1>
-          <Auth 
+      <Auth 
             user={this.props.user}
             signOut={this.props.signOut}
             signInWithGoogle={this.props.signInWithGoogle}
-          />
-      </React.Fragment>
+        />
+     </Jumbotron>
+
     );
   };
 }
