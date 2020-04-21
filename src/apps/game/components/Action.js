@@ -11,6 +11,7 @@ class Action extends Component {
     onClick(action) {
         Game.pushUpdateGameState(this.props.game);
         alert(action+": Game.updateGameState");
+        this.props.afterAction();
     }
   
     render() { 

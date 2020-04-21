@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 // Style imports
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ListGroup from 'react-bootstrap/ListGroup'
-import { Jumbotron } from 'react-bootstrap';
 
 // Firebase imports
 import * as firebase from 'firebase';

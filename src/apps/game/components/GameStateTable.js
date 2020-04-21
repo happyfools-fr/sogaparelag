@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 // Styles imports
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-  Jumbotron, 
-  Table, 
-  Button
-}  from 'react-bootstrap';
+import {Jumbotron, Table}  from 'react-bootstrap';
 import Game from '../model/Game';
 import * as firebase from 'firebase';
 import firebaseApp from '../../../firebaseApp';
+
+import WaitingRoomView from './WaitingRoomView';
 
 const db = firebase.firestore(firebaseApp);
 
@@ -72,25 +70,17 @@ export default class GameStateTable extends Component {
     this.unsubscribeForCurrentPlayer();
     this.unsubscribeForNextPlayer();
   };
+
+    onClickNotStarted(game) {
+        Game.startFirstRound(game);
+        alert("Game.startFirstRound");
+    };
   
   createJumbotron(game) {
     if (!game.currentState.isStarted){
-      return (
-        <Jumbotron>
-          <h1>{game.slugname.toUpperCase()} </h1>
-          <p>
-            A simple jumbotron-style component to display the game state info.
-          </p>
-          <p>
-            <Button variant="primary" onClick={
-              () => {
-              Game.startFirstRound(game);
-              alert("Game.startFirstRound");
-            }
-          }>Start the game if everybody is ready!</Button>
-          </p>
-        </Jumbotron>
-      );
+
+        return ( <WaitingRoomView game={game} onClick={this.onClickNotStarted} />);
+
     } else {
       return (
         <Jumbotron>

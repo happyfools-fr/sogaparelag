@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import firebaseApp from '../../firebaseApp';
-import Action from './components/Action';
+import ActionView from './components/ActionView';
 import GameStateTable from './components/GameStateTable';
 import PlayerStateTable from './components/PlayerStateTable';
 import GameLogSidebar from './components/GameLogSidebar';
@@ -55,7 +55,7 @@ class GameView extends Component {
                     <React.Fragment>
                         <Jumbotron>
                             <h1 id='player-turn'>Your turn boo!</h1>
-                            <Action game={game} />
+                            <ActionView game={game}/>
                         </Jumbotron>
                     </React.Fragment>
                 );
