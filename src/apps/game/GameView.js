@@ -7,7 +7,7 @@ import PlayerStateTable from './components/PlayerStateTable';
 import GameLogSidebar from './components/GameLogSidebar';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Jumbotron } from 'react-bootstrap';
+import { Jumbotron, Col, Row, Container } from 'react-bootstrap';
 
 const db = firebase.firestore(firebaseApp);
 
@@ -90,23 +90,26 @@ class GameView extends Component {
         const game = this.props.game;
         return (
             <React.Fragment>
-                {
-                    game
-                        ? <GameStateTable game={game} />
-                        : <div>No GameStateTable</div>
-                }
-                {
-                    game && user
-                        ? <PlayerStateTable game={game} user={user} />
-                        : <div>No PlayerStateTable</div>
-                }
-                {
-                    this.createActionApp(game, user)
-                }
-                {
-                    this.createGameLogSidebar(game)
-                }
-
+                <Container>
+                    <Row>
+                        <Col>
+                            {
+                                game
+                                    ? <GameStateTable game={game} />
+                                    : <div>No GameStateTable</div>
+                            }
+                            {
+                                game && user
+                                    ? <PlayerStateTable game={game} user={user} />
+                                    : <div>No PlayerStateTable</div>
+                            }
+                            {this.createActionApp(game, user)}
+                        </Col>
+                        <Col sm={3}>
+                            {this.createGameLogSidebar(game)}
+                        </Col>
+                    </Row>
+                </Container>
             </React.Fragment>
         );
     };
