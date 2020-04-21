@@ -10,6 +10,11 @@ export default class LoggedInUser {
     this.nickname = nickname;
   }
 
+  get id()
+  { 
+      return this._id
+  }
+
   static pushOrUpdateRecord(player) {
     db.collection("player").doc(player._id).set({
       ...player
