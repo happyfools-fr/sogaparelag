@@ -91,3 +91,12 @@ firebase deploy
 ```
 
 ## With Github-Discord integration
+
+## Deploy within  a Gitpod workspace
+
+```
+npm install -g firebase-tools
+npm run build
+firebase login --no-localhost
+firebase deploy
+```
