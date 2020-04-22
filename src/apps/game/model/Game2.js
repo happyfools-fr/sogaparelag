@@ -93,9 +93,8 @@ class Game2
 
     _canLeave()
     {
-        return 
-            this._waterManager.authorizeLeaving(this._gameTable.playersCount) && 
-            this._foodManager.authorizeLeaving(this._gameTable.playersCount) && 
-            this._woodManager.authorizeLeaving(this._gameTable.playersCount)
+        return  this._waterManager.authorizeLeaving(this._gameTable.playersCount) && 
+                this._foodManager.authorizeLeaving(this._gameTable.playersCount) && 
+                this._woodManager.authorizeLeaving(this._gameTable.playersCount)
     }
 }
