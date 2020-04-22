@@ -27,7 +27,7 @@ export default class PlayerStateTable extends Component {
 
   onListenForPlayer = () => {
     this.setState({ loading: true });
-    this.unsubscribe = db.doc(`player/${this.props.user.uid}`)
+    this.unsubscribe = db.doc(`player/${this.props.player}`)
       .onSnapshot(snapshot => {
         if (snapshot) {
           let player = [];

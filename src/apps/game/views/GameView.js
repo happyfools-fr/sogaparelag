@@ -6,7 +6,7 @@ import firebaseApp from '../../../firebaseApp';
 
 // Bootstrap imports
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Jumbotron, Col, Row, Container } from 'react-bootstrap';
+import { Container, Col, Row } from 'react-bootstrap';
 
 // View imports
 import ActionView from './ActionView';
@@ -73,7 +73,11 @@ export default class GameView extends Component {
                 <Row>
                     <Col>
                         <GameStateTable game={game} />
-                        <PlayerStateTable game={game} user={user} />
+                        {
+                            game.players.map(
+                                (player) => { return (<PlayerStateTable game={game} player={player} />) }
+                            )
+                        }
                         { this.createActionApp(game, user)}
                     </Col>
                     <Col sm={3}>
