@@ -206,4 +206,5 @@ describe('GameTable', function()
         assert.equal(thirdPlayer.next.id, 1)
         assert.equal(thirdPlayer.previous.id, 2)
     });
+    
 });

@@ -45,14 +45,31 @@ export class GameTable
                 let nextPlayer = currentPlayer.value.next
                 previousPlayer.next = nextPlayer
                 nextPlayer.previous = previousPlayer
-                this.playersCount --
 
                 if (this._headPlayer.player == currentPlayer.value.player)
                     this._headPlayer = this._headPlayer.next
 
+                this._refreshPlayers()
                 return true;
             }
         }
+    }
+
+    _refreshPlayers()
+    {
+        this.players = []
+        let playerEnumerator = this.getPlayerEnumerator()
+
+        while (true)
+        {
+            let currentPlayer = playerEnumerator.next()
+            if (currentPlayer.done)
+                break
+
+            this.players.push(currentPlayer.value.player)
+        }
+
+        this.playersCount = this.players.length
     }
 
     assignNextHeadPlayer()
