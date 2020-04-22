@@ -55,7 +55,8 @@ class GameView extends Component {
                     <React.Fragment>
                         <Jumbotron>
                             <h1 id='player-turn'>Your turn boo!</h1>
-                            <ActionView game={game}/>
+                            
+                            <ActionView game={game} show={true}/>
                         </Jumbotron>
                     </React.Fragment>
                 );

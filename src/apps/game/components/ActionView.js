@@ -1,31 +1,22 @@
 import React from 'react';
 
-import {Modal, Button} from 'react-bootstrap';
+import {Modal} from 'react-bootstrap';
 
 import Action from './Action';
 
 export default function ActionView(props) {
 
-    const [show, setShow] = React.useState(false);
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const [, setShow] = React.useState(false);
 
     return (
-        <>
-        <Button variant="primary" onClick={handleShow}>
-            Play my turn
-        </Button>
-
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={props.show} onHide={()=> {setShow(false)}}>
             <Modal.Header closeButton>
                 <Modal.Title>It's your turm</Modal.Title>
             </Modal.Header>
             <Modal.Body>Choose your action, and choose wisely ...</Modal.Body>
             <Modal.Footer>
-                <Action game={props.game} afterAction={handleClose} />
+                <Action game={props.game} afterAction={()=> {setShow(false)}} />
             </Modal.Footer>
         </Modal>
-        </>
     );
 }
