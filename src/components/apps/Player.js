@@ -1,7 +1,3 @@
-import * as firebase from 'firebase';
-import firebaseApp from '../firebaseApp';
-
-const db = firebase.firestore(firebaseApp);
 
 class Player {
   
@@ -11,7 +7,7 @@ class Player {
     this.currentPlayerStateInGame = currentPlayerStateInGame;
   }
 
-  static pushOrUpdateRecord(player) {
+  static pushOrUpdateRecord(db, player) {
     db.collection("player").doc(player._id).set({
       _id: player._id,
       nickname: player.nickname,
@@ -20,14 +16,14 @@ class Player {
     return player;
   }
   
-  static createAndPushPlayerWithState(user, playerStateInGame) {
+  static createAndPushPlayerWithState(db, user, playerStateInGame) {
     const stateInGame = playerStateInGame ? playerStateInGame._id : null;
     const player = new Player(
       user.uid,
       user.displayName,
       stateInGame,
     )
-    return Player.pushOrUpdateRecord(player);
+    return Player.pushOrUpdateRecord(db, player);
   }
 
   choosePlayerToVoteAgainst(players)
