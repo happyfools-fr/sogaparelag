@@ -1,103 +1,145 @@
+// React imports
 import React, { Component } from 'react';
+
+import GameMenu from './GameMenu'
+import GameView from './views/GameView'
+import Game from './model/Game';
+
 import * as firebase from 'firebase';
 import firebaseApp from '../../firebaseApp';
-import Action from './components/Action';
-import GameStateTable from './components/GameStateTable';
-import PlayerStateTable from './components/PlayerStateTable';
-
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Jumbotron }  from 'react-bootstrap';
-
 const db = firebase.firestore(firebaseApp);
 
-class GameApp extends Component {
+export default class GameApp extends Component {
 
-  constructor(props){
-    super(props);
-    this.state = {
-      game: null,
-      loading: false,
-    };
-  }
-
-  componentDidMount() {
-    this.onListenForGame();
-  }
-
-  onListenForGame = () => {
-    this.setState({ loading: true });
-    this.unsubscribe = db.doc(`game/${this.props.gameId}`)
-      .onSnapshot(snapshot => {
-        if (snapshot) {
-          let games = [];
-          games.push({ ...snapshot.data() });
-          this.setState({
-            game: games[0],
+    constructor(props) {
+        super(props);
+        const currentGameSlugname = this.props.match
+            ? (
+                this.props.match.params
+                    ? (
+                        this.props.match.params.gameSlugname
+                            ? this.props.match.params.gameSlugname
+                            : 'slugname-undefined'
+                    )
+                    : 'slugname-undefined'
+            )
+            : 'slugname-undefined';
+        this.state = {
+            currentGame: null,
+            currentGameSlugname: currentGameSlugname,
             loading: false,
-          });
-        } else {
-          this.setState({ game: null, loading: false });
+        };
+        this.handleClickCreateNewGame = this.handleClickCreateNewGame.bind(this);
+        this.handleJoinGameSubmit = this.handleJoinGameSubmit.bind(this);
+        if (currentGameSlugname.length > 0
+            && currentGameSlugname !== 'slugname-undefined'
+            && this.props.addUserToGame) {
+            this.onJoinGame(currentGameSlugname);
         }
-      });
-  };
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
-  createActionApp(game, user){
-    if (game && game.currentState.isStarted) {
-      const currentState = game ? game.currentState : "No currentState";
-      const currentPlayerId = game ? currentState.currentPlayerId : "No currentPlayerId";
-      if (currentState && currentPlayerId === user.uid) {
-        return(
-          <React.Fragment>
-            <Jumbotron>
-              <h1 id='player-turn'>Your turn boo!</h1>
-              <Action game={game}/>
-            </Jumbotron>
-          </React.Fragment>
-        );
-      } else {
-        return(
-        <React.Fragment>
-          <Jumbotron>
-            <h1 id='player-turn'>Not your turn Babe! Wait for it...</h1>
-          </Jumbotron>
-        </React.Fragment>
-      );
-      }
-    } else {
-      return(
-      <React.Fragment>
-        <div></div>
-      </React.Fragment>
-    );
     }
-  }
 
-  render() {
-    const user = this.props.user;
-    const game = this.state.game;
-    return (
-      <React.Fragment>
-        {
-          game
-          ? <GameStateTable game={game}/>
-          : <div>No GameStateTable</div>
-        }
-        {
-          game && user
-          ? <PlayerStateTable game={game} user={user}/>
-          : <div>No PlayerStateTable</div>
-        }
-        {
-          this.createActionApp(game, user)
-        }
+    componentDidMount() {
+        this.onListenForGame();
+    }
 
-      </React.Fragment>
-    );
-  };
+    onListenForGame = () => {
+        const gameSlugname = this.props.match
+            ? (
+                this.props.match.params
+                    ? (
+                        this.props.match.params.gameSlugname
+                            ? this.props.match.params.gameSlugname
+                            : 'slugname-undefined'
+                    )
+                    : 'slugname-undefined'
+            )
+            : 'slugname-undefined';
+
+        this.setState({ loading: true });
+        this.unsubscribe = db.collection(`game`).where("slugname", "==", gameSlugname)
+            .onSnapshot(snapshot => {
+                if (snapshot) {
+                    let games = [];
+                    games = snapshot.docs.map(x => x.data())
+                    if (games.length > 0) {
+                        const game = games[0];
+                        this.setState({
+                            currentGame: game,
+                            currentGameSlugname: game.slugname,
+                            loading: false,
+                        });
+                    }
+                } else {
+                    this.setState({
+                        currentGame: null,
+                        currentGameSlugname: null,
+                        loading: false,
+                    });
+                }
+            });
+    };
+
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
+
+    handleClickCreateNewGame(click, user) {
+        const game = Game.createAndPushNewGame(user);
+        this.setState({
+            currentGame: game,
+            currentGameSlugname: game.slugname,
+            loading: false,
+        });
+        alert('New game created, share this: ' + window.location.origin + '/game/' + game.slugname);
+        return game;
+    }
+
+    handleJoinGameSubmit(submittedSlugName, submit) {
+        submit.preventDefault();
+        this.onJoinGame(submittedSlugName);
+    }
+
+    async onJoinGame(submittedSlugName) {
+        const game = await Game.getGameBySlugname(submittedSlugName);
+        if (game) {
+            const user = this.props.user;
+            const updatedGame = Game.createAndAddPlayerToGame(game, user);
+            const pushedGame = Game.pushOrUpdateRecord(updatedGame);
+            this.setState({
+                currentGame: pushedGame,
+                currentGameSlugname: pushedGame.slugname,
+                loading: false,
+            });
+        } else {
+            alert("Provided Gamed Name is not recognized! Please Amend...");
+        }
+    }
+
+    async updateGameId(gameId) {
+        const gameSnapshot = await Game.getGameSnapshotByGameId(gameId);
+        if (gameSnapshot.exists) {
+            this.setState({
+                currentGame: gameSnapshot.data(),
+            });
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    render() {
+        const user = this.props.user;
+        const game = this.state.currentGame;
+        if (game) {
+            return (<GameView game={game} user={user} />);
+        } else {
+            return (
+                <GameMenu
+                    user={user}
+                    handleClickCreateNewGame={this.handleClickCreateNewGame}
+                    handleJoinGameSubmit={this.handleJoinGameSubmit}
+                />
+            );
+        };
+    }
 }
-
-export default GameApp;

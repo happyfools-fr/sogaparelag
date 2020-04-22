@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-
-
+import {
+  Jumbotron, 
+}  from 'react-bootstrap';
 class About extends Component {
   render() {
     return (
-      <div>
-        <h2>About</h2>
-        <h3>Quarantine distraction. Maggle</h3>
-      </div>
+        <Jumbotron>
+            <h2>About</h2>
+            <h3>Quarantine distraction. Maggle</h3>
+        </Jumbotron>
     );
   }
 }

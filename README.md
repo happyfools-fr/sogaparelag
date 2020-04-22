@@ -89,3 +89,14 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 npm run build
 firebase deploy
 ```
+
+## With Github-Discord integration
+
+## Deploy within  a Gitpod workspace
+
+```
+npm install -g firebase-tools
+npm run build
+firebase login --no-localhost
+firebase deploy
+```
