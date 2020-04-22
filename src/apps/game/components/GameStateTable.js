@@ -16,14 +16,14 @@ import GameTableView from "../views/GameTableView";
 const db = firebase.firestore(firebaseApp);
 
 export default class GameStateTable extends Component {
-  
+
   constructor(props){
     super(props);
     this.state = {
       currentPlayerNickname: "currentPlayerNickname undefined",
       nextPlayerNickname: "nextPlayerNickname undefined",
       loading: false,
-    };  
+    };
   }
 
   componentDidMount() {
@@ -43,9 +43,9 @@ export default class GameStateTable extends Component {
             loading: false,
           });
         } else {
-          this.setState({ 
-            currentPlayerNickname: null, 
-            loading: false 
+          this.setState({
+            currentPlayerNickname: null,
+            loading: false
           });
         }
       });
@@ -63,29 +63,29 @@ export default class GameStateTable extends Component {
             loading: false,
           });
         } else {
-          this.setState({ 
-            nextPlayerNickname: null, 
-            loading: false 
+          this.setState({
+            nextPlayerNickname: null,
+            loading: false
           });
         }
       });
   };
 
-  componentWillUnmount() {
-    this.unsubscribeForCurrentPlayer();
-    this.unsubscribeForNextPlayer();
-  };
+    componentWillUnmount() {
+        this.unsubscribeForCurrentPlayer();
+        this.unsubscribeForNextPlayer();
+    };
 
     onClickNotStarted(game) {
         Game.startFirstRound(game);
         alert("Game.startFirstRound");
     };
- 
+
   render() {
     const game = this.props.game;
 
     return (
-        <Card border="light">  
+        <Card border="light">
             <Card.Body>
             <Card.Title>Welcome to Island of {game.slugname} </Card.Title>
             {
