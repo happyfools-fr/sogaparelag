@@ -1,14 +1,14 @@
 import Game2 from './Game2'
 
 /** 
- * GamingRoom
+ * WaitingRoom
  * - Can add loggedInPlayer only if game has not started (if !this_currentGame)
  * - Can start game only if this._loggedInUsers.length >= 3 && <= 12
  * 
  * Features:
- * - create GamingRoom collection
+ * - create WaitingRoom collection
  */
-class GamingRoom
+class WaitingRoom
 {
     constructor() 
     {
