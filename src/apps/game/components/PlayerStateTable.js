@@ -27,7 +27,7 @@ export default class PlayerStateTable extends Component {
 
   onListenForPlayer = () => {
     this.setState({ loading: true });
-    this.unsubscribe = db.doc(`player/${this.props.user.uid}`)
+    this.unsubscribe = db.doc(`player/${this.props.player}`)
       .onSnapshot(snapshot => {
         if (snapshot) {
           let player = [];
@@ -45,25 +45,11 @@ export default class PlayerStateTable extends Component {
   componentWillUnmount() {
     this.unsubscribe();
   }
-  
-  createJumbotron(game) {
-    const player = this.state.player;
-    const playerStateInGame = game && player ? game.currentState.playerStatesInGame.filter(
-      playerStateInGame => playerStateInGame.playerId === player._id)[0] : "No playerStateInGame";
-    if (!game.currentState.isStarted || !player){
-      return (
-          <Jumbotron>
-            <h2>Game has not started yet!</h2>
-        </Jumbotron>
-       );
-    } else {
-      return (
-          <PlayerView player={player} playerStateInGame={playerStateInGame} />
-       );
-     }
- }
  
   render() {
+
+    // TODO : assume game isStarted
+
     const game = this.props.game;
     const player = this.state.player;
 

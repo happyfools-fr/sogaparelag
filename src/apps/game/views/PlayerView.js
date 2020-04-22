@@ -2,29 +2,25 @@ import React from 'react';
 
 // Import bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Jumbotron, Table}  from 'react-bootstrap';
+import {Card}  from 'react-bootstrap';
 
 export default function PlayerView(props) {
+
+    const cards = ["Card1", "Card2", "Card3", "Card4"]
+
     return (
-        <Jumbotron>
-        <h4>{props.player ? props.player.nickname : ""}</h4>
-        <p>{props.player ? props.player._id : "" }</p>
-        <Table striped bordered hover>
-        <thead>
-            <tr>
-            <th>Sick</th>
-            <th>Dead</th>
-            <th>Hand</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-            <td>{props.playerStateInGame ? props.playerStateInGame.isSick.toString() : ""}</td>
-            <td>{props.playerStateInGame ? props.playerStateInGame.isDead.toString() : ""}</td>
-            <td>{props.playerStateInGame ? props.playerStateInGame.currentHand : ""}</td>
-            </tr>
-        </tbody>
-        </Table>
-        </Jumbotron>
+        <Card style={{ width: '18rem' }}>
+        <Card.Body>
+            <Card.Title>{props.player ? props.player.nickname : ""}</Card.Title>
+            <Card.Text>
+                <p> {props.player ? props.player._id : "" } </p>
+                <p> IsSick :  {props.playerStateInGame ? props.playerStateInGame.isSick.toString() : ""}</p>
+                <p> IsDead :  {props.playerStateInGame ? props.playerStateInGame.isDead.toString() : ""}</p>
+            </Card.Text>
+        </Card.Body>
+        <Card.Body>
+            {cards.map((card) => {return(<Card.Link>{card}</Card.Link>) })}
+        </Card.Body>
+        </Card>
     );
 }

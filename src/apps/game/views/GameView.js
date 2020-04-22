@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import assert from 'assert';
 
 import * as firebase from 'firebase';
 import firebaseApp from '../../../firebaseApp';
 
 // Bootstrap imports
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Jumbotron, Col, Row, Container } from 'react-bootstrap';
+import { Container, Col, Row } from 'react-bootstrap';
 
 // View imports
 import ActionView from './ActionView';
@@ -17,8 +18,12 @@ const db = firebase.firestore(firebaseApp);
 
 export default class GameView extends Component {
 
+    /* Here we assume that game exists and is not undefined */
+
     constructor(props) {
         super(props);
+        assert(this.props.game);
+        assert(this.props.user);
         this.state = {
             game: this.props.game,
             loading: false,
@@ -51,69 +56,35 @@ export default class GameView extends Component {
     }
 
     createActionApp(game, user) {
-        if (game && game.currentState.isStarted) {
-            const currentState = game ? game.currentState : "No currentState";
-            const currentPlayerId = game ? currentState.currentPlayerId : "No currentPlayerId";
-            if (currentState && currentPlayerId === user.uid) {
-                return (
-                    <ActionView game={game} show={currentPlayerId === user.uid}/>
-                );
-            } else {
-                return (
-                    <React.Fragment>
-                        <Jumbotron>
-                            <h1 id='player-turn'>Not your turn Babe! Wait for it...</h1>
-                        </Jumbotron>
-                    </React.Fragment>
-                );
-            }
+        const currentState = game.currentState;
+        const isPlayerTurn = currentState.currentPlayerId === user.uid;
+        if (currentState.isStarted & isPlayerTurn) {
+            return (<ActionView game={game} show={isPlayerTurn}/>);
         } else {
-            return (
-                <React.Fragment>
-                    <div></div>
-                </React.Fragment>
-            );
+           return ( <div /> ); 
         }
     }
-
-    createGameLogSidebar(game) {
-        if (game) {
-            return (<GameLogSidebar game={game} />)
-        } else {
-            return (<div />)
-        }
-    };
 
     render() {
         const user = this.props.user;
         const game = this.props.game;
         return (
-            <React.Fragment>
-                <Container>
-                    <Row>
-                        <Col>
-                            {
-                                game
-                                    ? <GameStateTable game={game} />
-                                    : <div>No GameStateTable</div>
-                            }
-                            {
-                                game && user
-                                    ? <PlayerStateTable game={game} user={user} />
-                                    : <div>No PlayerStateTable</div>
-                            }
-                            { 
-                                game && user
-                                ? this.createActionApp(game, user)
-                                : <div>No ActionApp</div>
-                            }
-                        </Col>
-                        <Col sm={3}>
-                            {this.createGameLogSidebar(game)}
-                        </Col>
-                    </Row>
-                </Container>
-            </React.Fragment>
+            <Container>
+                <Row>
+                    <Col>
+                        <GameStateTable game={game} />
+                        {
+                            game.players.map(
+                                (player) => { return (<PlayerStateTable game={game} player={player} />) }
+                            )
+                        }
+                        { this.createActionApp(game, user)}
+                    </Col>
+                    <Col sm={3}>
+                        <GameLogSidebar game={game} />
+                    </Col>
+                </Row>
+            </Container>
         );
     };
 }
