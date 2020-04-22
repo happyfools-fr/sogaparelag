@@ -1,5 +1,10 @@
 export class RoundAction
 {
+    static get MockCollect()
+    {
+        return 42
+    }
+
     static get CollectWater()
     {
         return 1

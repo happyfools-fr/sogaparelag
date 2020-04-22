@@ -9,7 +9,7 @@ export class PollManager
     
     vote()
     {
-        votesByPlayerId = this._initVotingPolls()
+        let votesByPlayerId = this._initVotingPolls()
         let healthyPlayerEnumerator = this._gameTable.getHealthyPlayerEnumerator()
         while (true)
         {
@@ -17,12 +17,20 @@ export class PollManager
             if (currentPlayer.done)
                 break   
                 
-            let chosenPlayerId = currentPlayer.value.choosePlayerIdToVoteAgainst(this._gameTable.players)
+            let chosenPlayerId = currentPlayer.value.player.choosePlayerIdToVoteAgainst(this._gameTable.players)
             votesByPlayerId[chosenPlayerId] ++
         }
-        let playersWithMaxVote = this._getPlayersWithMaxVote(votesByPlayerId)
+        let playersWithMaxVote = this._getPlayerIdsWithMaxVote(votesByPlayerId)
         if (playersWithMaxVote.length > 1)
-            return this._gameTable.headPlayer.chooseFinalPlayerIdToVoteAgainst(this._gameTable.players)
+        {
+            let finalVoteByHeadPlayer = this._gameTable.headPlayer.chooseFinalPlayerIdToVoteAgainst(playersWithMaxVote)
+            
+            if (playersWithMaxVote.includes(finalVoteByHeadPlayer))
+                return finalVoteByHeadPlayer
+
+            throw Error()
+        }
+
         return playersWithMaxVote[0]
     }
 
