@@ -23,7 +23,7 @@
     "install-functions": "cd functions && npm install",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
