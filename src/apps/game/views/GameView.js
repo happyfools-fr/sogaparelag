@@ -63,12 +63,12 @@ export default class GameView extends Component {
         this.unsubscribe();
     }
 
-    handleEndOfAction(action) {   
+    handleEndOfAction(action) {
         this.setState({
             game: this.state.game,
             showModal : false,
             loading : this.state.loading,
-            
+
         });
         Game.pushUpdateGameState(this.state.game);
         alert(action + ": Game.updateGameState");
@@ -80,7 +80,7 @@ export default class GameView extends Component {
         if (currentState.isStarted & isPlayerTurn) {
             return (<TurnView show={this.state.showModal} handleAction={this.handleEndOfAction}/>);
         } else {
-           return ( <div /> ); 
+           return ( <div /> );
         }
     }
 
@@ -100,7 +100,7 @@ export default class GameView extends Component {
                             }
                         </CardDeck>
                         { this.createTurnView(game, user)}
-                        
+
                     </Col>
                     <Col sm={3}>
                         <GameLogSidebar game={game} />
