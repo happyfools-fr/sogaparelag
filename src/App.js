@@ -134,9 +134,9 @@ class App extends Component {
                         }
                     </Switch>
                 </div>
-                <Navbar sticky="bottom">
+                <Navbar className='mt-3' sticky="bottom">
                     <b>Sogaparelag</b>&nbsp;project, a HappyFools.fr initiative in 2020.
-      </Navbar>
+                </Navbar>
             </Router>
         );
     }

@@ -1,12 +1,5 @@
 // React imports
 import React, { Component } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-    Jumbotron,
-    Accordion,
-    Card,
-    Button,
-} from 'react-bootstrap';
 
 import GameMenu from './GameMenu'
 import GameView from './views/GameView'
@@ -137,39 +130,16 @@ export default class GameApp extends Component {
     render() {
         const user = this.props.user;
         const game = this.state.currentGame;
-        return (
-            <Jumbotron>
-                <Accordion>
-                    <Card>
-                        <Card.Header>
-                            <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                                Menu
-                    </Accordion.Toggle>
-                        </Card.Header>
-                        <Accordion.Collapse eventKey="0">
-                            <Card.Body>
-                                <GameMenu
-                                    user={user}
-                                    handleClickCreateNewGame={this.handleClickCreateNewGame}
-                                    handleJoinGameSubmit={this.handleJoinGameSubmit}
-                                />
-                            </Card.Body>
-                        </Accordion.Collapse>
-                    </Card>
-                    <Card>
-                        <Card.Header>
-                            <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                                Active Game
-                    </Accordion.Toggle>
-                        </Card.Header>
-                        <Accordion.Collapse eventKey="1">
-                            <Card.Body>{
-                                game ? <GameView game={game} user={user} /> : <p></p>
-                            }</Card.Body>
-                        </Accordion.Collapse>
-                    </Card>
-                </Accordion>
-            </Jumbotron>
-        );
+        if (game) {
+            return (<GameView game={game} user={user} />);
+        } else {
+            return (
+                <GameMenu
+                    user={user}
+                    handleClickCreateNewGame={this.handleClickCreateNewGame}
+                    handleJoinGameSubmit={this.handleJoinGameSubmit}
+                />
+            );
+        };
     }
 }
