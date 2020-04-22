@@ -27,8 +27,10 @@ export default class GameView extends Component {
         assert(this.props.user);
         this.state = {
             game: this.props.game,
+            showModal : this.props.game.currentState.currentPlayerId === this.props.user.uid,
             loading: false
         };
+        this.handleEndOfAction = this.handleEndOfAction.bind(this)
     }
 
     componentDidMount() {
@@ -36,18 +38,23 @@ export default class GameView extends Component {
     }
 
     onListenForGame = () => {
-        this.setState({ loading: true });
+        this.setState({
+            showModal: false,
+            loading: true,
+        });
         this.unsubscribe = db.doc(`game/${this.props.gameId}`)
             .onSnapshot(snapshot => {
                 if (snapshot) {
                     let games = [];
                     games.push({ ...snapshot.data() });
+                    let game = games[0];
                     this.setState({
-                        game: games[0],
+                        game: game,
+                        showModal: game.currentState ? this.props.user.uid === game.currentState.currentPlayerId : false,
                         loading: false,
                     });
                 } else {
-                    this.setState({ game: null, loading: false });
+                    this.setState({ game: null, showModal: false, loading: false });
                 }
             });
     };
@@ -56,33 +63,14 @@ export default class GameView extends Component {
         this.unsubscribe();
     }
 
-    handleEndOfAction(action) {
-        
-        const currentState = this.props.game.currentState;
-
-        const newState = JSON.parse(JSON.stringify(currentState))
-
-        newState.currentPlayerId = currentState.nextPlayerId===currentState.currentPlayerId 
-            ? undefined
-            : currentState.nextPlayerId ;
-        
-        newState.nextPlayerId = currentState.nextPlayerId===currentState.currentPlayerId 
-            ? currentState.currentPlayerId
-            : undefined ;
-
-        const game = JSON.parse(JSON.stringify(this.props.game))
-
-        game.currentState = newState;
-
-        this.setState(
-            {
-                game: game,
-                loading: false,
-            }
-        );
-
-        Game.pushUpdateGameState(game);
-
+    handleEndOfAction(action) {   
+        this.setState({
+            game: this.state.game,
+            showModal : false,
+            loading : this.state.loading,
+            
+        });
+        Game.pushUpdateGameState(this.state.game);
         alert(action + ": Game.updateGameState");
     };
 
@@ -90,7 +78,7 @@ export default class GameView extends Component {
         const currentState = game.currentState;
         const isPlayerTurn = currentState.currentPlayerId === user.uid;
         if (currentState.isStarted & isPlayerTurn) {
-            return (<TurnView show={isPlayerTurn} handleAction={this.handleEndOfAction}/>);
+            return (<TurnView show={this.state.showModal} handleAction={this.handleEndOfAction}/>);
         } else {
            return ( <div /> ); 
         }
