@@ -1,12 +1,11 @@
 import React from 'react';
 
-import {Jumbotron, Table} from 'react-bootstrap';
+import {Table} from 'react-bootstrap';
 
 export default function GameTableView(props) {
     const game = props.game
     return (
-        <Jumbotron>
-          <h3>Welcome to Island of {game.slugname} </h3>
+        <>
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -41,7 +40,7 @@ export default function GameTableView(props) {
             </tr>
           </tbody>
       </Table>
-        </Jumbotron>
+      </>
     );
 
 };
