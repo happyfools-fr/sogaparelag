@@ -44,7 +44,9 @@ export class Round
                 case RoundAction.CollectWood:
                     let additionalRequest = currentPlayer.value.player.additionalWoodRequest()
                     if (!this._woodManager.tryCollect(additionalRequest))
-                        currentPlayer.value.player.onGetSick()
+                    {
+                      currentPlayer.value.player.onGetSick()
+                    }
                     break
             }
         }

@@ -11,20 +11,19 @@ describe('WoodManager', function()
         const _woodManager = new WoodManager()
 
         assert.equal(_woodManager.inventory, 0)
-        let sick = _woodManager.tryCollect(0)
+        let notSick = _woodManager.tryCollect(0)
         assert.equal(_woodManager.inventory, 1)
-        assert.equal(sick, false)
+        assert.equal(notSick, true)
     });
 
     it('collect 6 woods will get you sick', () =>
     {
         const _woodManager = new WoodManager()
 
-
         assert.equal(_woodManager.inventory, 0)
-        let sick = _woodManager.tryCollect(6)
+        let notSick = _woodManager.tryCollect(6)
         assert.equal(_woodManager.inventory, 0)
-        assert.equal(sick, true)
+        assert.equal(notSick, false)
     });
 
     it('collect more than 6 woods throws', () =>

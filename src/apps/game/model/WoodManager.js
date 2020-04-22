@@ -12,7 +12,7 @@ export class WoodManager {
         if (additionalRequest == 0)
         {
             this.inventory += 1
-            return false
+            return true
         }
 
         if (additionalRequest > this._woods.length)
@@ -21,10 +21,9 @@ export class WoodManager {
         shuffle(this._woods)
         let collectedWood = WoodManager._collectSumary(this._woods, additionalRequest)
         let sick = collectedWood == null
-
         if (!sick)
             this.inventory += 1 + collectedWood.value
-        return sick
+        return !sick
     }
 
     static _collectSumary(shuffledWoods, additionalRequest)
