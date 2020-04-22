@@ -18,7 +18,10 @@ export default class Firebase {
         app.initializeApp(config);
         this.auth = app.auth();
         this.ft = app.firestore();
-    }
+        this.authProviders= {
+            googleProvider: this.auth.GoogleAuthProvider,
+        }
+    };
 
     /**
      * Synchronously set (merge mode) document in collection referenced by obj._id
@@ -64,15 +67,5 @@ export default class Firebase {
             return null;
         }
     }
-
-    // /*
-    // Game
-    // */
-    // game = id => this.ft.doc(`game/${id}`);
-    // games = () => this.ft.collection('game');
-
-    // getGame = obj => this.game(obj._id).get();
-    // createGame = obj => this.game(obj._id).set({ ...obj });
-    // updateGame = obj => this.game(obj._id).set({ ...obj }, { merge: true });
 
 }

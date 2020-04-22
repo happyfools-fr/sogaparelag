@@ -1,12 +1,12 @@
+// Firebase imports
+import {withFirebase} from '../../../components/firebase/index'
+
+// React imports
 import React, { Component } from 'react';
 // Styles imports
 import ListGroup from 'react-bootstrap/ListGroup'
 
-import * as firebase from 'firebase';
-import firebaseApp from '../../../firebaseApp';
-const db = firebase.firestore(firebaseApp);
-
-export default class PlayerGameList extends Component {
+class PlayerGameList extends Component {
   
   constructor(props){
     super(props);
@@ -22,7 +22,7 @@ export default class PlayerGameList extends Component {
 
   onListenForGames = () => {
     this.setState({ loading: true });
-    this.unsubscribe = db.collection(`game`).where("players", "array-contains", this.props.user.uid)
+    this.unsubscribe = this.props.firebase.ft.collection(`game`).where("players", "array-contains", this.props.user.uid)
       .onSnapshot(snapshot => {
         if (snapshot) {
           let playerGames = [];
@@ -70,3 +70,5 @@ export default class PlayerGameList extends Component {
 
   )}
 }
+
+export default withFirebase(PlayerGameList);

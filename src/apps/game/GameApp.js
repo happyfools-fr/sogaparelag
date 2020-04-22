@@ -1,3 +1,5 @@
+// Firebase imports
+import {withFirebase} from '../../components/firebase/index'
 // React imports
 import React, { Component } from 'react';
 
@@ -5,11 +7,7 @@ import GameMenu from './GameMenu'
 import GameView from './views/GameView'
 import Game from './model/Game';
 
-import * as firebase from 'firebase';
-import firebaseApp from '../../firebaseApp';
-const db = firebase.firestore(firebaseApp);
-
-export default class GameApp extends Component {
+class GameApp extends Component {
 
     constructor(props) {
         super(props);
@@ -56,7 +54,7 @@ export default class GameApp extends Component {
             : 'slugname-undefined';
 
         this.setState({ loading: true });
-        this.unsubscribe = db.collection(`game`).where("slugname", "==", gameSlugname)
+        this.unsubscribe = this.props.firebase.ft.collection(`game`).where("slugname", "==", gameSlugname)
             .onSnapshot(snapshot => {
                 if (snapshot) {
                     let games = [];
@@ -143,3 +141,5 @@ export default class GameApp extends Component {
         };
     }
 }
+
+export default  withFirebase(GameApp);

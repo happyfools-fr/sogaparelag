@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { withFirebase } from '../../components/firebase/index';
+
 import {
   Jumbotron, 
 }  from 'react-bootstrap';
@@ -13,4 +15,4 @@ class About extends Component {
   }
 }
 
-export default About;
+export default withFirebase(About);

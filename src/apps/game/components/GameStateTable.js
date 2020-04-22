@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
-
 // Firebase imports
-import * as firebase from 'firebase';
-import firebaseApp from '../../../firebaseApp';
+import {withFirebase} from '../../../components/firebase/index'
 
+// React imports
+import React, { Component } from 'react';
 import {Card} from 'react-bootstrap';
 
 // Model
@@ -13,9 +12,7 @@ import Game from '../model/Game';
 import WaitingRoomView from '../views/WaitingRoomView';
 import GameTableView from "../views/GameTableView";
 
-const db = firebase.firestore(firebaseApp);
-
-export default class GameStateTable extends Component {
+class GameStateTable extends Component {
   
   constructor(props){
     super(props);
@@ -33,7 +30,7 @@ export default class GameStateTable extends Component {
 
   onListenForCurrentPlayer = () => {
     this.setState({ loading: true });
-    this.unsubscribeForCurrentPlayer = db.collection(`player`).doc(this.props.game.currentState.currentPlayerId)
+    this.unsubscribeForCurrentPlayer = this.props.firebase.ft.collection(`player`).doc(this.props.game.currentState.currentPlayerId)
       .onSnapshot(snapshot => {
         if (snapshot.exists) {
           let currentPlayerNickname;
@@ -53,7 +50,7 @@ export default class GameStateTable extends Component {
 
   onListenForNextPlayer = () => {
     this.setState({ loading: true });
-    this.unsubscribeForNextPlayer = db.collection(`player`).doc(this.props.game.currentState.nextPlayerId)
+    this.unsubscribeForNextPlayer = this.props.firebase.ft.collection(`player`).doc(this.props.game.currentState.nextPlayerId)
       .onSnapshot(snapshot => {
         if (snapshot.exists) {
           let nextPlayerNickname;
@@ -103,3 +100,5 @@ export default class GameStateTable extends Component {
     );
   };
 }
+
+export default  withFirebase(GameStateTable);
