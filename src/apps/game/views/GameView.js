@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
-import * as firebase from 'firebase';
-import firebaseApp from '../../firebaseApp';
-import ActionView from './components/ActionView';
-import GameStateTable from './components/GameStateTable';
-import PlayerStateTable from './components/PlayerStateTable';
-import GameLogSidebar from './components/GameLogSidebar';
 
+import * as firebase from 'firebase';
+import firebaseApp from '../../../firebaseApp';
+
+// Bootstrap imports
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Jumbotron, Col, Row, Container } from 'react-bootstrap';
 
+// View imports
+import ActionView from './ActionView';
+import GameStateTable from '../components/GameStateTable';
+import PlayerStateTable from '../components/PlayerStateTable';
+import GameLogSidebar from '../components/GameLogSidebar';
+
 const db = firebase.firestore(firebaseApp);
 
-class GameView extends Component {
+export default class GameView extends Component {
 
     constructor(props) {
         super(props);
@@ -52,13 +56,7 @@ class GameView extends Component {
             const currentPlayerId = game ? currentState.currentPlayerId : "No currentPlayerId";
             if (currentState && currentPlayerId === user.uid) {
                 return (
-                    <React.Fragment>
-                        <Jumbotron>
-                            <h1 id='player-turn'>Your turn boo!</h1>
-                            
-                            <ActionView game={game} show={true}/>
-                        </Jumbotron>
-                    </React.Fragment>
+                    <ActionView game={game} show={currentPlayerId === user.uid}/>
                 );
             } else {
                 return (
@@ -119,5 +117,3 @@ class GameView extends Component {
         );
     };
 }
-
-export default GameView;

@@ -7,7 +7,7 @@ import {
 import * as firebase from 'firebase';
 import firebaseApp from '../../../firebaseApp';
 
-import PlayerView from './PlayerView';
+import PlayerView from '../views/PlayerView';
 
 const db = firebase.firestore(firebaseApp);
 
@@ -64,11 +64,22 @@ export default class PlayerStateTable extends Component {
  }
  
   render() {
-    return (
-      <React.Fragment>
-        { 
-          this.createJumbotron(this.props.game) 
-        }
-      </React.Fragment>
-  )};
+    const game = this.props.game;
+    const player = this.state.player;
+
+    const playerStateInGame = game && player ? game.currentState.playerStatesInGame.filter(
+      playerStateInGame => playerStateInGame.playerId === player._id)[0] : "No playerStateInGame";
+    
+    if (!game.currentState.isStarted || !player){
+      return (
+        <Jumbotron>
+            <h2>Game has not started yet!</h2>
+        </Jumbotron>
+       );
+    } else {
+      return (
+          <PlayerView player={player} playerStateInGame={playerStateInGame} />
+       );
+     }
+ }
 }

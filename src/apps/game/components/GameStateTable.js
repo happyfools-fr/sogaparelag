@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
-// Styles imports
-import 'bootstrap/dist/css/bootstrap.min.css';
-import {Jumbotron, Table}  from 'react-bootstrap';
-import Game from '../model/Game';
+
+// Firebase imports
 import * as firebase from 'firebase';
 import firebaseApp from '../../../firebaseApp';
 
-import WaitingRoomView from './WaitingRoomView';
+// Styles imports
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Jumbotron, Table}  from 'react-bootstrap';
+
+// Model
+import Game from '../model/Game';
+
+// Views
+import WaitingRoomView from '../views/WaitingRoomView';
 
 const db = firebase.firestore(firebaseApp);
 

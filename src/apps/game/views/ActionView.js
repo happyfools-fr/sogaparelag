@@ -1,8 +1,8 @@
 import React from 'react';
 
-import {Modal} from 'react-bootstrap';
+import Modal from 'react-bootstrap/Modal';
 
-import Action from './Action';
+import ActionButtons from '../components/ActionButtons';
 
 export default function ActionView(props) {
 
@@ -15,7 +15,7 @@ export default function ActionView(props) {
             </Modal.Header>
             <Modal.Body>Choose your action, and choose wisely ...</Modal.Body>
             <Modal.Footer>
-                <Action game={props.game} afterAction={()=> {setShow(false)}} />
+                <ActionButtons game={props.game} afterAction={()=> {setShow(false)}} />
             </Modal.Footer>
         </Modal>
     );

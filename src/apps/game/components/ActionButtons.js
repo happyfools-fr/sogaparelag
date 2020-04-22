@@ -6,7 +6,7 @@ import Game from '../model/Game';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, ButtonGroup} from 'react-bootstrap';
 
-class Action extends Component {
+export default class ActionButtons extends Component {
 
     onClick(action) {
         Game.pushUpdateGameState(this.props.game);
@@ -31,5 +31,3 @@ class Action extends Component {
         )
     }
 }
-
-export default Action;
