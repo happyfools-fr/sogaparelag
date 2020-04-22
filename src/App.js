@@ -37,23 +37,6 @@ const createComponentWithAuth = withFirebaseAuth({
 
 class App extends Component {
 
-    constructor() {
-        super();
-        this.state = {
-            speed: 10
-        };
-    }
-
-    componentDidMount() {
-        const rootRef = firebase.database().ref();
-        const speedRef = rootRef.child('speed');
-        speedRef.on('value', snap => {
-            this.setState({
-                speed: snap.val()
-            });
-        });
-    }
-
     render() {
         const {
             user,
@@ -113,45 +96,42 @@ class App extends Component {
                             />
                         </Route>
                         {
-                            user
-                                ? (
-                                    <Route
-                                        exact path="/game"
-                                        render={(props) => <GameApp {...props} user={user} />}
-                                    >
-                                    </Route>
-                                )
-                                : (
-                                    <Route path="/game/:gameSlugname">
-                                        <Auth
+                            <Route
+                                exact path="/game"
+                                render={(props) => {
+                                    if (user) {
+                                        return (<GameApp {...props} user={user} addUserToGame={false} />);
+                                    } else {
+                                        return (<Auth
                                             user={user}
                                             signOut={signOut}
                                             signInWithGoogle={signInWithGoogle}
-                                        />
-                                    </Route>
-                                )
+                                        />);
+                                    }
+                                }
+
+                                }
+                            >
+                            </Route>
                         }
                         {
-                            user
-                                ? (
-                                    <Route
-                                        path="/game/:gameSlugname"
-                                        render={(props) => <GameApp {...props} user={user} addUserToGame={true} />}
-                                    >
-                                    </Route>
-                                )
-                                : (
-                                    <Route path="/game/:gameSlugname">
-                                        <Auth
+                            <Route
+                                path="/game/:gameSlugname"
+                                render={(props) => {
+                                    if (user) {
+                                        return (<GameApp {...props} user={user} addUserToGame={true} />);
+                                    } else {
+                                        return (<Auth
                                             user={user}
                                             signOut={signOut}
                                             signInWithGoogle={signInWithGoogle}
-                                        />
-                                    </Route>
-                                )
+                                        />);
+                                    }
+                                }
+                                }
+                            >
+                            </Route>
                         }
-
-
                     </Switch>
                 </div>
                 <Navbar sticky="bottom">
