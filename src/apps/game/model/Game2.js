@@ -1,18 +1,19 @@
-import Player from "./Player";
-import WaterManager from "./WaterManager";
-import FoodManager from "./FoodManager";
-import WoodManager from "./WoodManager";
+import {Player} from "./Player";
+import {WaterManager} from "./WaterManager";
+import {FoodManager} from "./FoodManager";
+import {WoodManager} from "./WoodManager";
 import { Round } from "./Round";
-import GameTable from "./GameTable";
-import PollManager from "./PollManager";
+import {GameTable} from "./GameTable";
+import {PollManager} from "./PollManager";
+import { v1 as uuidv1 } from 'uuid';
 
 
-class Game2
+export class Game2
 {
-    constructor(loggedInUsers) 
+    constructor(loggedInUsers)
     {
         this._id = uuidv1();
-        this.players = []
+        this.players = [] //TODO: valider que c'est dynamique partout dans le game
         this._createPlayers(loggedInUsers)
 
         this._lastRound = false
@@ -29,7 +30,7 @@ class Game2
 
     _createPlayers(loggedInUsers)
     {
-        for (loggedInUser in loggedInUsers)
+        for (let loggedInUser in loggedInUsers)
         {
             this.players.push(new Player(loggedInUser, false, false, null))
         }
@@ -83,8 +84,8 @@ class Game2
             {
                 let currentPlayer = playerEnumerator.next()
                 if (currentPlayer.done)
-                    break   
-                    
+                    break
+
                 currentPlayer.onRoundEnded()
             }
             this._gameTable.assignNextHeadPlayer()
@@ -93,8 +94,8 @@ class Game2
 
     _canLeave()
     {
-        return  this._waterManager.authorizeLeaving(this._gameTable.playersCount) && 
-                this._foodManager.authorizeLeaving(this._gameTable.playersCount) && 
+        return  this._waterManager.authorizeLeaving(this._gameTable.playersCount) &&
+                this._foodManager.authorizeLeaving(this._gameTable.playersCount) &&
                 this._woodManager.authorizeLeaving(this._gameTable.playersCount)
     }
 }

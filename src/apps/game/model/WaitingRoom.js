@@ -1,19 +1,20 @@
-import Game2 from './Game2'
+import {Game2} from './Game2'
+import { v1 as uuidv1 } from 'uuid';
 
-/** 
+/**
  * WaitingRoom
  * - Can add loggedInPlayer only if game has not started (if !this_currentGame)
  * - Can start game only if this._loggedInUsers.length >= 3 && <= 12
- * 
+ *
  * Features:
  * - create WaitingRoom collection
  */
-class WaitingRoom
+export class WaitingRoom
 {
-    constructor() 
+    constructor()
     {
         this._id = uuidv1();
-        this.slugname = createSlugname();
+        this.slugname = this._createSlugname();
         this._loggedInUsers = [];
         this._currentGame = null
     }
@@ -30,11 +31,11 @@ class WaitingRoom
         this._currentGame = new Game2(this._loggedInUsers)
     }
 
-    createSlugname() 
+    _createSlugname()
     {
         const json = require('../../../assets/words.json');
         const words = json["words"];
         const random = Math.round(Math.random() * words.length / 2)
         return words[random] + "-" + words[random * 2]
-    }   
+    }
 }
