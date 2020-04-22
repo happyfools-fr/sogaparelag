@@ -14,9 +14,9 @@ const _poll = new PollManager(gameTable)
 const assert = require('assert');
 
 
-describe('GameTable', function() 
+describe('PollManager', function()
 {
-    it('init 3 players polling system', () => 
+    it('init 3 players polling system', () =>
     {
         let initialPolls = _poll._initVotingPolls()
         assert.equal(Object.keys(initialPolls).length, 3)
@@ -31,7 +31,7 @@ describe('GameTable', function()
         assert.equal(initialPolls[3], 0)
     });
 
-    it('get unique player with max votes', () => 
+    it('get unique player with max votes', () =>
     {
         let votes = {}
         votes[1] =  2
@@ -42,7 +42,7 @@ describe('GameTable', function()
         assert.equal(playerWithMaxVote[0], 1)
     });
 
-    it('get multiple players with max votes', () => 
+    it('get multiple players with max votes', () =>
     {
         let votes = {}
         votes[1] =  1
@@ -55,7 +55,7 @@ describe('GameTable', function()
     });
 
 
-    it('everybody votes againt playerId #42', () => 
+    it('everybody votes againt playerId #42', () =>
     {
         let player1 = new MockPlayer(new MockLoggedInUser(1, 'toto'))
         player1._choosePlayerIdToVoteAgainst = 42
@@ -75,7 +75,7 @@ describe('GameTable', function()
         assert.equal(_poll.vote(), 42)
     });
 
-    it('2 againt #42 - 1 against #1 - 1 against #2', () => 
+    it('2 againt #42 - 1 against #1 - 1 against #2', () =>
     {
         let player1 = new MockPlayer(new MockLoggedInUser(1, 'toto'))
         player1._choosePlayerIdToVoteAgainst = 42
@@ -95,7 +95,7 @@ describe('GameTable', function()
         assert.equal(_poll.vote(), 42)
     });
 
-    it('2 againt #42 - 2 against #1 - with #1 votes #42', () => 
+    it('2 againt #42 - 2 against #1 - with #1 votes #42', () =>
     {
         let id1 = uuidv1();
         let id2 = uuidv1();
@@ -121,7 +121,7 @@ describe('GameTable', function()
         assert.equal(_poll.vote(), id42)
     });
 
-    it('2 againt #42 - 2 against #1 - with #1 votes #1', () => 
+    it('2 againt #42 - 2 against #1 - with #1 votes #1', () =>
     {
         let id1 = uuidv1();
         let id2 = uuidv1();
@@ -147,7 +147,7 @@ describe('GameTable', function()
         assert.equal(_poll.vote(), id1)
     });
 
-    it('2 againt #42 - 2 against #1 - with #1 votes #2 throws', () => 
+    it('2 againt #42 - 2 against #1 - with #1 votes #2 throws', () =>
     {
         let id1 = uuidv1();
         let id2 = uuidv1();
@@ -170,7 +170,30 @@ describe('GameTable', function()
         const gameTable = new GameTable([player1, player2, player3, player42])
         const _poll = new PollManager(gameTable)
 
-        assert.throws(() => { _polll.vote() })    
+        assert.throws(() => { _polll.vote() })
+    });
+
+    it('everybody votes againt playerId #42 but all but him are sick', () =>
+    {
+        let player1 = new MockPlayer(new MockLoggedInUser(1, 'toto'))
+        player1._choosePlayerIdToVoteAgainst = 42
+        player1.onGetSick()
+
+        let player2 = new MockPlayer(new MockLoggedInUser(2, 'tata'))
+        player2._choosePlayerIdToVoteAgainst = 42
+        player2.onGetSick()
+
+        let player3 = new MockPlayer(new MockLoggedInUser(3, 'titi'))
+        player3._choosePlayerIdToVoteAgainst = 42
+        player3.onGetSick()
+
+        let player42 = new MockPlayer(new MockLoggedInUser(42, 'tete'))
+        player42._choosePlayerIdToVoteAgainst = 1
+
+        const gameTable = new GameTable([player1, player2, player3, player42])
+        const _poll = new PollManager(gameTable)
+
+        assert.equal(_poll.vote(), 1)
     });
 
 });

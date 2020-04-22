@@ -1,12 +1,12 @@
 import {RoundAction} from './RoundAction'
 
-/** 
+/**
  * Player holds player state in game
- * 
+ *
  */
-export class Player 
-{  
-    constructor(loggedInUser) 
+export class Player
+{
+    constructor(loggedInUser)
     {
         this.userId = loggedInUser.id
         this.nickName = loggedInUser.displayName
@@ -17,7 +17,7 @@ export class Player
 
     get id()
     {
-        return this.userId 
+        return this.userId
     }
 
     get isSick()
@@ -54,5 +54,10 @@ export class Player
         return RoundAction.CollectFood;
         //return RoundAction.CollectWood;
         //return RoundAction.CollectWater;
+    }
+
+    additionalWoodRequest()
+    {
+      return 0
     }
 }

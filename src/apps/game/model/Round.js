@@ -3,7 +3,7 @@ import WaterManager from './WaterManager'
 import FoodManager from './FoodManager'
 import WoodManager from './WoodManager'
 import Player from './Player'
-import RoundAction from './RoundAction'
+import {RoundAction} from './RoundAction'
 
 
 export class Round
@@ -14,6 +14,7 @@ export class Round
         this._waterManager = waterManager
         this._foodManager = foodManager
         this._woodManager = woodManager
+        this.actionsPerformedByPlayer = {}
     }
 
     play()
@@ -23,22 +24,27 @@ export class Round
         {
             let currentPlayer = healthyPlayerEnumerator.next()
             if (currentPlayer.done)
-                break   
-                
-            let actionToPerform = currentPlayer.value.chooseActionToPerform()
+                break
+
+            this.actionsPerformedByPlayer[currentPlayer.value.id] = []
+
+            let actionToPerform = currentPlayer.value.player.chooseActionToPerform()
+            this.actionsPerformedByPlayer[currentPlayer.value.id].push(actionToPerform)
+
             switch (actionToPerform)
             {
                 case RoundAction.CollectWater:
                     this._waterManager.collect()
                     break
-                
+
                 case RoundAction.CollectFood:
                     this._foodManager.collect()
                     break
-                  
+
                 case RoundAction.CollectWood:
-                    if (!this._woodManager.tryCollect())
-                        currentPlayer.value.onGetSick()
+                    let additionalRequest = currentPlayer.value.player.additionalWoodRequest()
+                    if (!this._woodManager.tryCollect(additionalRequest))
+                        currentPlayer.value.player.onGetSick()
                     break
             }
         }

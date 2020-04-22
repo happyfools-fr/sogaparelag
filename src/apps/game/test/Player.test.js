@@ -6,15 +6,15 @@ const assert = require('assert');
 
 const loggedInUser = new MockLoggedInUser('fake-uid', 'fake-displayName');
 
-describe('Player', function() 
+describe('Player', function()
 {
-    it('_sickenessLevel attribute is initialized to 0', () => 
+    it('_sickenessLevel attribute is initialized to 0', () =>
     {
         const _player = new Player(loggedInUser);
         assert.equal(_player._sickenessLevel, 0);
     });
 
-    it('_sickenessLevel attribute is set to 2 with onGetSick', () => 
+    it('_sickenessLevel attribute is set to 2 with onGetSick', () =>
     {
         const _player = new Player(loggedInUser);
         assert.equal(_player._sickenessLevel, 0);
@@ -23,7 +23,7 @@ describe('Player', function()
         assert.equal(_player._sickenessLevel, 2);
     });
 
-    it('_sickenessLevel attribute is decremented with onEndOfRound', () => 
+    it('_sickenessLevel attribute is decremented with onEndOfRound', () =>
     {
         const _player = new Player(loggedInUser);
         assert.equal(_player._sickenessLevel, 0);
@@ -37,23 +37,29 @@ describe('Player', function()
         assert.equal(_player._sickenessLevel, 0);
     });
 
-    it('vote against first playerId', () => 
+    it('vote against first playerId', () =>
     {
         const _player = new Player(loggedInUser);
         let players = [5, 4, 3, 2, 1]
         assert.equal(_player.choosePlayerIdToVoteAgainst(players), 5)
     });
 
-    it('final vote against first playerId', () => 
+    it('final vote against first playerId', () =>
     {
         const _player = new Player(loggedInUser);
         let players = [5, 4, 3, 2, 1]
         assert.equal(_player.chooseFinalPlayerIdToVoteAgainst(players), 5)
     });
 
-    it('action should always be to collect food', () => 
+    it('action should always be to collect food', () =>
     {
         const _player = new Player(loggedInUser);
         assert.equal(_player.chooseActionToPerform(), RoundAction.CollectFood)
+    });
+
+    it('additionalRequest for wood is 0', () =>
+    {
+        const _player = new Player(loggedInUser);
+        assert.equal(_player.additionalWoodRequest(), 0)
     });
 });

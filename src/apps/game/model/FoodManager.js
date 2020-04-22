@@ -1,8 +1,8 @@
 import shuffle from 'shuffle-array'
 
-export class FoodManager 
+export class FoodManager
 {
-    constructor() 
+    constructor()
     {
         this._foods = [1, 1, 1, 2, 2, 3]
         this._inventory = 0
@@ -17,10 +17,10 @@ export class FoodManager
         this._inventory = value
     }
 
-    collect() 
+    collect()
     {
         shuffle(this._foods)
-        this._inventory = this._foods[0]
+        this._inventory += this._foods[0]
     }
 
     eat(playersCount)
