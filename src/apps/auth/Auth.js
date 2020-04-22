@@ -1,4 +1,4 @@
-import { withFirebase, createComponentWithFirebaseAuth } from '../../components/firebase/index';
+import { withFirebase } from '../../components/firebase/index';
 import React, { Component } from 'react';
 import {
   Jumbotron, 

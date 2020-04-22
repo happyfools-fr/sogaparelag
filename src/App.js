@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 
 // Firebase imports
-import { withFirebase, createComponentWithFirebaseAuth } from './components/firebase/index';
+import { createComponentWithFirebaseAuth } from './components/firebase/index';
 
 // Styles imports
 import 'bootstrap/dist/css/bootstrap.min.css';

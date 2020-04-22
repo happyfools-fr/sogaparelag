@@ -11,7 +11,6 @@ class GameApp extends Component {
 
     constructor(props) {
         super(props);
-        const db = this.props.firebase.ft;
         const currentGameSlugname = this.props.match
             ? (
                 this.props.match.params
