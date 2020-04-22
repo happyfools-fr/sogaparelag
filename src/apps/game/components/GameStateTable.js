@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import firebaseApp from '../../../firebaseApp';
 
-import {Jumbotron} from 'react-bootstrap';
+import {Card} from 'react-bootstrap';
 
 // Model
 import Game from '../model/Game';
@@ -85,18 +85,20 @@ export default class GameStateTable extends Component {
     const game = this.props.game;
 
     return (
-        <Jumbotron>
-            <h3>Welcome to Island of {game.slugname} </h3>
+        <Card border="light">  
+            <Card.Body>
+            <Card.Title>Welcome to Island of {game.slugname} </Card.Title>
             {
                 !game.currentState.isStarted ?
                     <WaitingRoomView game={game} onClick={this.onClickNotStarted} />
                 :
-                    <GameTableView game={game}
+                    <GameTableView className='mt-5' game={game}
                         currentPlayerNickname={this.state.currentPlayerNickname}
                         nextPlayerNickname={this.state.nextPlayerNickname}
                     />
             }
-        </Jumbotron>
+            </Card.Body>
+        </Card>
 
     );
   };

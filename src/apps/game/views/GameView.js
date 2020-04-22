@@ -6,7 +6,7 @@ import firebaseApp from '../../../firebaseApp';
 
 // Bootstrap imports
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Col, Row } from 'react-bootstrap';
+import { CardDeck, Container, Col, Row } from 'react-bootstrap';
 
 // View imports
 import TurnView from './TurnView';
@@ -92,12 +92,15 @@ export default class GameView extends Component {
                 <Row>
                     <Col>
                         <GameStateTable game={game} />
-                        {
-                            game.players.map(
-                                (player) => { return (<PlayerStateTable game={game} player={player} />) }
-                            )
-                        }
+                        <CardDeck>
+                            {
+                                game.players.map(
+                                    (player) => { return (<PlayerStateTable game={game} player={player} />) }
+                                )
+                            }
+                        </CardDeck>
                         { this.createTurnView(game, user)}
+                        
                     </Col>
                     <Col sm={3}>
                         <GameLogSidebar game={game} />
