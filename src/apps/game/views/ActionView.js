@@ -11,7 +11,7 @@ export default function ActionView(props) {
     return (
         <Modal show={props.show} onHide={()=> {setShow(false)}}>
             <Modal.Header closeButton>
-                <Modal.Title>It's your turm</Modal.Title>
+                <Modal.Title>It's your turn</Modal.Title>
             </Modal.Header>
             <Modal.Body>Choose your action, and choose wisely ...</Modal.Body>
             <Modal.Footer>
