@@ -9,7 +9,7 @@ import {
 } from 'react-bootstrap';
 
 import GameMenu from './GameMenu'
-import GameView from './GameView'
+import GameView from './views/GameView'
 import Game from './model/Game';
 
 import * as firebase from 'firebase';
