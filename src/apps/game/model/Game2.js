@@ -13,8 +13,8 @@ export class Game2
     constructor(loggedInUsers)
     {
         this._id = uuidv1();
-        this.players = [] //TODO: valider que c'est dynamique partout dans le game
-        this._createPlayers(loggedInUsers)
+
+        let players = this._createPlayers(loggedInUsers)
 
         this._lastRound = false
         this._win = false
@@ -23,17 +23,24 @@ export class Game2
         this._foodManager = new FoodManager()
         this._woodManager = new WoodManager()
 
-        this._gameTable = new GameTable(this.players)
+        this._gameTable = new GameTable(players)
         this._currentRound = null
         this._pollManager = new PollManager(this._gameTable);
     }
 
     _createPlayers(loggedInUsers)
     {
+        let players = []
         for (let loggedInUser in loggedInUsers)
         {
-            this.players.push(new Player(loggedInUser, false, false, null))
+            players.push(new Player(loggedInUser, false, false, null))
         }
+        return players
+    }
+
+    get playersCount()
+    {
+      return this._gameTable.playersCount
     }
 
     play()

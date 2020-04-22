@@ -31,13 +31,13 @@ describe('WaitingRoom', function()
 
         waitingRoom.startGame()
 
-        assert.equal(waitingRoom._currentGame.players.length, 2)
+        assert.equal(waitingRoom._currentGame.playersCount, 2)
 
         let user3 = new MockLoggedInUser("toto3", "ToTO")
         waitingRoom.addLoggedInPlayer(user3)
         assert.equal(waitingRoom._loggedInUsers.length, 3)
 
-        assert.equal(waitingRoom._currentGame.players.length, 2)
+        assert.equal(waitingRoom._currentGame.playersCount, 2)
     });
 
     it('game is null before starts', () =>
