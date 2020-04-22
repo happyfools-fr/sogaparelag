@@ -11,10 +11,6 @@ export class WoodManager {
     {
         return this._inventory
     }
-    set inventory(value)
-    {
-        this._inventory = value
-    }
 
     tryCollect(additionalRequest) 
     {

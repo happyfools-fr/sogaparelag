@@ -50,6 +50,24 @@ describe('WoodManager', function()
         
     });
 
+    it('should not leave if not enough wood', () => 
+    {
+        _woodManager._inventory = 10
+        assert.equal(_woodManager.authorizeLeaving(3), false)
+    });
+
+    it('should leave if just enough wood', () => 
+    {
+        _woodManager._inventory = 18
+        assert.equal(_woodManager.authorizeLeaving(3), true)
+    });
+
+    it('should leave if more than enough wood', () => 
+    {
+        _woodManager._inventory = 30
+        assert.equal(_woodManager.authorizeLeaving(3), true)
+    });
+
     it('test array shuffling (can be false if shuffling did nothing)', () => 
     {
         let array = []
