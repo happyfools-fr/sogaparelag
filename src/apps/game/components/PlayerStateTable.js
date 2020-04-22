@@ -47,6 +47,9 @@ export default class PlayerStateTable extends Component {
   }
  
   render() {
+
+    // TODO : assume game isStarted
+
     const game = this.props.game;
     const player = this.state.player;
 
