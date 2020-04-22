@@ -18,9 +18,6 @@ export default class Firebase {
         app.initializeApp(config);
         this.auth = app.auth();
         this.ft = app.firestore();
-        this.authProviders= {
-            googleProvider: this.auth.GoogleAuthProvider,
-        }
     };
 
     /**

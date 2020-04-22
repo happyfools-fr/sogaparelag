@@ -11,6 +11,7 @@ class GameApp extends Component {
 
     constructor(props) {
         super(props);
+        const db = this.props.firebase.ft;
         const currentGameSlugname = this.props.match
             ? (
                 this.props.match.params
@@ -41,6 +42,7 @@ class GameApp extends Component {
     }
 
     onListenForGame = () => {
+        const db = this.props.firebase.ft;
         const gameSlugname = this.props.match
             ? (
                 this.props.match.params
@@ -54,7 +56,7 @@ class GameApp extends Component {
             : 'slugname-undefined';
 
         this.setState({ loading: true });
-        this.unsubscribe = this.props.firebase.ft.collection(`game`).where("slugname", "==", gameSlugname)
+        this.unsubscribe = db.collection(`game`).where("slugname", "==", gameSlugname)
             .onSnapshot(snapshot => {
                 if (snapshot) {
                     let games = [];
@@ -82,7 +84,8 @@ class GameApp extends Component {
     }
 
     handleClickCreateNewGame(click, user) {
-        const game = Game.createAndPushNewGame(user);
+        const db = this.props.firebase.ft;
+        const game = Game.createAndPushNewGame(db, user);
         this.setState({
             currentGame: game,
             currentGameSlugname: game.slugname,
@@ -98,11 +101,12 @@ class GameApp extends Component {
     }
 
     async onJoinGame(submittedSlugName) {
-        const game = await Game.getGameBySlugname(submittedSlugName);
+        const db = this.props.firebase.ft;
+        const game = await Game.getGameBySlugname(db, submittedSlugName);
         if (game) {
             const user = this.props.user;
-            const updatedGame = Game.createAndAddPlayerToGame(game, user);
-            const pushedGame = Game.pushOrUpdateRecord(updatedGame);
+            const updatedGame = Game.createAndAddPlayerToGame(db, game, user);
+            const pushedGame = Game.pushOrUpdateRecord(db, updatedGame);
             this.setState({
                 currentGame: pushedGame,
                 currentGameSlugname: pushedGame.slugname,
@@ -114,7 +118,8 @@ class GameApp extends Component {
     }
 
     async updateGameId(gameId) {
-        const gameSnapshot = await Game.getGameSnapshotByGameId(gameId);
+        const db = this.props.firebase.ft;
+        const gameSnapshot = await Game.getGameSnapshotByGameId(db, gameId);
         if (gameSnapshot.exists) {
             this.setState({
                 currentGame: gameSnapshot.data(),
