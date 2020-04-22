@@ -66,6 +66,6 @@ export default class PlayerStateTable extends Component {
       return (
           <PlayerView player={player} playerStateInGame={playerStateInGame} />
        );
-     }
+    }
  }
 }

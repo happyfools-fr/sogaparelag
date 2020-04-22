@@ -9,10 +9,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Col, Row } from 'react-bootstrap';
 
 // View imports
-import ActionView from './ActionView';
+import TurnView from './TurnView';
 import GameStateTable from '../components/GameStateTable';
 import PlayerStateTable from '../components/PlayerStateTable';
 import GameLogSidebar from '../components/GameLogSidebar';
+import Game from '../model/Game';
 
 const db = firebase.firestore(firebaseApp);
 
@@ -26,7 +27,7 @@ export default class GameView extends Component {
         assert(this.props.user);
         this.state = {
             game: this.props.game,
-            loading: false,
+            loading: false
         };
     }
 
@@ -55,11 +56,41 @@ export default class GameView extends Component {
         this.unsubscribe();
     }
 
-    createActionApp(game, user) {
+    handleEndOfAction(action) {
+        
+        const currentState = this.props.game.currentState;
+
+        const newState = JSON.parse(JSON.stringify(currentState))
+
+        newState.currentPlayerId = currentState.nextPlayerId===currentState.currentPlayerId 
+            ? undefined
+            : currentState.nextPlayerId ;
+        
+        newState.nextPlayerId = currentState.nextPlayerId===currentState.currentPlayerId 
+            ? currentState.currentPlayerId
+            : undefined ;
+
+        const game = JSON.parse(JSON.stringify(this.props.game))
+
+        game.currentState = newState;
+
+        this.setState(
+            {
+                game: game,
+                loading: false,
+            }
+        );
+
+        Game.pushUpdateGameState(game);
+
+        alert(action + ": Game.updateGameState");
+    };
+
+    createTurnView(game, user) {
         const currentState = game.currentState;
         const isPlayerTurn = currentState.currentPlayerId === user.uid;
         if (currentState.isStarted & isPlayerTurn) {
-            return (<ActionView game={game} show={isPlayerTurn}/>);
+            return (<TurnView show={isPlayerTurn} handleAction={this.handleEndOfAction}/>);
         } else {
            return ( <div /> ); 
         }
@@ -78,7 +109,7 @@ export default class GameView extends Component {
                                 (player) => { return (<PlayerStateTable game={game} player={player} />) }
                             )
                         }
-                        { this.createActionApp(game, user)}
+                        { this.createTurnView(game, user)}
                     </Col>
                     <Col sm={3}>
                         <GameLogSidebar game={game} />
