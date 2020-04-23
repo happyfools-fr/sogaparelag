@@ -9,11 +9,12 @@ class GameController {
         this._database = database;
     };
 
+
     gameConverter = {
-        toFirestore: function(game) {
+        toFirestore: (game) => {
             return {}
         },
-        fromFirestore: function(snapshot, options){
+        fromFirestore: (snapshot, options) => {
           const data = snapshot.data(options);
           return new Game()
         }
@@ -24,16 +25,17 @@ class GameController {
     /** Asynchronously connects to database and creates a game document
     * @returns {Game} newGame - newly created Game
     */
-    async createGame() {
-        let game;
+    async create() {
+        let game = new Game();
         this._database.collection("game").doc(game.id).set(game)
+            withConverter(gameConverter)
             .then(
                 () => {console.log("Game successfully created");}
             )
             .catch(
                 (e) => {console.log("Error creating game:", e);}
             );
-        return this._loads(game);
+        return game;
     };
 
 
@@ -41,7 +43,7 @@ class GameController {
     * @params {uuid} gameId - game ID
     * @returns {Game} game - Game
     */
-    async getGameById(gameId) {
+    async getById(gameId) {
         let game;
         const query = this._databass.collection("games").doc(gameId);
         query.get().withConverter(gameConverter).then(
@@ -61,7 +63,7 @@ class GameController {
     * @params {string} gameSlugname - game slugname
     * @returns {Game} game - Game
     */
-    async getGameBySlugname(gameSlugname) {
+    async getBySlugname(gameSlugname) {
         let game;
         const query = db.collection("game").where("slugname", "==", gameSlugname).limit(1);
         query.get().withConverter(gameConverter).then(
@@ -75,12 +77,18 @@ class GameController {
 
 
     /** Asynchronously connects to database and updates a Game from ID
-    * @params {Game} game - old version of the Game
-    * @params {Object} updates - an objects of fields to be updated and their new value
-    * @returns {Game} updatedGame - Game with updates
+    * @params {Game} newGame - new version of the Game
+    * @returns {Game} newGame - new version of the Game
     */
-    async updateGame(game) {
-        return updatedGame;
+    async update(newGame) {
+        const query = this._database.collection("game").doc(game.id).update()
+            .then(
+                () => {console.log("Game successfully updated!");}
+            )
+            .catch(
+                (e) => {console.log("Error updating game :", e);}
+            )
+        return newGame;
     };
 
 
@@ -88,17 +96,36 @@ class GameController {
     * @params {Game} game - old version of the Game
     * @returns {Boolean} isDeleted - always true
     */
-    async deleteGame(game) {
+    async delete(game) {
+        const query = this._database.collection("game").doc(game.id).delete()
+            .then(
+                () => {console.log("Game successfully deleted!");}
+            )
+            .catch(
+                (e) => {console.log("Error deleting game :", e);}
+            )
         return true;
     }
 
-    /** Asynchronously listens to any database update on a game
+
+    /** Asynchronously listens to a single game
+    *
+    * Usage :
+    *   To subscribe to listener :
+    *       const unsubscribe = GameController.getListener(game, handleSnapshot);
+    *   To unsubscribe :
+    *       unsubscribe();
+    *
     * @params {Game} game - old version of the Game
-    * @returns {?} gameListener
+    * @params {(snapshot) => void} handleSnapshot -
+    * @returns {DocumentSnapshot} gameSnapshot -
     */
-    async listen(game) {
-        return ;
-    }
+    async listen(game, handleSnapshot) {
+        return this._database.collection("game").doc(game.id)
+                .onSnapshot(
+                    (snapshot) => {handleSnapshot(snapshot)}
+                );
+    };
 }
 
 export default GameController;
