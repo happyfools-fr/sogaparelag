@@ -1,18 +1,15 @@
+// Firebase imports
+import {withFirebase} from '../../../components/firebase/index'
+
 // React imports
 import React, { Component } from 'react';
 
 // Style imports
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ListGroup from 'react-bootstrap/ListGroup'
-import { Jumbotron } from 'react-bootstrap';
+import LogItem from './LogItem';
 
-// Firebase imports
-import * as firebase from 'firebase';
-import firebaseApp from '../../../firebaseApp';
-
-const db = firebase.firestore(firebaseApp);
-
-export default class GameLogSidebar extends Component {
+class GameLogSidebar extends Component {
     
     constructor(props) {
         super(props);
@@ -28,7 +25,7 @@ export default class GameLogSidebar extends Component {
 
     onListenForGame() {
         this.setState({ loading: true });
-        this.unsubscribe = db.doc(`game/${this.props.game._id}`)
+        this.unsubscribe = this.props.firebase.ft.doc(`game/${this.props.game._id}`)
         .onSnapshot(snapshot => {
             if (snapshot) {
             let game = [];
@@ -49,16 +46,18 @@ export default class GameLogSidebar extends Component {
     
     render() {
         return (
-            <Jumbotron>
+            <div>
             <h3>Game Log</h3>
             <ListGroup>
                 {
                     this.state.game.history.map(state => {
-                        return (<ListGroup.Item>{state._id}</ListGroup.Item>);
+                        return (<LogItem icon="fa-info-circle" value={state._id} />);
                     })
                 }
             </ListGroup>
-            </Jumbotron>
+            </div>
         )
     }
 }
+
+export default withFirebase(GameLogSidebar);

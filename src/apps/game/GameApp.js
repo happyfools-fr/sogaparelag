@@ -1,22 +1,13 @@
+// Firebase imports
+import {withFirebase} from '../../components/firebase/index'
 // React imports
 import React, { Component } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-    Jumbotron,
-    Accordion,
-    Card,
-    Button,
-} from 'react-bootstrap';
 
 import GameMenu from './GameMenu'
-import GameView from './GameView'
+import GameView from './views/GameView'
 import Game from './model/Game';
 
-import * as firebase from 'firebase';
-import firebaseApp from '../../firebaseApp';
-const db = firebase.firestore(firebaseApp);
-
-export default class GameApp extends Component {
+class GameApp extends Component {
 
     constructor(props) {
         super(props);
@@ -50,6 +41,7 @@ export default class GameApp extends Component {
     }
 
     onListenForGame = () => {
+        const db = this.props.firebase.ft;
         const gameSlugname = this.props.match
             ? (
                 this.props.match.params
@@ -91,7 +83,8 @@ export default class GameApp extends Component {
     }
 
     handleClickCreateNewGame(click, user) {
-        const game = Game.createAndPushNewGame(user);
+        const db = this.props.firebase.ft;
+        const game = Game.createAndPushNewGame(db, user);
         this.setState({
             currentGame: game,
             currentGameSlugname: game.slugname,
@@ -107,11 +100,12 @@ export default class GameApp extends Component {
     }
 
     async onJoinGame(submittedSlugName) {
-        const game = await Game.getGameBySlugname(submittedSlugName);
+        const db = this.props.firebase.ft;
+        const game = await Game.getGameBySlugname(db, submittedSlugName);
         if (game) {
             const user = this.props.user;
-            const updatedGame = Game.createAndAddPlayerToGame(game, user);
-            const pushedGame = Game.pushOrUpdateRecord(updatedGame);
+            const updatedGame = Game.createAndAddPlayerToGame(db, game, user);
+            const pushedGame = Game.pushOrUpdateRecord(db, updatedGame);
             this.setState({
                 currentGame: pushedGame,
                 currentGameSlugname: pushedGame.slugname,
@@ -123,7 +117,8 @@ export default class GameApp extends Component {
     }
 
     async updateGameId(gameId) {
-        const gameSnapshot = await Game.getGameSnapshotByGameId(gameId);
+        const db = this.props.firebase.ft;
+        const gameSnapshot = await Game.getGameSnapshotByGameId(db, gameId);
         if (gameSnapshot.exists) {
             this.setState({
                 currentGame: gameSnapshot.data(),
@@ -137,39 +132,18 @@ export default class GameApp extends Component {
     render() {
         const user = this.props.user;
         const game = this.state.currentGame;
-        return (
-            <Jumbotron>
-                <Accordion>
-                    <Card>
-                        <Card.Header>
-                            <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                                Menu
-                    </Accordion.Toggle>
-                        </Card.Header>
-                        <Accordion.Collapse eventKey="0">
-                            <Card.Body>
-                                <GameMenu
-                                    user={user}
-                                    handleClickCreateNewGame={this.handleClickCreateNewGame}
-                                    handleJoinGameSubmit={this.handleJoinGameSubmit}
-                                />
-                            </Card.Body>
-                        </Accordion.Collapse>
-                    </Card>
-                    <Card>
-                        <Card.Header>
-                            <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                                Active Game
-                    </Accordion.Toggle>
-                        </Card.Header>
-                        <Accordion.Collapse eventKey="1">
-                            <Card.Body>{
-                                game ? <GameView game={game} user={user} /> : <p></p>
-                            }</Card.Body>
-                        </Accordion.Collapse>
-                    </Card>
-                </Accordion>
-            </Jumbotron>
-        );
+        if (game) {
+            return (<GameView game={game} user={user} />);
+        } else {
+            return (
+                <GameMenu
+                    user={user}
+                    handleClickCreateNewGame={this.handleClickCreateNewGame}
+                    handleJoinGameSubmit={this.handleJoinGameSubmit}
+                />
+            );
+        };
     }
 }
+
+export default  withFirebase(GameApp);

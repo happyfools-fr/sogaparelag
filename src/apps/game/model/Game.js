@@ -1,13 +1,7 @@
-
 import { v1 as uuidv1 } from 'uuid';
-import * as firebase from 'firebase';
-import firebaseApp from '../../../firebaseApp';
 
 import GameState from './GameState';
-import LoggedInUser from './LoggedInUser';
 import Player from './Player';
-
-const db = firebase.firestore(firebaseApp);
 
 class Game {
     constructor() {
@@ -18,13 +12,41 @@ class Game {
         this.history = [];
         this.currentState = GameState.getInitialGameState();
     }
-
-    static addNewPlayer(game, player, playerState) {
-        if (!game.players.includes(player._id)) {
+    
+    get id()
+    {
+        return this._id;
+    }
+    
+    // fetch = (fb) => {return fb.getDocSync('game', this)};
+    // push = (fb) => {return fb.setDocSync('game', this)};
+    // 
+    // 
+    // 
+    // 
+    // addPlayer = (fb, player) => {
+    //   if(!this.players.includes(player.id)){
+    //     this.players = this.players.slice().concat([player.id]);
+    //     this.playerOrder = this.playerOrder.slice().concat([player.id]);
+    //     this.currentState.playerStatesInGame = this.currentState.playerStatesInGame.slice().concat([{ ...player }]);
+    //     this.currentPlayerId = this.playerOrder[0];
+    //     if (this.players.length === 0) {
+    //         t.nextPlayerId = updatedPlayerOrder[0];
+    //     } else {
+    //         updatedCurrentState.nextPlayerId = updatedPlayerOrder[1];
+    //     }
+    //   }else{
+    // 
+    //   }
+    // }
+    
+    
+    static addNewPlayer(db, game, player, playerState) {
+        if (!game.players.includes(player.id)) {
             const updatedGame = JSON.parse(JSON.stringify(game));
-            const updatedPlayers = updatedGame.players.slice().concat([player._id])
+            const updatedPlayers = updatedGame.players.slice().concat([player.id])
             updatedGame.players = updatedPlayers;
-            const updatedPlayerOrder = updatedGame.playerOrder.slice().concat([player._id])
+            const updatedPlayerOrder = updatedGame.playerOrder.slice().concat([player.id])
             updatedGame.playerOrder = updatedPlayerOrder;
             const updatedCurrentState = JSON.parse(JSON.stringify(updatedGame.currentState));
             updatedCurrentState.playerStatesInGame = updatedGame.currentState.playerStatesInGame.slice().concat([{ ...playerState }]);
@@ -35,19 +57,19 @@ class Game {
                 updatedCurrentState.nextPlayerId = updatedPlayerOrder[1];
             }
             updatedGame.currentState = updatedCurrentState;
-            return Game.pushOrUpdateRecord(updatedGame);
+            return Game.pushOrUpdateRecord(db, updatedGame);
         } else {
             console.log("You are already a player in this game");
             return game;
         }
     };
 
-    static async getGameSnapshotByGameId(gameId) {
+    static async getGameSnapshotByGameId(db, gameId) {
         const gameSnapshot = await db.collection("game").doc(gameId).get();
         return gameSnapshot;
     }
 
-    static async getGameBySlugname(gameSlugname) {
+    static async getGameBySlugname(db, gameSlugname) {
         const query = db.collection("game").where("slugname", "==", gameSlugname);
         let game;
         await query.get()
@@ -56,8 +78,9 @@ class Game {
         return game;
     }
 
-    static pushOrUpdateRecord(game) {
-        db.collection("game").doc(game._id).set({
+    static async pushOrUpdateRecord(db, game) {
+        console.log(JSON.stringify(game));
+        await db.collection("game").doc(game._id).set({
             ...game
         },
             {
@@ -75,20 +98,20 @@ class Game {
         return game;
     };
 
-    static createAndAddPlayerToGame(game, user) {
-        const player = Player.createAndPushPlayer(user);
-        const playerStateInGame = Player.getInitialPlayerStateInGame(player);
-        const updatedGame = Game.addNewPlayer(game, player, playerStateInGame);
+    static createAndAddPlayerToGame(db, game, user) {
+        const player = Player.createAndPushPlayer(db, user);
+        const updatedGame = Game.addNewPlayer(db, game, player, player);
         return updatedGame;
     }
 
-    static createAndPushNewGame(user) {
+    static createAndPushNewGame(db, user) {
         const game = new Game();
-        const updatedGame = Game.createAndAddPlayerToGame(game, user);
-        return Game.pushOrUpdateRecord(updatedGame);
+        console.log("new game is created",game);
+        const updatedGame = Game.createAndAddPlayerToGame(db, game, user);
+        return Game.pushOrUpdateRecord(db, updatedGame);
     }
 
-    static pushUpdateGameState(game) {
+    static pushUpdateGameState(db, game) {
         const updatedHistory = game.history.slice().concat([
             { _id: 'history ' + Math.random().toString() }
         ]);
@@ -109,7 +132,7 @@ class Game {
             });
     };
 
-    static startFirstRound(game) {
+    static startFirstRound(db, game) {
         const updatedGame = JSON.parse(JSON.stringify(game));
         updatedGame.currentState.isStarted = !updatedGame.currentState.isStarted;
         db.collection("game").doc(game._id).set({

@@ -4,11 +4,11 @@ import {RoundAction} from './RoundAction'
  * Player holds player state in game
  *
  */
-export class Player
+export default class Player
 {
     constructor(loggedInUser)
     {
-        this.userId = loggedInUser.id
+        this.userId = loggedInUser.uid
         this.nickName = loggedInUser.displayName
         this._sickenessLevel = 0
         this.isDead = false
@@ -17,17 +17,22 @@ export class Player
 
     get id()
     {
-        return this.userId
+        return this.userId;
+    }
+    
+    get _id()
+    {
+        return this.userId;
     }
 
     get isSick()
     {
-        return this._sickenessLevel != 0
+        return this._sickenessLevel !== 0;
     }
 
     onGetSick()
     {
-        this._sickenessLevel = 2
+        this._sickenessLevel = 2;
     }
 
     onRoundEnded()
@@ -39,13 +44,13 @@ export class Player
     choosePlayerIdToVoteAgainst(players)
     {
         //TODO
-        return players[0]
+        return players[0];
     }
 
     chooseFinalPlayerIdToVoteAgainst(players)
     {
         //TODO
-        return players[0]
+        return players[0];
     }
 
     chooseActionToPerform()
@@ -60,4 +65,21 @@ export class Player
     {
       return 0
     }
+    
+    static async pushOrUpdateRecord(db, player) {
+      await db.collection("player").doc(player.id).set({
+        ...player
+      },
+      {
+        merge: true,
+      }
+    );
+      return player;
+    }
+    
+    static createAndPushPlayer(db, user) {
+      const player = new Player(user);
+      return Player.pushOrUpdateRecord(db, player);
+    } 
+
 }

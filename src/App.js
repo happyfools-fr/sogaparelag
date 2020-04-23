@@ -8,9 +8,7 @@ import {
 } from "react-router-dom";
 
 // Firebase imports
-import * as firebase from 'firebase';
-import firebaseApp from './firebaseApp';
-import withFirebaseAuth from 'react-with-firebase-auth';
+import { createComponentWithFirebaseAuth } from './components/firebase/index';
 
 // Styles imports
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -24,35 +22,7 @@ import GameApp from './apps/game/GameApp'
 import LandingPage from './apps/home/LandingPage'
 import About from './apps/about/About'
 
-const firebaseAppAuth = firebaseApp.auth();
-const providers = {
-    googleProvider: new firebase.auth.GoogleAuthProvider(),
-};
-
-/** Create the FirebaseAuth component wrapper */
-const createComponentWithAuth = withFirebaseAuth({
-    providers,
-    firebaseAppAuth,
-});
-
 class App extends Component {
-
-    constructor() {
-        super();
-        this.state = {
-            speed: 10
-        };
-    }
-
-    componentDidMount() {
-        const rootRef = firebase.database().ref();
-        const speedRef = rootRef.child('speed');
-        speedRef.on('value', snap => {
-            this.setState({
-                speed: snap.val()
-            });
-        });
-    }
 
     render() {
         const {
@@ -113,53 +83,54 @@ class App extends Component {
                             />
                         </Route>
                         {
-                            user
-                                ? (
-                                    <Route
-                                        exact path="/game"
-                                        render={(props) => <GameApp {...props} user={user} />}
-                                    >
-                                    </Route>
-                                )
-                                : (
-                                    <Route path="/game/:gameSlugname">
-                                        <Auth
+                            <Route
+                                exact path="/game"
+                                render={(props) => {
+                                    if (user) {
+                                        return (
+                                            <GameApp {...props} user={user} addUserToGame={false} />
+                                        );
+                                    } else {
+                                        return (<Auth
                                             user={user}
                                             signOut={signOut}
                                             signInWithGoogle={signInWithGoogle}
-                                        />
-                                    </Route>
-                                )
+                                        />);
+                                    }
+                                }
+
+                                }
+                            >
+                            </Route>
                         }
                         {
-                            user
-                                ? (
-                                    <Route
-                                        path="/game/:gameSlugname"
-                                        render={(props) => <GameApp {...props} user={user} addUserToGame={true} />}
-                                    >
-                                    </Route>
-                                )
-                                : (
-                                    <Route path="/game/:gameSlugname">
-                                        <Auth
+                            <Route
+                                path="/game/:gameSlugname"
+                                render={(props) => {
+                                    if (user) {
+                                        return (
+                                            <GameApp {...props} user={user} addUserToGame={true}/>
+                                        )                                    
+                                    } else {
+                                        return (<Auth
                                             user={user}
                                             signOut={signOut}
                                             signInWithGoogle={signInWithGoogle}
-                                        />
-                                    </Route>
-                                )
+                                        />);
+                                    }
+                                }
+                                }
+                            >
+                            </Route>
                         }
-
-
                     </Switch>
                 </div>
-                <Navbar sticky="bottom">
+                <Navbar className='mt-3' sticky="bottom">
                     <b>Sogaparelag</b>&nbsp;project, a HappyFools.fr initiative in 2020.
-      </Navbar>
+                </Navbar>
             </Router>
         );
     }
 }
 
-export default createComponentWithAuth(App);
+export default createComponentWithFirebaseAuth(App);
