@@ -1,8 +1,8 @@
 import SittingPlayer from './SittingPlayer'
 
-export class GameTable 
+export class GameTable
 {
-    constructor(players) 
+    constructor(players)
     {
         this.players = players
         this.playersCount = players.length
