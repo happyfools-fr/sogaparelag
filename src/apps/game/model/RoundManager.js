@@ -6,7 +6,7 @@ import Player from './Player'
 import {RoundAction} from './RoundAction'
 
 
-export class Round
+export class RoundManager
 {
     constructor(gameTable, waterManager, foodManager, woodManager)
     {

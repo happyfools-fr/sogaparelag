@@ -2,7 +2,7 @@ import {Player} from "./Player";
 import {WaterManager} from "./WaterManager";
 import {FoodManager} from "./FoodManager";
 import {WoodManager} from "./WoodManager";
-import { Round } from "./Round";
+import { RoundManager } from "./RoundManager";
 import {GameTable} from "./GameTable";
 import {PollManager} from "./PollManager";
 import { v1 as uuidv1 } from 'uuid';
@@ -24,7 +24,7 @@ export class Game2
         this._woodManager = new WoodManager()
 
         this._gameTable = new GameTable(players)
-        this._currentRound = null
+        this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
         this._pollManager = new PollManager(this._gameTable);
     }
 
@@ -49,8 +49,7 @@ export class Game2
         {
             this._lastRound = _waterManager.mustLeave()
             //actions round
-            this._currentRound = new Round(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
-            this._currentRound.play()
+            this._roundManager.play()
 
             //can leave?
             if (this._canLeave())
