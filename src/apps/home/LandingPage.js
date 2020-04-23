@@ -1,3 +1,5 @@
+import { withFirebase } from '../../components/firebase/index';
+
 import React, { Component } from 'react';
 import {
   Jumbotron, 
@@ -22,4 +24,4 @@ class LandingPage extends Component {
   };
 }
 
-export default LandingPage;
+export default withFirebase(LandingPage);

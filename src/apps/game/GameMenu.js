@@ -1,3 +1,4 @@
+import { withFirebase } from '../../components/firebase/index';
 // React imports
 import React, { Component } from 'react';
 
@@ -12,7 +13,7 @@ import {
 // Relative imports
 import PlayerGameList from './components/PlayerGameList';
 
-export default class GameMenu extends Component {
+class GameMenu extends Component {
 
 
     constructor(props) {
@@ -66,3 +67,5 @@ export default class GameMenu extends Component {
         }
     };
 }
+
+export default withFirebase(GameMenu);

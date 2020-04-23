@@ -8,9 +8,7 @@ import {
 } from "react-router-dom";
 
 // Firebase imports
-import * as firebase from 'firebase';
-import firebaseApp from './firebaseApp';
-import withFirebaseAuth from 'react-with-firebase-auth';
+import { createComponentWithFirebaseAuth } from './components/firebase/index';
 
 // Styles imports
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -23,17 +21,6 @@ import Auth from './apps/auth/Auth'
 import GameApp from './apps/game/GameApp'
 import LandingPage from './apps/home/LandingPage'
 import About from './apps/about/About'
-
-const firebaseAppAuth = firebaseApp.auth();
-const providers = {
-    googleProvider: new firebase.auth.GoogleAuthProvider(),
-};
-
-/** Create the FirebaseAuth component wrapper */
-const createComponentWithAuth = withFirebaseAuth({
-    providers,
-    firebaseAppAuth,
-});
 
 class App extends Component {
 
@@ -100,7 +87,9 @@ class App extends Component {
                                 exact path="/game"
                                 render={(props) => {
                                     if (user) {
-                                        return (<GameApp {...props} user={user} addUserToGame={false} />);
+                                        return (
+                                            <GameApp {...props} user={user} addUserToGame={false} />
+                                        );
                                     } else {
                                         return (<Auth
                                             user={user}
@@ -119,7 +108,9 @@ class App extends Component {
                                 path="/game/:gameSlugname"
                                 render={(props) => {
                                     if (user) {
-                                        return (<GameApp {...props} user={user} addUserToGame={true} />);
+                                        return (
+                                            <GameApp {...props} user={user} addUserToGame={true}/>
+                                        )                                    
                                     } else {
                                         return (<Auth
                                             user={user}
@@ -142,4 +133,4 @@ class App extends Component {
     }
 }
 
-export default createComponentWithAuth(App);
+export default createComponentWithFirebaseAuth(App);

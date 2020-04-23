@@ -1,8 +1,8 @@
+// Firebase imports
+import {withFirebase} from '../../../components/firebase/index'
+// React imports
 import React, { Component } from 'react';
 import assert from 'assert';
-
-import * as firebase from 'firebase';
-import firebaseApp from '../../../firebaseApp';
 
 // Bootstrap imports
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -15,9 +15,7 @@ import PlayerStateTable from '../components/PlayerStateTable';
 import GameLogSidebar from '../components/GameLogSidebar';
 import Game from '../model/Game';
 
-const db = firebase.firestore(firebaseApp);
-
-export default class GameView extends Component {
+class GameView extends Component {
 
     /* Here we assume that game exists and is not undefined */
 
@@ -38,6 +36,7 @@ export default class GameView extends Component {
     }
 
     onListenForGame = () => {
+        const db = this.props.firebase.ft;
         this.setState({
             showModal: false,
             loading: true,
@@ -110,3 +109,5 @@ export default class GameView extends Component {
         );
     };
 }
+
+export default withFirebase(GameView);

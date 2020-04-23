@@ -1,13 +1,8 @@
-
 import { v1 as uuidv1 } from 'uuid';
-import * as firebase from 'firebase';
-import firebaseApp from '../../../firebaseApp';
 
 import GameState from './GameState';
 import Player from './Player';
 import PlayerStateInGame from './PlayerStateInGame';
-
-const db = firebase.firestore(firebaseApp);
 
 class Game {
     constructor() {
@@ -19,7 +14,7 @@ class Game {
         this.currentState = GameState.getInitialGameState();
     }
 
-    static addNewPlayer(game, player, playerState) {
+    static addNewPlayer(db, game, player, playerState) {
         if (!game.players.includes(player._id)) {
             const updatedGame = JSON.parse(JSON.stringify(game));
             const updatedPlayers = updatedGame.players.slice().concat([player._id])
@@ -35,19 +30,19 @@ class Game {
                 updatedCurrentState.nextPlayerId = updatedPlayerOrder[1];
             }
             updatedGame.currentState = updatedCurrentState;
-            return Game.pushOrUpdateRecord(updatedGame);
+            return Game.pushOrUpdateRecord(db, updatedGame);
         } else {
             console.log("You are already a player in this game");
             return game;
         }
     };
 
-    static async getGameSnapshotByGameId(gameId) {
+    static async getGameSnapshotByGameId(db, gameId) {
         const gameSnapshot = await db.collection("game").doc(gameId).get();
         return gameSnapshot;
     }
 
-    static async getGameBySlugname(gameSlugname) {
+    static async getGameBySlugname(db, gameSlugname) {
         const query = db.collection("game").where("slugname", "==", gameSlugname);
         let game;
         await query.get()
@@ -56,7 +51,7 @@ class Game {
         return game;
     }
 
-    static pushOrUpdateRecord(game) {
+    static pushOrUpdateRecord(db, game) {
         db.collection("game").doc(game._id).set({
             ...game
         },
@@ -75,20 +70,20 @@ class Game {
         return game;
     };
 
-    static createAndAddPlayerToGame(game, user) {
-        const player = Player.createAndPushPlayer(user);
+    static createAndAddPlayerToGame(db, game, user) {
+        const player = Player.createAndPushPlayer(db, user);
         const playerStateInGame = PlayerStateInGame.getInitialPlayerStateInGame(player);
-        const updatedGame = Game.addNewPlayer(game, player, playerStateInGame);
+        const updatedGame = Game.addNewPlayer(db, game, player, playerStateInGame);
         return updatedGame;
     }
 
-    static createAndPushNewGame(user) {
+    static createAndPushNewGame(db, user) {
         const game = new Game();
-        const updatedGame = Game.createAndAddPlayerToGame(game, user);
-        return Game.pushOrUpdateRecord(updatedGame);
+        const updatedGame = Game.createAndAddPlayerToGame(db, game, user);
+        return Game.pushOrUpdateRecord(db, updatedGame);
     }
 
-    static pushUpdateGameState(game) {
+    static pushUpdateGameState(db, game) {
         const updatedHistory = game.history.slice().concat([
             { _id: 'history ' + Math.random().toString() }
         ]);
@@ -109,7 +104,7 @@ class Game {
             });
     };
 
-    static startFirstRound(game) {
+    static startFirstRound(db, game) {
         const updatedGame = JSON.parse(JSON.stringify(game));
         updatedGame.currentState.isStarted = !updatedGame.currentState.isStarted;
         db.collection("game").doc(game._id).set({

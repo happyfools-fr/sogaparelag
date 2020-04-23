@@ -1,7 +1,3 @@
-import * as firebase from 'firebase';
-import firebaseApp from '../../../firebaseApp';
-
-const db = firebase.firestore(firebaseApp);
 
 export default class Player {
   
@@ -10,7 +6,7 @@ export default class Player {
     this.nickname = nickname;
   }
 
-  static pushOrUpdateRecord(player) {
+  static pushOrUpdateRecord(db, player) {
     db.collection("player").doc(player._id).set({
       ...player
     },
@@ -21,11 +17,11 @@ export default class Player {
     return player;
   }
   
-  static createAndPushPlayer(user) {
+  static createAndPushPlayer(db, user) {
     const player = new Player(
       user.uid,
       user.displayName,
     )
-    return Player.pushOrUpdateRecord(player);
+    return Player.pushOrUpdateRecord(db, player);
   }  
 }

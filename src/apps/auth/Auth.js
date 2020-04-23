@@ -1,3 +1,4 @@
+import { withFirebase } from '../../components/firebase/index';
 import React, { Component } from 'react';
 import {
   Jumbotron, 
@@ -30,4 +31,4 @@ class Auth extends Component {
   };
 }
 
-export default Auth;
+export default withFirebase(Auth);

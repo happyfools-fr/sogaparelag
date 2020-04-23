@@ -1,23 +1,20 @@
+// Firebase imports
+import {withFirebase} from '../../../components/firebase/index'
+
+// React imports
 import React, { Component } from 'react';
 // Styles imports
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-  Jumbotron
-}  from 'react-bootstrap';
-import * as firebase from 'firebase';
-import firebaseApp from '../../../firebaseApp';
 
 import PlayerView from '../views/PlayerView';
 
-const db = firebase.firestore(firebaseApp);
-
-export default class PlayerStateTable extends Component {
-
+class PlayerStateTable extends Component {
+  
     constructor(props){
         super(props);
         this.state = {
-            player: null,
-            loading: false,
+        player: null,
+        loading: false,
         };
     }
 
@@ -32,6 +29,7 @@ export default class PlayerStateTable extends Component {
 
 
     onListenForPlayer() {
+        const db = this.props.firebase.ft; 
         this.setState({ loading: true });
         this.unsubscribe = db.doc(`player/${this.props.player}`)
             .onSnapshot(snapshot => {
@@ -72,3 +70,5 @@ export default class PlayerStateTable extends Component {
         };
     };
 }
+
+export default withFirebase(PlayerStateTable);
