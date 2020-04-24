@@ -20,7 +20,7 @@ import Nav from 'react-bootstrap/Nav'
 // Relative imports
 import Auth from './apps/auth/Auth'
 // import GameMenu from './apps/game/GameMenu'
-import GameApp2 from './apps/game/GameApp2'
+import GameApp from './apps/game/GameApp'
 import LandingPage from './apps/home/LandingPage'
 import About from './apps/about/About'
 
@@ -100,7 +100,7 @@ class App extends Component {
                                 exact path="/game"
                                 render={(props) => {
                                     if (user) {
-                                        return (<GameApp2 {...props} user={user} addUserToGame={false} />);
+                                        return (<GameApp {...props} user={user} addUserToGame={false} />);
                                     } else {
                                         return (<Auth
                                             user={user}
@@ -119,7 +119,7 @@ class App extends Component {
                                 path="/game/:gameSlugname"
                                 render={(props) => {
                                     if (user) {
-                                        return (<GameApp2 {...props} user={user} addUserToGame={true} />);
+                                        return (<GameApp {...props} user={user} addUserToGame={true} />);
                                     } else {
                                         return (<Auth
                                             user={user}
