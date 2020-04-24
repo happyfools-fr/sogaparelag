@@ -1,4 +1,6 @@
-export class PollingSystem
+import GameTable from './GameTable'
+
+export class PollManager
 {
     constructor(gameTable)
     {
@@ -7,20 +9,28 @@ export class PollingSystem
     
     vote()
     {
-        votesByPlayerId = this._initVotingPolls()
-        let playerEnumerator = this._gameTable.getPlayerEnumerator()
+        let votesByPlayerId = this._initVotingPolls()
+        let healthyPlayerEnumerator = this._gameTable.getHealthyPlayerEnumerator()
         while (true)
         {
-            let currentPlayer = playerEnumerator.next()
+            let currentPlayer = healthyPlayerEnumerator.next()
             if (currentPlayer.done)
                 break   
                 
-            let chosenPlayerId = currentPlayer.value.choosePlayerToVoteAgainst(this._gameTable.players)
+            let chosenPlayerId = currentPlayer.value.player.choosePlayerIdToVoteAgainst(this._gameTable.players)
             votesByPlayerId[chosenPlayerId] ++
         }
-        let playersWithMaxVote = _getPlayersWithMaxVote(votesByPlayerId)
+        let playersWithMaxVote = this._getPlayerIdsWithMaxVote(votesByPlayerId)
         if (playersWithMaxVote.length > 1)
-            return this._gameTable.headPlayer.chooseFinalPlayerToVoteAgainst(this._gameTable.players)
+        {
+            let finalVoteByHeadPlayer = this._gameTable.headPlayer.chooseFinalPlayerIdToVoteAgainst(playersWithMaxVote)
+            
+            if (playersWithMaxVote.includes(finalVoteByHeadPlayer))
+                return finalVoteByHeadPlayer
+
+            throw Error()
+        }
+
         return playersWithMaxVote[0]
     }
 
@@ -32,14 +42,14 @@ export class PollingSystem
         {
             let currentPlayer = playerEnumerator.next()
             if (currentPlayer.done)
-                break   
-                
+                break 
+                  
             votesByPlayerId[currentPlayer.value.id] = 0
         }
         return votesByPlayerId;
     }
 
-    _getPlayersWithMaxVote(votesByPlayerId)
+    _getPlayerIdsWithMaxVote(votesByPlayerId)
     {
         let max = -1
         let playerIdsWithMax = []
@@ -59,4 +69,4 @@ export class PollingSystem
     }
 };
 
-export default PollingSystem;
+export default PollManager;

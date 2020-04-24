@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
-
 // Firebase imports
-import * as firebase from 'firebase';
-import firebaseApp from '../../../firebaseApp';
+import {withFirebase} from '../../../components/firebase/index'
 
+// React imports
+import React, { Component } from 'react';
 import {Card} from 'react-bootstrap';
 
 // Model
@@ -13,17 +12,17 @@ import Game from '../model/Game';
 import WaitingRoomView from '../views/WaitingRoomView';
 import GameTableView from "../views/GameTableView";
 
-const db = firebase.firestore(firebaseApp);
+class GameStateTable extends Component {
 
-export default class GameStateTable extends Component {
-  
   constructor(props){
     super(props);
     this.state = {
       currentPlayerNickname: "currentPlayerNickname undefined",
       nextPlayerNickname: "nextPlayerNickname undefined",
       loading: false,
-    };  
+    };
+    this.onClickNotStarted = this.onClickNotStarted.bind(this);
+
   }
 
   componentDidMount() {
@@ -33,19 +32,19 @@ export default class GameStateTable extends Component {
 
   onListenForCurrentPlayer = () => {
     this.setState({ loading: true });
-    this.unsubscribeForCurrentPlayer = db.collection(`player`).doc(this.props.game.currentState.currentPlayerId)
+    this.unsubscribeForCurrentPlayer = this.props.firebase.ft.collection(`player`).doc(this.props.game.currentState.currentPlayerId)
       .onSnapshot(snapshot => {
         if (snapshot.exists) {
           let currentPlayerNickname;
-          currentPlayerNickname = snapshot.data().nickname;
+          currentPlayerNickname = snapshot.data().nickName;
           this.setState({
             currentPlayerNickname: currentPlayerNickname,
             loading: false,
           });
         } else {
-          this.setState({ 
-            currentPlayerNickname: null, 
-            loading: false 
+          this.setState({
+            currentPlayerNickname: null,
+            loading: false
           });
         }
       });
@@ -53,39 +52,39 @@ export default class GameStateTable extends Component {
 
   onListenForNextPlayer = () => {
     this.setState({ loading: true });
-    this.unsubscribeForNextPlayer = db.collection(`player`).doc(this.props.game.currentState.nextPlayerId)
+    this.unsubscribeForNextPlayer = this.props.firebase.ft.collection(`player`).doc(this.props.game.currentState.nextPlayerId)
       .onSnapshot(snapshot => {
         if (snapshot.exists) {
           let nextPlayerNickname;
-          nextPlayerNickname = snapshot.data().nickname;
+          nextPlayerNickname = snapshot.data().nickName;
           this.setState({
             nextPlayerNickname: nextPlayerNickname,
             loading: false,
           });
         } else {
-          this.setState({ 
-            nextPlayerNickname: null, 
-            loading: false 
+          this.setState({
+            nextPlayerNickname: null,
+            loading: false
           });
         }
       });
   };
 
-  componentWillUnmount() {
-    this.unsubscribeForCurrentPlayer();
-    this.unsubscribeForNextPlayer();
-  };
-
-    onClickNotStarted(game) {
-        Game.startFirstRound(game);
-        alert("Game.startFirstRound");
+    componentWillUnmount() {
+        this.unsubscribeForCurrentPlayer();
+        this.unsubscribeForNextPlayer();
     };
- 
+
+    async onClickNotStarted() {
+      const game = await this.props.game;
+      await Game.startFirstRound(this.props.firebase.ft, game);
+      alert("Game.startFirstRound");
+    };
+
   render() {
     const game = this.props.game;
-
     return (
-        <Card border="light">  
+        <Card border="light">
             <Card.Body>
             <Card.Title>Welcome to Island of {game.slugname} </Card.Title>
             {
@@ -103,3 +102,5 @@ export default class GameStateTable extends Component {
     );
   };
 }
+
+export default  withFirebase(GameStateTable);

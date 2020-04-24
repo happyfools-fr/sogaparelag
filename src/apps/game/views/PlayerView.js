@@ -1,3 +1,4 @@
+// React imports
 import React from 'react';
 
 // Import bootstrap
@@ -14,7 +15,7 @@ export default function PlayerView(props) {
             <Card.Title>{props.player ? props.player.nickname : ""}</Card.Title>
             <Card.Text>
                 <p> {props.player ? props.player._id : "" } </p>
-                <p> IsSick :  {props.playerStateInGame ? props.playerStateInGame.isSick.toString() : ""}</p>
+                <p> IsSick :  {props.playerStateInGame ? (props.playerStateInGame._sickenessLevel !== 0).toString() : ""}</p>
                 <p> IsDead :  {props.playerStateInGame ? props.playerStateInGame.isDead.toString() : ""}</p>
             </Card.Text>
         </Card.Body>

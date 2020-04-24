@@ -1,3 +1,4 @@
+// React imports
 import React, { Component } from 'react';
 
 export default class RouteRedirectionToGame extends Component {

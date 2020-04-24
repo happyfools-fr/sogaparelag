@@ -1,16 +1,13 @@
-import PlayerOnTable from './PlayerOnTable'
+import SittingPlayer from './SittingPlayer'
 
-export class GameTable {
-    constructor(players) {
-        this._players = players
-        this._playersCount = players.length
-        this._headPlayer = new PlayerOnTable(players[0]);
-        this._initTable(players);
-    }
-
-    get players()
+export class GameTable
+{
+    constructor(players)
     {
-        return this._players
+        this.players = players
+        this.playersCount = players.length
+        this._headPlayer = new SittingPlayer(players[0]);
+        this._initTable(players);
     }
 
     get headPlayer()
@@ -22,7 +19,7 @@ export class GameTable {
         let previousCreatedPlayerOnTable = this._headPlayer;
         //1 .. N-1
         for (let i = 1; i < players.length; i++) {
-            let player = new PlayerOnTable(players[i]);
+            let player = new SittingPlayer(players[i]);
             previousCreatedPlayerOnTable.next = player;
             player.previous = previousCreatedPlayerOnTable;
             previousCreatedPlayerOnTable = player;
@@ -48,14 +45,31 @@ export class GameTable {
                 let nextPlayer = currentPlayer.value.next
                 previousPlayer.next = nextPlayer
                 nextPlayer.previous = previousPlayer
-                this._playersCount --
 
                 if (this._headPlayer.player == currentPlayer.value.player)
                     this._headPlayer = this._headPlayer.next
 
+                this._refreshPlayers()
                 return true;
             }
         }
+    }
+
+    _refreshPlayers()
+    {
+        this.players = []
+        let playerEnumerator = this.getPlayerEnumerator()
+
+        while (true)
+        {
+            let currentPlayer = playerEnumerator.next()
+            if (currentPlayer.done)
+                break
+
+            this.players.push(currentPlayer.value.player)
+        }
+
+        this.playersCount = this.players.length
     }
 
     assignNextHeadPlayer()
@@ -70,6 +84,20 @@ export class GameTable {
         while (currentPlayer.player != this._headPlayer.player)
         {
             yield currentPlayer;
+            currentPlayer = currentPlayer.next
+        }
+    }
+
+    * getHealthyPlayerEnumerator()
+    {
+        if (!this._headPlayer.player.isSick)
+            yield this._headPlayer;
+
+        let currentPlayer = this._headPlayer.next;
+        while (currentPlayer.player != this._headPlayer.player)
+        {
+            if (!currentPlayer.player.isSick)
+                yield currentPlayer;
             currentPlayer = currentPlayer.next
         }
     }
