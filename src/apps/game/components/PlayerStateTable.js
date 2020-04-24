@@ -59,7 +59,7 @@ class PlayerStateTable extends Component {
 
         if (game && player) {
             playerStateInGame = game.currentState.playerStatesInGame
-                .filter(playerStateInGame => playerStateInGame.playerId === player._id)[0];
+                .filter(playerStateInGame => playerStateInGame._id === player._id)[0];
 
             return (
                 <PlayerView player={player} playerStateInGame={playerStateInGame} />

@@ -24,25 +24,5 @@ export default class LoggedInUser
       //todo
       return true;
   }
-
-//   static pushOrUpdateRecord(player) 
-//   {
-//     db.collection("player").doc(player._id).set({
-//       ...player
-//     },
-//     {
-//       merge: true,
-//     }
-//   );
-//     return player;
-//   }
   
-// //   static createAndPushLoggedInUser(user) 
-// //   {
-// //     const player = new LoggedInUser(
-// //       user.uid,
-// //       user.displayName,
-// //     )
-// //     return LoggedInUser.pushOrUpdateRecord(player);
-// //   }  
 }

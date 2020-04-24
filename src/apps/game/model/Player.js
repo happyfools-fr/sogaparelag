@@ -14,7 +14,8 @@ export default class Player
         this.isDead = false
         this.currentHand = null
     }
-
+    
+  
     get id()
     {
         return this.userId;
@@ -29,7 +30,7 @@ export default class Player
     {
         return this._sickenessLevel !== 0;
     }
-
+    
     onGetSick()
     {
         this._sickenessLevel = 2;
@@ -67,12 +68,8 @@ export default class Player
     }
     
     static async pushOrUpdateRecord(db, player) {
-      await db.collection("player").doc(player.id).set({
-        ...player
-      },
-      {
-        merge: true,
-      }
+      await db.collection("player").doc(player.userId).set(
+        {...player}
     );
       return player;
     }

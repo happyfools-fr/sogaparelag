@@ -21,6 +21,8 @@ class GameStateTable extends Component {
       nextPlayerNickname: "nextPlayerNickname undefined",
       loading: false,
     };
+    this.onClickNotStarted = this.onClickNotStarted.bind(this);
+
   }
 
   componentDidMount() {
@@ -34,7 +36,7 @@ class GameStateTable extends Component {
       .onSnapshot(snapshot => {
         if (snapshot.exists) {
           let currentPlayerNickname;
-          currentPlayerNickname = snapshot.data().nickname;
+          currentPlayerNickname = snapshot.data().nickName;
           this.setState({
             currentPlayerNickname: currentPlayerNickname,
             loading: false,
@@ -54,7 +56,7 @@ class GameStateTable extends Component {
       .onSnapshot(snapshot => {
         if (snapshot.exists) {
           let nextPlayerNickname;
-          nextPlayerNickname = snapshot.data().nickname;
+          nextPlayerNickname = snapshot.data().nickName;
           this.setState({
             nextPlayerNickname: nextPlayerNickname,
             loading: false,
@@ -73,14 +75,14 @@ class GameStateTable extends Component {
         this.unsubscribeForNextPlayer();
     };
 
-    onClickNotStarted(game) {
-        Game.startFirstRound(game);
-        alert("Game.startFirstRound");
+    async onClickNotStarted() {
+      const game = await this.props.game;
+      await Game.startFirstRound(this.props.firebase.ft, game);
+      alert("Game.startFirstRound");
     };
 
   render() {
     const game = this.props.game;
-
     return (
         <Card border="light">
             <Card.Body>
