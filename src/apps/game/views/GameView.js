@@ -23,8 +23,7 @@ export default class GameView extends Component {
 
     constructor(props) {
         super(props);
-        assert(this.props.game);
-        assert(this.props.user);
+        console.log(this.props.game);
         this.state = {
             game: this.props.game,
             showModal : this.props.game.currentState.currentPlayerId === this.props.user.uid,
@@ -63,12 +62,12 @@ export default class GameView extends Component {
         this.unsubscribe();
     }
 
-    handleEndOfAction(action) {   
+    handleEndOfAction(action) {
         this.setState({
             game: this.state.game,
             showModal : false,
             loading : this.state.loading,
-            
+
         });
         Game.pushUpdateGameState(this.state.game);
         alert(action + ": Game.updateGameState");
@@ -80,7 +79,7 @@ export default class GameView extends Component {
         if (currentState.isStarted & isPlayerTurn) {
             return (<TurnView show={this.state.showModal} handleAction={this.handleEndOfAction}/>);
         } else {
-           return ( <div /> ); 
+           return ( <div /> );
         }
     }
 
@@ -100,7 +99,7 @@ export default class GameView extends Component {
                             }
                         </CardDeck>
                         { this.createTurnView(game, user)}
-                        
+
                     </Col>
                     <Col sm={3}>
                         <GameLogSidebar game={game} />

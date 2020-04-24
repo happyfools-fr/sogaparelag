@@ -10,13 +10,14 @@ import PlayerStateInGame from './PlayerStateInGame';
 const db = firebase.firestore(firebaseApp);
 
 class Game {
-    constructor() {
-        this._id = uuidv1();
-        this.slugname = createSlugname();
-        this.players = [];
-        this.playerOrder = [];
-        this.history = [];
-        this.currentState = GameState.getInitialGameState();
+
+    constructor(id, slugname, players, playerOrder, history, currentState) {
+        this._id = id || uuidv1();
+        this.slugname = slugname || createSlugname();
+        this.players = players || [];
+        this.playerOrder = playerOrder || [];
+        this.history = history || [];
+        this.currentState = currentState || GameState.getInitialGameState();
     }
 
     static addNewPlayer(game, player, playerState) {
