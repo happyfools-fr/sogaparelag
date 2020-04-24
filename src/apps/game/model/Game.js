@@ -4,13 +4,14 @@ import GameState from './GameState';
 import Player from './Player';
 
 class Game {
-    constructor() {
-        this._id = uuidv1();
-        this.slugname = createSlugname();
-        this.players = [];
-        this.playerOrder = [];
-        this.history = [];
-        this.currentState = GameState.getInitialGameState();
+
+    constructor(id, slugname, players, playerOrder, history, currentState) {
+        this._id = id || uuidv1();
+        this.slugname = slugname || createSlugname();
+        this.players = players || [];
+        this.playerOrder = playerOrder || [];
+        this.history = history || [];
+        this.currentState = currentState || GameState.getInitialGameState();
     }
     
     get id()

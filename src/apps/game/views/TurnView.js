@@ -3,12 +3,12 @@ import React from 'react';
 
 import Modal from 'react-bootstrap/Modal';
 
-import TurnActionButtons from '../components/TurnActionButtons';
+import TurnActionButtons from '../../game/components/TurnActionButtons';
 
 export default function TurnView(props) {
 
     return (
-        <Modal show={props.show} onHide={props.handleAction}>
+        <Modal show={props.show} onHide={(action) => props.handleAction(action)}>
             <Modal.Header closeButton>
                 <Modal.Title>It's your turn</Modal.Title>
             </Modal.Header>
