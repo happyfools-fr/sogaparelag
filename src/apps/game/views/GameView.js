@@ -1,7 +1,7 @@
 // Firebase imports
 import {withFirebase} from '../../../components/firebase/index'
 // React imports
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Bootstrap imports
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -23,109 +23,65 @@ import WaitingRoomView from './WaitingRoomView';
 import GameTableView from './GameTableView';
 import AllPlayersView from './AllPlayersView';
 
-class GameView extends Component {
 
-    /* Here we assume that game exists and is not undefined */
+function GameView(props) {
+    const [game, setGame] = useState(props.game);
+    const [showModal, setShowModal] = useState(
+        (game.currentState && game.currentState.currentPlayerId)
+        ? game.currentState.currentPlayerId === props.user.uid
+        : false
+    );
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            game: this.props.game,
-            showModal : this.props.game.currentState.currentPlayerId === this.props.user.uid,
-            loading : false,
-        };
+    const db = props.firebase.ft;
+    const gameController = new GameController(db)
 
-        this.handleEndOfAction = this.handleEndOfAction.bind(this)
-        this.setGameInState = this.setGameInState.bind(this)
-        this.setShowModal = this.setShowModal.bind(this)
-    }
+    useEffect(
+        () => {
+            const unsubscribe = gameController.listen(game, setGame);
+            return unsubscribe;
+        },
+        [gameController, game, setGame]
+    );
 
-    componentDidMount() {
-        this.onListenForGame();
-    }
-
-    setGameInState(game) {
-        this.setState({
-            game : game,
-            showModal : this.state.showModal,
-            loading : !this.loading,
-        })
-    }
-
-    setShowModal(showModal) {
-        this.setState({
-            game : this.state.game,
-            showModal : showModal,
-            loading : this.loading,
-        })
-    }
-
-    onListenForGame = () => {
-        const db = this.props.firebase.ft;
-        this.setState({
-            showModal: false,
-            loading: true,
-        });
-        const gameController = new GameController(db)
-        this.unsubscribe = gameController.listen(this.props.game, this.setGameInState)
-    };
-
-    componentWillUnmount() {
-        this.unsubscribe();
-    }
-
-    handleEndOfAction(action) {
-        this.setState({
-            game: this.state.game,
-            showModal : false,
-            loading : this.state.loading,
-
-        });
-        Game.pushUpdateGameState(this.state.game);
-        alert(action + ": Game.updateGameState");
-    };
-
-    render() {
-        const game = this.state.game;
-        if (!game.currentState.isStarted) {
-            return (
-                <WaitingRoomView
-                    game={game}
-                    onClick={() => {Game.startFirstRound(game); alert("Game.startFirstRound");}}
-                />)
-        } else {
-            const currentState = game.currentState;
-            return (
-                <Container>
-                    <Row>
-                        <Col>
-                            <Card border="light">
-                                <Card.Body>
-                                <Card.Title>Welcome to Island of {game.slugname} </Card.Title>
-                                <GameTableView className='mt-5' game={game}
-                                    currentPlayerNickname={currentState.currentPlayerId}
-                                    nextPlayerNickname={currentState.nextPlayerId}
-                                />
-                                </Card.Body>
-                            </Card>
-                            <AllPlayersView game={this.state.game} />
-                            <TurnView
-                                show={this.state.showModal}
-                                handleAction={
-                                    (action) => {
-                                        this.setShowModal(false);
-                                        alert(action + ": Game.updateGameState");
-                                    }
-                                }
+    if (game.currentState && game.currentState.isStarted) {
+        const currentState = game.currentState;
+        return (
+            <Container>
+                <Row>
+                    <Col>
+                        <Card border="light">
+                            <Card.Body>
+                            <Card.Title>Welcome to Island of {game.slugname} </Card.Title>
+                            <GameTableView className='mt-5' game={game}
+                                currentPlayerNickname={currentState.currentPlayerId}
+                                nextPlayerNickname={currentState.nextPlayerId}
                             />
-                        </Col>
-                        <Col sm={3}>
-                            <GameLogSidebar game={game} />
-                        </Col>
-                    </Row>
-                </Container>
-            );
-        }
+                            </Card.Body>
+                        </Card>
+                        <AllPlayersView game={game} />
+                        <TurnView
+                            show={showModal}
+                            handleAction={
+                                (action) => {
+                                    setShowModal(false);
+                                    alert(action + ": Game.updateGameState");
+                                }
+                            }
+                        />
+                    </Col>
+                    <Col sm={3}>
+                        <GameLogSidebar game={game} />
+                    </Col>
+                </Row>
+            </Container>
+        );
+    } else {
+        return (
+            <WaitingRoomView
+                gameSlugname={game.slugname}
+                players={game.players}
+                onClick={() => {Game.startFirstRound(game); alert("Game.startFirstRound");}}
+            />)
     }
 }
 

@@ -5,7 +5,6 @@ class GameController {
 
     constructor(database) {
         this._database = database;
-        this._loading = false;
         this._gameConverter = {
             toFirestore: this._toFirestore,
             fromFirestore: this._fromFirestore
@@ -136,30 +135,18 @@ class GameController {
     *   To unsubscribe :
     *       unsubscribe();
     *
-    * @params {Game} game - old version of the Game
+    * @params {uuid} gameId - Game ID to listen to
     * @params {(snapshot) => void} handleSnapshot -
     * @returns {DocumentSnapshot} gameSnapshot -
     */
-    async listen(game, handleSnapshot) {
-        this._loading = true;
-        const listener = await this._database.collection("game")
+    listen(game, observer) {
+        return this._database.collection("game")
+            //.withConverter(this._gameConverter)
             .doc(game._id)
             .onSnapshot(
-                (snapshot) => {
-                    if (snapshot) {
-                        handleSnapshot(snapshot.data());
-                    } else {
-                        handleSnapshot(null);
-                    }
-                    this._loading = false;
-                }
+                (snapshot) => { observer(snapshot.data()) }
             );
-        return listener;
     };
-
-    isLoading() {
-        return this._loading;
-    }
 }
 
 export default GameController;
