@@ -1,19 +1,28 @@
 import React, { Component } from 'react';
-import assert from 'assert';
 
 import * as firebase from 'firebase';
 import firebaseApp from '../../../firebaseApp';
 
 // Bootstrap imports
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { CardDeck, Container, Col, Row } from 'react-bootstrap';
+import { Card, Container, Col, Row } from 'react-bootstrap';
+
+// Component imports
+import GameLogSidebar from '../components/GameLogSidebar';
+
+// Model imports
+import Game from '../model/Game';
+
+// Controller imports
+import GameController from '../controller/GameController';
+
 
 // View imports
 import TurnView from './TurnView';
-import GameStateTable from '../components/GameStateTable';
-import PlayerStateTable from '../components/PlayerStateTable';
-import GameLogSidebar from '../components/GameLogSidebar';
-import Game from '../model/Game';
+import WaitingRoomView from './WaitingRoomView';
+import GameTableView from './GameTableView';
+import AllPlayersView from './AllPlayersView';
+
 
 const db = firebase.firestore(firebaseApp);
 
@@ -23,39 +32,44 @@ export default class GameView extends Component {
 
     constructor(props) {
         super(props);
-        console.log(this.props.game);
         this.state = {
             game: this.props.game,
             showModal : this.props.game.currentState.currentPlayerId === this.props.user.uid,
-            loading: false
+            loading : false,
         };
+
         this.handleEndOfAction = this.handleEndOfAction.bind(this)
+        this.setGameInState = this.setGameInState.bind(this)
+        this.setShowModal = this.setShowModal.bind(this)
     }
 
     componentDidMount() {
         this.onListenForGame();
     }
 
-    onListenForGame = () => {
+    setGameInState(game) {
+        this.setState({
+            game : game,
+            showModal : this.state.showModal,
+            loading : !this.loading,
+        })
+    }
+
+    setShowModal(showModal) {
+        this.setState({
+            game : this.state.game,
+            showModal : showModal,
+            loading : this.loading,
+        })
+    }
+
+    onListenForGame() {
         this.setState({
             showModal: false,
             loading: true,
         });
-        this.unsubscribe = db.doc(`game/${this.props.gameId}`)
-            .onSnapshot(snapshot => {
-                if (snapshot) {
-                    let games = [];
-                    games.push({ ...snapshot.data() });
-                    let game = games[0];
-                    this.setState({
-                        game: game,
-                        showModal: game.currentState ? this.props.user.uid === game.currentState.currentPlayerId : false,
-                        loading: false,
-                    });
-                } else {
-                    this.setState({ game: null, showModal: false, loading: false });
-                }
-            });
+        const gameController = new GameController(db)
+        this.unsubscribe = gameController.listen(this.props.game, this.setGameInState)
     };
 
     componentWillUnmount() {
@@ -73,47 +87,46 @@ export default class GameView extends Component {
         alert(action + ": Game.updateGameState");
     };
 
-    createTurnView(game, user) {
-        const currentState = game.currentState;
-        const isPlayerTurn = currentState.currentPlayerId === user.uid;
-        if (currentState.isStarted & isPlayerTurn) {
-            return (<TurnView show={this.state.showModal} handleAction={this.handleEndOfAction}/>);
+    render() {
+        const game = this.state.game;
+        if (!game.currentState.isStarted) {
+            return (
+                <WaitingRoomView
+                    game={game}
+                    onClick={() => {Game.startFirstRound(game); alert("Game.startFirstRound");}}
+                />)
         } else {
-           return ( <div /> );
+            const currentState = game.currentState;
+            return (
+                <Container>
+                    <Row>
+                        <Col>
+                            <Card border="light">
+                                <Card.Body>
+                                <Card.Title>Welcome to Island of {game.slugname} </Card.Title>
+                                <GameTableView className='mt-5' game={game}
+                                    currentPlayerNickname={currentState.currentPlayerId}
+                                    nextPlayerNickname={currentState.nextPlayerId}
+                                />
+                                </Card.Body>
+                            </Card>
+                            <AllPlayersView game={this.state.game} />
+                            <TurnView
+                                show={this.state.showModal}
+                                handleAction={
+                                    (action) => {
+                                        this.setShowModal(false);
+                                        alert(action + ": Game.updateGameState");
+                                    }
+                                }
+                            />
+                        </Col>
+                        <Col sm={3}>
+                            <GameLogSidebar game={game} />
+                        </Col>
+                    </Row>
+                </Container>
+            );
         }
     }
-
-    render() {
-        const user = this.props.user;
-        const game = this.props.game;
-        return (
-            <Container>
-                <Row>
-                    <Col>
-                        <Card border="light">
-                            <Card.Body>
-                            <Card.Title>Welcome to Island of {game.slugname} </Card.Title>
-                            <GameTableView className='mt-5' game={game}
-                                currentPlayerNickname={this.state.currentPlayerNickname}
-                                nextPlayerNickname={this.state.nextPlayerNickname}
-                            />
-                            </Card.Body>
-                        </Card>
-                        <CardDeck>
-                            {
-                                game.players.map(
-                                    (player) => { return (<PlayerStateTable game={game} player={player} />) }
-                                )
-                            }
-                        </CardDeck>
-                        { this.createTurnView(game, user)}
-
-                    </Col>
-                    <Col sm={3}>
-                        <GameLogSidebar game={game} />
-                    </Col>
-                </Row>
-            </Container>
-        );
-    };
 }
