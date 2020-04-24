@@ -2,7 +2,6 @@ import { v1 as uuidv1 } from 'uuid';
 
 import GameState from './GameState';
 import Player from './Player';
-import PlayerStateInGame from './PlayerStateInGame';
 
 class Game {
     constructor() {
@@ -13,13 +12,24 @@ class Game {
         this.history = [];
         this.currentState = GameState.getInitialGameState();
     }
+    
+    get id()
+    {
+        return this._id;
+    }
+        
+    fetch = (fb) => {return fb.getDocSync('game', this)};
+    push = (fb) => {return fb.setDocSync('game', this)};
 
-    static addNewPlayer(db, game, player, playerState) {
-        if (!game.players.includes(player._id)) {
+    static async addNewPlayer(db, game, player, playerState) {
+        console.log("addNewPlayer ", player, playerState);
+        if (!game.players.includes(player.id)) {
             const updatedGame = JSON.parse(JSON.stringify(game));
-            const updatedPlayers = updatedGame.players.slice().concat([player._id])
+            console.log("addNewPlayer/if: updatedGame ", updatedGame);
+            console.log("addNewPlayer/if: game ", game);
+            const updatedPlayers = updatedGame.players.slice().concat([player.id])
             updatedGame.players = updatedPlayers;
-            const updatedPlayerOrder = updatedGame.playerOrder.slice().concat([player._id])
+            const updatedPlayerOrder = updatedGame.playerOrder.slice().concat([player.id])
             updatedGame.playerOrder = updatedPlayerOrder;
             const updatedCurrentState = JSON.parse(JSON.stringify(updatedGame.currentState));
             updatedCurrentState.playerStatesInGame = updatedGame.currentState.playerStatesInGame.slice().concat([{ ...playerState }]);
@@ -30,7 +40,8 @@ class Game {
                 updatedCurrentState.nextPlayerId = updatedPlayerOrder[1];
             }
             updatedGame.currentState = updatedCurrentState;
-            return Game.pushOrUpdateRecord(db, updatedGame);
+            const up = await Game.pushOrUpdateRecord(db, updatedGame);
+            return up;
         } else {
             console.log("You are already a player in this game");
             return game;
@@ -51,13 +62,10 @@ class Game {
         return game;
     }
 
-    static pushOrUpdateRecord(db, game) {
-        db.collection("game").doc(game._id).set({
-            ...game
-        },
-            {
-                merge: true,
-            }
+    static async pushOrUpdateRecord(db, game) {
+        console.log("In pushOrUpdateRecord", JSON.stringify(game));
+        await db.collection("game").doc(game._id).set(
+            game
         );
         // .then(function() {
         //     console.log("Successfully written!");
@@ -70,57 +78,35 @@ class Game {
         return game;
     };
 
-    static createAndAddPlayerToGame(db, game, user) {
-        const player = Player.createAndPushPlayer(db, user);
-        const playerStateInGame = PlayerStateInGame.getInitialPlayerStateInGame(player);
-        const updatedGame = Game.addNewPlayer(db, game, player, playerStateInGame);
+    static async createAndAddPlayerToGame(db, game, user) {
+        const player = await Player.createAndPushPlayer(db, user);
+        console.log(player);
+        const updatedGame = await Game.addNewPlayer(db, game, player, player);
         return updatedGame;
     }
 
-    static createAndPushNewGame(db, user) {
+    static async createAndPushNewGame(db, user) {
         const game = new Game();
-        const updatedGame = Game.createAndAddPlayerToGame(db, game, user);
-        return Game.pushOrUpdateRecord(db, updatedGame);
+        console.log("new game is created ", game);
+        console.log("USER = ", JSON.stringify(user));
+        const updatedGame = await Game.createAndAddPlayerToGame(db, game, user);
+        console.log("updatedGame ", updatedGame);
+        const pushed = await Game.pushOrUpdateRecord(db, updatedGame);
+        console.log("Pushed ",  pushed);
+        return pushed;
     }
 
-    static pushUpdateGameState(db, game) {
-        const updatedHistory = game.history.slice().concat([
-            { _id: 'history ' + Math.random().toString() }
-        ]);
-        const updatedGame = JSON.parse(JSON.stringify(game));
-        updatedGame.history = updatedHistory;
-        db.collection("game").doc(game._id).set({
-            history: updatedGame.history,
-        },
-            {
-                merge: true
-            })
-            .then(function () {
-                console.log("Successfully written!");
-                return updatedGame;
-            })
-            .catch(function (error) {
-                console.error("Error writing: ", error);
-            });
-    };
-
-    static startFirstRound(db, game) {
-        const updatedGame = JSON.parse(JSON.stringify(game));
-        updatedGame.currentState.isStarted = !updatedGame.currentState.isStarted;
-        db.collection("game").doc(game._id).set({
-            currentState: updatedGame.currentState,
+    static async startFirstRound(db, game) {
+        console.log("startFirstRound: game = ", game);
+        game.currentState.isStarted = !game.currentState.isStarted;
+        await db.collection("game").doc(game._id).set({
+            currentState: game.currentState,
         },
             {
                 merge: true
             }
-        )
-            .then(function () {
-                console.log("Successfully written!");
-                return updatedGame;
-            })
-            .catch(function (error) {
-                console.error("Error writing: ", error);
-            });
+        );
+        return game;
     };
 }
 

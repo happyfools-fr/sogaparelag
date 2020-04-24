@@ -4,26 +4,40 @@ export class WaterManager
 {
     constructor(value)
     {
-        this._inventory = 0
-        this._value = value;
+        this.inventory = 0
+        this._weathers = []
     }
 
-    get inventory()
+    get currentWeather()
     {
-        return this._inventory
-    }
-    set inventory(value)
-    {
-        this._inventory = value
-    }
-
-    set value(newValue)
-    {
-        this._value = newValue;
+        return this._weathers[0]
     }
 
     collect()
     {
-        this._inventory += this._value;
+        this.inventory += this.currentWeather
+    }
+
+    drink(playersCount)
+    {
+        this.inventory -= playersCount
+    }
+
+    onRoundEnded()
+    {
+        //TODO
+        //pop at element 0
+    }
+
+    mustLeave()
+    {
+        //TODO
+        //this.currentWeather === Weather.Deluge
+        return this.currentWeather === 3
+    }
+
+    authorizeLeaving(playersCount)
+    {
+        return this.inventory >= 2 * playersCount;
     }
 }

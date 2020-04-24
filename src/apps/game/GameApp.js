@@ -82,9 +82,9 @@ class GameApp extends Component {
         this.unsubscribe();
     }
 
-    handleClickCreateNewGame(click, user) {
+    async handleClickCreateNewGame(click, user) {
         const db = this.props.firebase.ft;
-        const game = Game.createAndPushNewGame(db, user);
+        const game = await Game.createAndPushNewGame(db, user);
         this.setState({
             currentGame: game,
             currentGameSlugname: game.slugname,
@@ -104,8 +104,8 @@ class GameApp extends Component {
         const game = await Game.getGameBySlugname(db, submittedSlugName);
         if (game) {
             const user = this.props.user;
-            const updatedGame = Game.createAndAddPlayerToGame(db, game, user);
-            const pushedGame = Game.pushOrUpdateRecord(db, updatedGame);
+            const updatedGame = await Game.createAndAddPlayerToGame(db, game, user);
+            const pushedGame = await Game.pushOrUpdateRecord(db, updatedGame);
             this.setState({
                 currentGame: pushedGame,
                 currentGameSlugname: pushedGame.slugname,

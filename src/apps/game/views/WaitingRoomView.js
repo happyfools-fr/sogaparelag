@@ -8,7 +8,7 @@ export default function WaitingRoomView(props) {
         <Jumbotron>
           <h3>Welcome to {props.game.slugname}!</h3>
           <div>
-            <Button variant="primary" onClick={() => {props.onClick(props.game)}}>
+            <Button variant="primary" onClick={() => {props.onClick()}}>
                 Start the game if everybody is ready!
             </Button>
           </div>

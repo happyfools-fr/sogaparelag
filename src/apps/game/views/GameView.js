@@ -26,6 +26,7 @@ class GameView extends Component {
         this.state = {
             game: this.props.game,
             showModal : this.props.game.currentState.currentPlayerId === this.props.user.uid,
+            // showModal: true;
             loading: false
         };
         this.handleEndOfAction = this.handleEndOfAction.bind(this)
