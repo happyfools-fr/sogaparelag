@@ -90,7 +90,15 @@ export default class GameView extends Component {
             <Container>
                 <Row>
                     <Col>
-                        <GameStateTable game={game} />
+                        <Card border="light">
+                            <Card.Body>
+                            <Card.Title>Welcome to Island of {game.slugname} </Card.Title>
+                            <GameTableView className='mt-5' game={game}
+                                currentPlayerNickname={this.state.currentPlayerNickname}
+                                nextPlayerNickname={this.state.nextPlayerNickname}
+                            />
+                            </Card.Body>
+                        </Card>
                         <CardDeck>
                             {
                                 game.players.map(

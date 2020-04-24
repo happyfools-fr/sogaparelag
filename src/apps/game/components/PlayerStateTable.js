@@ -12,7 +12,7 @@ import PlayerView from '../views/PlayerView';
 const db = firebase.firestore(firebaseApp);
 
 export default class PlayerStateTable extends Component {
-  
+
   constructor(props){
     super(props);
     this.state = {
@@ -45,7 +45,7 @@ export default class PlayerStateTable extends Component {
   componentWillUnmount() {
     this.unsubscribe();
   }
- 
+
   render() {
 
     // TODO : assume game isStarted
@@ -55,7 +55,7 @@ export default class PlayerStateTable extends Component {
 
     const playerStateInGame = game && player ? game.currentState.playerStatesInGame.filter(
       playerStateInGame => playerStateInGame.playerId === player._id)[0] : "No playerStateInGame";
-    
+
     if (!game.currentState.isStarted || !player){
       return (
         <Jumbotron>

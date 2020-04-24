@@ -38,7 +38,7 @@ class GameController {
         let game = new Game();
         await this._database.collection("game")
             .withConverter(this._gameConverter)
-            .doc(game.id)
+            .doc(game._id)
             .set(game)
             .then(
                 () => { console.log("Game successfully created") }
@@ -98,7 +98,10 @@ class GameController {
     * @returns {Game} newGame - new version of the Game
     */
     async update(newGame) {
-        await this._database.collection("game").doc(newGame.id).update()
+        await this._database.collection("game")
+            .withConverter(this._gameConverter)
+            .doc(newGame._id)
+            .update()
             .then(
                 () => { console.log("Game successfully updated!") }
             )
@@ -114,7 +117,7 @@ class GameController {
     * @returns {Boolean} isDeleted - always true
     */
     async delete(game) {
-        await this._database.collection("game").doc(game.id).delete()
+        await this._database.collection("game").doc(game._id).delete()
             .then(
                 () => { console.log("Game successfully deleted!") }
             )
@@ -140,11 +143,14 @@ class GameController {
     async listen(game, handleSnapshot) {
         this._loading = true;
         const listener = await this._database.collection("game")
-            .withConverter(this._gameConverter)
-            .doc(game.id)
+            .doc(game._id)
             .onSnapshot(
                 (snapshot) => {
-                    handleSnapshot(snapshot)
+                    if (snapshot) {
+                        handleSnapshot(snapshot.data());
+                    } else {
+                        handleSnapshot(null);
+                    }
                     this._loading = false;
                 }
             );

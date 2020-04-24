@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 
 import GameMenu from './GameMenu'
-import GameView from './views/GameView'
+import GameView from '../game2/views/GameView'
 import Game from './model/Game';
 
 import * as firebase from 'firebase';
