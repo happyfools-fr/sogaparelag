@@ -5,20 +5,20 @@ import Player from './Player';
 
 class Game {
 
-    constructor(id, slugname, players, playerOrder, history, currentState) {
-        this._id = id || uuidv1();
-        this.slugname = slugname || createSlugname();
-        this.players = players || [];
-        this.playerOrder = playerOrder || [];
-        this.history = history || [];
-        this.currentState = currentState || GameState.getInitialGameState();
+    constructor() {
+        this._id = uuidv1();
+        this.slugname = createSlugname();
+        this.players = [];
+        this.playerOrder = [];
+        this.history = [];
+        this.currentState = GameState.getInitialGameState();
     }
-    
+
     get id()
     {
         return this._id;
     }
-        
+
     fetch = (fb) => {return fb.getDocSync('game', this)};
     push = (fb) => {return fb.setDocSync('game', this)};
 

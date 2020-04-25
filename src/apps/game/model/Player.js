@@ -14,13 +14,13 @@ export default class Player
         this.isDead = false
         this.currentHand = null
     }
-    
-  
+
+
     get id()
     {
         return this.userId;
     }
-    
+
     get _id()
     {
         return this.userId;
@@ -30,7 +30,7 @@ export default class Player
     {
         return this._sickenessLevel !== 0;
     }
-    
+
     onGetSick()
     {
         this._sickenessLevel = 2;
@@ -66,17 +66,17 @@ export default class Player
     {
       return 0
     }
-    
+
     static async pushOrUpdateRecord(db, player) {
       await db.collection("player").doc(player.userId).set(
         {...player}
-    );
+        );
       return player;
     }
-    
+
     static createAndPushPlayer(db, user) {
       const player = new Player(user);
       return Player.pushOrUpdateRecord(db, player);
-    } 
+    }
 
 }
