@@ -1,34 +1,27 @@
-import { withFirebase } from '../../components/firebase/index';
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   Jumbotron, 
   Button
 }  from 'react-bootstrap';
 
-class Auth extends Component {
-  render() {
-    const {
-      user,
-      signOut,
-      signInWithGoogle,
-    } = this.props;
-    if (user) {
-        return (
-            <Jumbotron>
-                <h2>Hello {user.displayName}!</h2>
-                <Button onClick={signOut}>Sign out</Button>
-            </Jumbotron>
-        );
-    } else {
-        return (
-            <Jumbotron>
-                <h2>Log in</h2>
-                <Button onClick={signInWithGoogle}>Sign in with Google</Button>
-            </Jumbotron>
-        )
-        
-    };
-  };
-}
+export default class Auth extends Component {
 
-export default withFirebase(Auth);
+  render() {
+    const { user, requestLogin, requestLogout } = this.props;
+    return (
+      user.loggedIn
+      ? (
+            <Jumbotron>
+                <h2>Hello {user.info.displayName}!</h2>
+                <Button onClick={requestLogout}>Sign out</Button>
+            </Jumbotron>
+          )
+        : (
+              <Jumbotron>
+                  <h2>Log in</h2>
+                  <Button onClick={requestLogin}>Sign in with Google</Button>
+              </Jumbotron>
+          )
+        );
+      }
+}

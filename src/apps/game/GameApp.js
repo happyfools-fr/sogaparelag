@@ -3,7 +3,7 @@ import {withFirebase} from '../../components/firebase/index'
 // React imports
 import React, { Component } from 'react';
 
-import GameMenu from './GameMenu'
+import GameMenu from '../GameMenu'
 import GameView from './views/GameView'
 import Game from './model/Game';
 

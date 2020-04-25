@@ -1,17 +1,19 @@
 // React imports
 import React, { useState, useEffect } from 'react';
 
-import GameMenu from './GameMenu'
-import GameView from './views/GameView'
+import GameMenu from '../game/GameMenu'
+import GameView from '../game/views/GameView'
 //import Game from './model/Game';
-import GameController from './controller/GameController'
+import GameController from '../game/controller/GameController'
 
-import * as firebase from 'firebase';
-import firebaseApp from '../../firebaseApp';
-const db = firebase.firestore(firebaseApp);
+// import * as firebase from 'firebase';
+import Firebase from '../../components/firebase/index';
+const fb = new Firebase();
+const db = fb.ft;
 
 export default function GameApp(props) {
 
+    // const db = props.firebase.ft;
     const gameController = new GameController(db);
 
     const [listener, setListener] = useState(() => {});
