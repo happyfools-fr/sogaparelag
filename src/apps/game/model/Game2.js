@@ -8,13 +8,13 @@ import {PollManager} from "./PollManager";
 import { v1 as uuidv1 } from 'uuid';
 
 
-export class Game2
+export default class Game
 {
     constructor(loggedInUsers, waterManager, foodManager, woodManager)
     {
         this._id = uuidv1();
 
-        let players = Game2._createPlayers(loggedInUsers)
+        let players = Game._createPlayers(loggedInUsers)
         this._lastRound = false
         this._win = false
 
@@ -31,10 +31,7 @@ export class Game2
     static _createPlayers(loggedInUsers)
     {
         let players = []
-        for (let i = 0; i < loggedInUsers.length; i++)
-        {
-            players.push(new Player(loggedInUsers[i]))
-        }
+        loggedInUsers.map( (user) => { players.push(new Player(user)) } )
         return players
     }
 
@@ -96,7 +93,7 @@ export class Game2
             let playerIdToKill = this._pollManager.vote()
             this._gameTable.killPlayer(playerIdToKill)
         }
-        //everbody drinks
+        //everybody drinks
         this._waterManager.drink(this._gameTable.playersCount)
     }
 
@@ -108,7 +105,7 @@ export class Game2
             let playerIdToKill = this._pollManager.vote()
             this._gameTable.killPlayer(playerIdToKill)
         }
-        //everbody eats
+        //everybody eats
         this._foodManager.eat(this._gameTable.playersCount)
     }
 

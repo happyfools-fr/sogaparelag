@@ -4,7 +4,7 @@ export class WaterManager
 {
     constructor(value)
     {
-        this.inventory = 0
+        this.inventory = value
         this._weathers = []
     }
 
