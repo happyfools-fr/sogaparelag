@@ -9,9 +9,6 @@ import {
     Button,
 } from 'react-bootstrap';
 
-// Relative imports
-import PlayerGameList from '../components/PlayerGameList';
-
 function GameMenuView(props) {
 
     const [slugname, setSlugname] = useState('')
@@ -45,13 +42,6 @@ function GameMenuView(props) {
                     Join
                 </Button>
             </Form>
-            <p></p>
-            <p></p>
-            <h3>Or</h3>
-            <p></p>
-            <p></p>
-            <h2>Join a Game you are registered in</h2>
-            <PlayerGameList user={props.user} />
         </Jumbotron>
     );
 }
