@@ -136,28 +136,15 @@ class GameApp extends Component {
     render() {
         const user = this.props.user;
         const game = this.state.currentGame;
-        if (game) {
-            if (game.currentState && game.currentState.isStarted) {
-                return (<GameView game={game} user={user} />);
-            } else {
-                 return (
-                    <WaitingRoomView
-                        gameSlugname={game.slugname}
-                        players={game.players}
-                        onClick={
-                            () => {Game.startFirstRound(game); alert("Game.startFirstRound");}
-                        }
-                    />
-                );
-            }
-        } else {
+        if (!game) {
             return (
                 <GameMenuView
-                    user={user}
                     handleClickCreateNewGame={this.handleClickCreateNewGame}
                     handleJoinGameSubmit={this.handleJoinGameSubmit}
                 />
             );
+        } else {
+            return ( <GameView game={game} user={user} /> );
         };
     }
 }
