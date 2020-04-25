@@ -9,6 +9,10 @@ import { v1 as uuidv1 } from 'uuid';
  * Features:
  * - create WaitingRoom collection
  */
+
+const MIN_NUMBER_PLAYERS = 3;
+const MAX_NUMBER_PLAYERS = 12;
+
 export class WaitingRoom
 {
     constructor()
@@ -21,14 +25,22 @@ export class WaitingRoom
 
     addLoggedInPlayer(loggedInPlayer)
     {
-        // if game has not started
-        // if this._loggedInUsers.length < MAX SIZE=12
-        this._loggedInUsers.push(loggedInPlayer)
+        const numberOfPlayers = this._loggedInUsers.length;
+        if (!this._currentGame && numberOfPlayers < MAX_NUMBER_PLAYERS) {
+            this._loggedInUsers.push(loggedInPlayer)
+        } else {
+            return null
+        }
     }
 
     startGame()
-    {   // if this._loggedInUsers.length >= 3 && <= 12
-        this._currentGame = new Game2(this._loggedInUsers)
+    {
+        const numberOfPlayers = this._loggedInUsers.length;
+        if (numberOfPlayers >= MIN_NUMBER_PLAYERS && numberOfPlayers <= MAX_NUMBER_PLAYERS) {
+            return new Game2(this._loggedInUsers)
+        } else {
+            return null
+        }
     }
 
     _createSlugname()
@@ -39,3 +51,5 @@ export class WaitingRoom
         return words[random] + "-" + words[random * 2]
     }
 }
+
+export default WaitingRoom
