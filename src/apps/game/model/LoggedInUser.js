@@ -18,7 +18,7 @@ export default class LoggedInUser
       return this._id
   }
 
-  connectToGameRoom(slugname){
+  connectToGameWaitingRoom(slugname){
 
 
       //todo

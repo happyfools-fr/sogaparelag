@@ -1,4 +1,4 @@
-import {Game2} from './Game2'
+import {Game} from './Game'
 import { v1 as uuidv1 } from 'uuid';
 
 /**
@@ -19,16 +19,18 @@ export class WaitingRoom
         this._currentGame = null
     }
 
-    addLoggedInPlayer(loggedInPlayer)
+    // addLoggedInPlayer(loggedInPlayer)
+    addLoggedInPlayer(loggedInUserToAdd)
+
     {
         // if game has not started
         // if this._loggedInUsers.length < MAX SIZE=12
-        this._loggedInUsers.push(loggedInPlayer)
+        this._loggedInUsers.push(loggedInUserToAdd)
     }
 
     startGame()
     {   // if this._loggedInUsers.length >= 3 && <= 12
-        this._currentGame = new Game2(this._loggedInUsers)
+        this._currentGame = new Game(this._loggedInUsers)
     }
 
     _createSlugname()

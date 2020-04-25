@@ -1,5 +1,3 @@
-// Firebase imports
-import {withFirebase} from '../../components/firebase/index'
 // React imports
 import React, { Component } from 'react';
 
@@ -34,7 +32,9 @@ class GameApp extends Component {
 
     onListenForGame = () => {
         const db = this.props.firebaseService.ft;
-        const gameSlugname = this.props.slugname ? this.props.slugname : 'slugname-undefined';
+        const gameSlugname = this.props.slugname 
+          ? this.props.slugname 
+          : 'slugname-undefined';
 
         this.setState({ loading: true });
         this.unsubscribe = db.collection(`game`).where("slugname", "==", gameSlugname)
