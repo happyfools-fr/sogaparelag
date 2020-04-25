@@ -27,7 +27,7 @@ export default class WaitingRoom
     {
         const numberOfPlayers = this._loggedInUsers.length;
         if (!this._currentGame && numberOfPlayers < MAX_NUMBER_PLAYERS) {
-            this._loggedInUsers.push(loggedInPlayer)
+            this._loggedInUsers.push(loggedInUserToAdd)
         } else {
             return null
         }
@@ -37,7 +37,7 @@ export default class WaitingRoom
     {
         const numberOfPlayers = this._loggedInUsers.length;
         if (numberOfPlayers >= MIN_NUMBER_PLAYERS && numberOfPlayers <= MAX_NUMBER_PLAYERS) {
-            return new Game2(this._loggedInUsers)
+            return new Game(this._loggedInUsers)
         } else {
             return null
         }
@@ -51,5 +51,3 @@ export default class WaitingRoom
         return words[random] + "-" + words[random * 2]
     }
 }
-
-export default WaitingRoom
