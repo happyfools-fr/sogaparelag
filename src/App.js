@@ -17,6 +17,7 @@ import Auth from './apps/auth/Auth'
 import LandingPage from './apps/home/LandingPage'
 import About from './apps/about/About'
 import GameApp from './apps/game/GameApp'
+import LoggedInUser from './apps/game/model/LoggedInUser'
 
 //Firebase
 import FirebaseService from './components/firebase/index';
@@ -61,11 +62,12 @@ export default function App() {
   function ProtectedGameAppWithSlugname({user, firebaseService}) {
     let match = useRouteMatch("/game/:gameSlugname");
     let slugname = match ? match.params.gameSlugname : null;
+    let loggedInUser = user.info ? new LoggedInUser(user.info.uid, user.info.displayName) : null;
     return (
       user.loggedIn 
       && 
-      <GameAppWithSlugname 
-        user={user} 
+      <GameApp 
+        user={loggedInUser} 
         slugname={slugname} 
         firebaseService={firebaseService}
         /> 
@@ -114,12 +116,6 @@ export default function App() {
 
 }
 
-function GameAppWithSlugname({user, slugname, firebaseService}) {
-    return (
-      <GameApp user={user.info} slugname={slugname} firebaseService={firebaseService}/>
-      // <div>Slugname: {slugname}, user: {user.info.displayName}</div>
-    );
-}
 
 
 

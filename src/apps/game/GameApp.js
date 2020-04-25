@@ -1,139 +1,99 @@
 // React imports
-import React, { Component } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import GameView from './views/GameView';
 import GameMenuView from './views/GameMenuView';
 import Game from './model/Game';
+import WaitingRoom from './model/WaitingRoom'
+import WaitingRoomController from './controller/WaitingRoomController'
 
-class GameApp extends Component {
+export default function GameApp(props) {
 
-    constructor(props) {
-        super(props);
-        const currentGameSlugname = this.props.slugname 
-          ? this.props.slugname 
-          : 'slugname-undefined';
-        this.state = {
-            currentGame: null,
-            currentGameSlugname: currentGameSlugname,
-            loading: false,
-        };
-        this.handleClickCreateNewGame = this.handleClickCreateNewGame.bind(this);
-        this.handleJoinGameSubmit = this.handleJoinGameSubmit.bind(this);
-        if (currentGameSlugname.length > 0
-            && currentGameSlugname !== 'slugname-undefined'
-            && this.props.addUserToGame) {
-            this.onJoinGame(currentGameSlugname);
+  const user = props.user;
+  const providedSlugname = props.slugname;
+  const firebaseService = props.firebaseService;
+  const waitingRoomController = new WaitingRoomController(firebaseService)
+
+  const [currentWaitingRoom, setCurrentWaitingRoom] = useState();
+  const [currentSlugname, setCurrentSlugname] = useState(providedSlugname);
+  const [error, setError] = useState('');
+
+  // if(currentSlugname && !currentWaitingRoom){
+  //   return waitingRoomController.onJoinBySlugname(currentSlugname, user);
+  // }
+
+  useEffect(
+      () => {
+        if(currentSlugname && !currentWaitingRoom){
+          return waitingRoomController.onJoinBySlugname(currentSlugname, user);
         }
-    }
-
-    componentDidMount() {
-        this.onListenForGame();
-    }
-
-    onListenForGame = () => {
-        const db = this.props.firebaseService.ft;
-        const gameSlugname = this.props.slugname 
-          ? this.props.slugname 
-          : 'slugname-undefined';
-
-        this.setState({ loading: true });
-        this.unsubscribe = db.collection(`game`).where("slugname", "==", gameSlugname)
-            .onSnapshot(snapshot => {
-                if (snapshot) {
-                    let games = [];
-                    games = snapshot.docs.map(x => x.data())
-                    if (games.length > 0) {
-                        const game = games[0];
-                        this.setState({
-                            currentGame: game,
-                            currentGameSlugname: game.slugname,
-                            loading: false,
-                        });
-                    }
-                } else {
-                    this.setState({
-                        currentGame: null,
-                        currentGameSlugname: null,
-                        loading: false,
-                    });
+        //Update WaitingRoom using provided slugname
+        if (currentSlugname){
+          let unsubscribe = waitingRoomController.listenOnSlugname(currentSlugname, (
+            waitingRoom => {
+              setCurrentWaitingRoom(waitingRoom);
+          }));
+          console.log("onEffect: currentSlugname");
+          return () => {unsubscribe()};
+        }
+      },
+      [currentSlugname]
+  );
+  
+  useEffect(
+      () => {
+          // Listen to WaitingRoom updates
+          if (currentWaitingRoom) {
+            let unsubscribe = waitingRoomController.listen(currentWaitingRoom, (
+              waitingRoom => {
+                setCurrentWaitingRoom(waitingRoom);
+                if (currentSlugname !== waitingRoom.slugname){
+                  setCurrentSlugname(waitingRoom.slugname);
                 }
-            });
-    };
+          }));
+          console.log("onEffect: currentWaitingRoom");
+          return () => {unsubscribe()};
+          }
+      },
+      [currentWaitingRoom]
+  );
 
-    componentWillUnmount() {
-        this.unsubscribe();
-    }
+  const handleClickCreateNewGame = (click) => {
+      let waitingRoom = new WaitingRoom();
+      waitingRoom.addLoggedInUsers(user);
+      waitingRoomController.update(waitingRoom);
+      alert('New game created, share this: ' + window.location.origin + '/game/' + waitingRoom.slugname);
+      return waitingRoom;
+  }
 
-    async handleClickCreateNewGame(click) {
-        const user = this.props.user;
-        const db = this.props.firebaseService.ft;
-        const game = await Game.createAndPushNewGame(db, user);
-        this.setState({
-            currentGame: game,
-            currentGameSlugname: game.slugname,
-            loading: false,
-        });
-        alert('New game created, share this: ' + window.location.origin + '/game/' + game.slugname);
-        return game;
-    }
+  const handleJoinGameSubmit = (submittedSlugName, submit) =>  {
+      submit.preventDefault();
+      let waitingRoom = waitingRoomController.getBySlugname(submittedSlugName);
+      let op = waitingRoom && waitingRoom.addLoggedInPlayer(user);
+      if(!op){
+        alert(`Could not add user to game name ${submittedSlugName}!`);
+      }
+      waitingRoomController.update(waitingRoom);
+      return waitingRoom;
+  }
 
-    handleJoinGameSubmit(submittedSlugName, submit) {
-        submit.preventDefault();
-        this.onJoinGame(submittedSlugName);
-    }
+  const game = currentWaitingRoom ? currentWaitingRoom.currentGame : null;
+  if (!currentWaitingRoom) {
+      return (
+          <GameMenuView
+              handleClickCreateNewGame={handleClickCreateNewGame}
+              handleJoinGameSubmit={handleJoinGameSubmit}
+              firebaseService={firebaseService}  
+          />
+      );
+  } else {
+      return ( 
+        <GameView 
+          game={game} 
+          user={user} 
+          firebaseService={firebaseService} 
+          /> 
+        );
+  };
 
-    async onJoinGame(submittedSlugName) {
-        const db = this.props.firebaseService.ft;
-        const game = await Game.getGameBySlugname(db, submittedSlugName);
-        if (game) {
-            const user = this.props.user;
-            const updatedGame = await Game.createAndAddPlayerToGame(db, game, user);
-            const pushedGame = await Game.pushOrUpdateRecord(db, updatedGame);
-            this.setState({
-                currentGame: pushedGame,
-                currentGameSlugname: pushedGame.slugname,
-                loading: false,
-            });
-        } else {
-            alert("Provided Gamed Name is not recognized! Please Amend...");
-        }
-    }
-
-    async updateGameId(gameId) {
-        const db = this.props.firebaseService.ft;
-        const gameSnapshot = await Game.getGameSnapshotByGameId(db, gameId);
-        if (gameSnapshot.exists) {
-            this.setState({
-                currentGame: gameSnapshot.data(),
-            });
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    render() {
-        const user = this.props.user;
-        const game = this.state.currentGame;
-        const firebaseService = this.props.firebaseService;
-        if (!game) {
-            return (
-                <GameMenuView
-                    handleClickCreateNewGame={this.handleClickCreateNewGame}
-                    handleJoinGameSubmit={this.handleJoinGameSubmit}
-                    firebaseService={firebaseService}  
-                />
-            );
-        } else {
-            return ( 
-              <GameView 
-                game={game} 
-                user={user} 
-                firebaseService={firebaseService} 
-                /> 
-              );
-        };
-    }
 }
-
-export default GameApp;

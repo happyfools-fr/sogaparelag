@@ -1,6 +1,6 @@
 import {MockLoggedInUser} from './MockLoggedInUser'
 import {WaitingRoom} from '../model/WaitingRoom'
-import {Game2} from '../model/Game2'
+import {Game} from '../model/Game'
 
 const assert = require('assert');
 
@@ -24,17 +24,17 @@ describe('WaitingRoom', function()
     {
         let waitingRoom = new WaitingRoom()
         let user1 = new MockLoggedInUser("toto1", "ToTO")
-        waitingRoom.addLoggedInPlayer(user1)
+        waitingRoom.addLoggedInUsers(user1)
 
         let user2 = new MockLoggedInUser("toto2", "ToTO")
-        waitingRoom.addLoggedInPlayer(user2)
+        waitingRoom.addLoggedInUsers(user2)
 
         waitingRoom.startGame()
 
         assert.equal(waitingRoom._currentGame.playersCount, 2)
 
         let user3 = new MockLoggedInUser("toto3", "ToTO")
-        waitingRoom.addLoggedInPlayer(user3)
+        waitingRoom.addLoggedInUsers(user3)
         assert.equal(waitingRoom._loggedInUsers.length, 3)
 
         assert.equal(waitingRoom._currentGame.playersCount, 2)

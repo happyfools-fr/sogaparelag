@@ -1,4 +1,4 @@
-import {Game} from './Game'
+import Game from './Game'
 import { v1 as uuidv1 } from 'uuid';
 
 /**
@@ -9,7 +9,7 @@ import { v1 as uuidv1 } from 'uuid';
  * Features:
  * - create WaitingRoom collection
  */
-export class WaitingRoom
+export default class WaitingRoom
 {
     constructor()
     {
@@ -19,9 +19,7 @@ export class WaitingRoom
         this._currentGame = null
     }
 
-    // addLoggedInPlayer(loggedInPlayer)
-    addLoggedInPlayer(loggedInUserToAdd)
-
+    addLoggedInUsers(loggedInUserToAdd)
     {
         // if game has not started
         // if this._loggedInUsers.length < MAX SIZE=12

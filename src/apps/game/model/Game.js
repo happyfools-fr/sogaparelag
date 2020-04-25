@@ -1,7 +1,4 @@
 import Player from "./Player";
-import {WaterManager} from "./WaterManager";
-import {FoodManager} from "./FoodManager";
-import {WoodManager} from "./WoodManager";
 import {RoundManager} from "./RoundManager";
 import {GameTable} from "./GameTable";
 import {PollManager} from "./PollManager";

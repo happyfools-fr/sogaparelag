@@ -36,6 +36,41 @@ class WaitingRoomController extends Controller {
         waitingRoom._currentGame = data._currentGame;
         return waitingRoom;
     }
+    
+    listenOnSlugname(slugname, observer) {
+        return this._database.collection(this._objectType)
+            .where("slugname", "==", slugname)
+            .onSnapshot(
+                (snapshot) => {
+                    if(snapshot.docs.length > 0) {
+                      let object = this._objectFromFirestoreDoc(snapshot.docs[0].data());
+                      observer(object);
+                    }
+                }
+            );
+    };
+    
+    async getBySlugname(slugname) {
+        let object;
+        await this._database.collection(this._objectType)
+            .where("slugname", "==", slugname)
+            .get()
+            .then(
+                (snapshot) => {(snapshot.exists) ?
+                    object = this._objectFromFirestoreDoc(snapshot.data())
+                    : console.log("No " + this._objectType + " with ID: ", slugname)
+                }
+            )
+            .catch(
+                (e) => { console.log("Error getting " + this._objectType + ":", e) }
+            );
+        return object;
+    }
+    
+    onJoinBySlugname(){
+      //todo
+      return true;
+    }
 }
 
-export default GameController;
+export default WaitingRoomController;

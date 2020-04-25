@@ -1,6 +1,6 @@
 import {GameTable} from '../model/GameTable'
 import {Player} from '../model/Player'
-import {Game2} from '../model/Game2'
+import {Game} from '../model/Game'
 import {WaterManager} from '../model/WaterManager'
 import {WoodManager} from '../model/WoodManager'
 import {FoodManager} from '../model/FoodManager'
@@ -15,7 +15,7 @@ import { v1 as uuidv1 } from 'uuid';
 const assert = require('assert');
 
 
-describe('Game2', function()
+describe('Game', function()
 {
     it('correctly create players Game', () =>
     {
@@ -26,7 +26,7 @@ describe('Game2', function()
         let user2 = new MockLoggedInUser(id2, 'tata')
         let user3 = new MockLoggedInUser(id3, 'titi')
 
-        let players = Game2._createPlayers([user1, user2, user3])
+        let players = Game._createPlayers([user1, user2, user3])
         assert.equal(players.length, 3)
         assert.equal(players[0].id, id1)
         assert.equal(players[1].id, id2)
@@ -46,7 +46,7 @@ describe('Game2', function()
         let woodManager = new WoodManager()
         let foodManager = new FoodManager()
 
-        let game = new Game2([user1, user2, user3], waterManager, foodManager, woodManager)
+        let game = new Game([user1, user2, user3], waterManager, foodManager, woodManager)
 
         let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
         let pollManager = new MockPollManager(game._gameTable)
@@ -70,7 +70,7 @@ describe('Game2', function()
         let woodManager = new WoodManager()
         let foodManager = new FoodManager()
 
-        let game = new Game2([user1, user2, user3], waterManager, foodManager, woodManager)
+        let game = new Game([user1, user2, user3], waterManager, foodManager, woodManager)
 
         let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
         let pollManager = new MockPollManager(game._gameTable)
@@ -100,7 +100,7 @@ describe('Game2', function()
         let woodManager = new WoodManager()
         let foodManager = new FoodManager()
 
-        let game = new Game2([user1, user2, user3], waterManager, foodManager, woodManager)
+        let game = new Game([user1, user2, user3], waterManager, foodManager, woodManager)
 
         let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
         let pollManager = new MockPollManager(game._gameTable)
@@ -128,7 +128,7 @@ describe('Game2', function()
         let woodManager = new WoodManager()
         let foodManager = new FoodManager()
 
-        let game = new Game2([user1, user2, user3], waterManager, foodManager, woodManager)
+        let game = new Game([user1, user2, user3], waterManager, foodManager, woodManager)
 
         let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
         let pollManager = new MockPollManager(game._gameTable)
@@ -156,7 +156,7 @@ describe('Game2', function()
         let woodManager = new WoodManager()
         let foodManager = new FoodManager()
 
-        let game = new Game2([user1, user2, user3], waterManager, foodManager, woodManager)
+        let game = new Game([user1, user2, user3], waterManager, foodManager, woodManager)
 
         let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
         let pollManager = new MockPollManager(game._gameTable)
@@ -184,7 +184,7 @@ describe('Game2', function()
         let woodManager = new WoodManager()
         let foodManager = new FoodManager()
 
-        let game = new Game2([user1, user2, user3], waterManager, foodManager, woodManager)
+        let game = new Game([user1, user2, user3], waterManager, foodManager, woodManager)
 
         let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
         let pollManager = new MockPollManager(game._gameTable)
@@ -213,7 +213,7 @@ describe('Game2', function()
         let woodManager = new WoodManager()
         let foodManager = new FoodManager()
 
-        let game = new Game2([user1, user2, user3], waterManager, foodManager, woodManager)
+        let game = new Game([user1, user2, user3], waterManager, foodManager, woodManager)
 
         let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
         let pollManager = new MockPollManager(game._gameTable)
@@ -245,7 +245,7 @@ describe('Game2', function()
         let woodManager = new WoodManager()
         let foodManager = new FoodManager()
 
-        let game = new Game2([user1, user2, user3], waterManager, foodManager, woodManager)
+        let game = new Game([user1, user2, user3], waterManager, foodManager, woodManager)
 
         let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
         let pollManager = new MockPollManager(game._gameTable)
@@ -275,7 +275,7 @@ describe('Game2', function()
         let woodManager = new WoodManager()
         let foodManager = new FoodManager()
 
-        let game = new Game2([user1, user2, user3], waterManager, foodManager, woodManager)
+        let game = new Game([user1, user2, user3], waterManager, foodManager, woodManager)
 
         let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
         let pollManager = new MockPollManager(game._gameTable)
@@ -305,7 +305,7 @@ describe('Game2', function()
         let foodManager = new FoodManager()
         foodManager.inventory = 3
 
-        let game = new Game2([user1, user2, user3], waterManager, foodManager, woodManager)
+        let game = new Game([user1, user2, user3], waterManager, foodManager, woodManager)
 
         let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
         let pollManager = new MockPollManager(game._gameTable)
@@ -335,7 +335,7 @@ describe('Game2', function()
         let foodManager = new FoodManager()
         foodManager.inventory = 2
 
-        let game = new Game2([user1, user2, user3], waterManager, foodManager, woodManager)
+        let game = new Game([user1, user2, user3], waterManager, foodManager, woodManager)
 
         let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
         let pollManager = new MockPollManager(game._gameTable)
