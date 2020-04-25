@@ -4,7 +4,6 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Redirect,
     useRouteMatch,
 } from "react-router-dom";
 
@@ -12,22 +11,17 @@ import {
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
-import NavDropdown from 'react-bootstrap/NavDropdown'
-import Form from 'react-bootstrap/Form'
-import FormControl from 'react-bootstrap/FormControl'
-import Button from 'react-bootstrap/Button'
 
 // Relative imports
 import Auth from './apps/auth/Auth'
 import LandingPage from './apps/home/LandingPage'
 import About from './apps/about/About'
+import GameApp from './apps/game/GameApp'
 
 //Firebase
 import FirebaseService from './components/firebase/index';
-import * as firebase from 'firebase';
 const firebaseServiceInstance = new FirebaseService();
 
-// import GameApp from './apps/game/GameApp'
 
 export default function App() {
 
@@ -64,18 +58,24 @@ export default function App() {
     logout();
   }, []);
   
-  function ProtectedGameAppWithSlugname({user}) {
+  function ProtectedGameAppWithSlugname({user, firebaseService}) {
     let match = useRouteMatch("/game/:gameSlugname");
     let slugname = match ? match.params.gameSlugname : null;
     return (
-      user.loggedIn && slugname 
-      ? <GameAppWithSlugname user={user} slugname={slugname}/> 
-      : <div>Placeholder for the GameApp</div>
+      user.loggedIn 
+      && 
+      <GameAppWithSlugname 
+        user={user} 
+        slugname={slugname} 
+        firebaseService={firebaseService}
+        /> 
     );
   }
   
   return (
     <Router>
+      <div>{error ? error : ""}</div>
+
       <Navbar bg="light" expand="lg">
         <Navbar.Brand href="/">
             <i className="fas fa-laugh-beam" />
@@ -101,7 +101,7 @@ export default function App() {
               <Auth user={user} requestLogin={requestLogin} requestLogout={requestLogout} />
           </Route>
           <Route path='/game'>
-            <ProtectedGameAppWithSlugname user={user} />
+            <ProtectedGameAppWithSlugname user={user} firebaseService={firebaseService} />
           </Route>
           <Route exact path='/'><LandingPage /></Route>
           <Route><LandingPage /></Route>
@@ -114,10 +114,10 @@ export default function App() {
 
 }
 
-function GameAppWithSlugname({user, slugname}) {
+function GameAppWithSlugname({user, slugname, firebaseService}) {
     return (
-      //<GameApp user={user} slugname={slugname}/> : <div></div>
-      <div>Slugname: {slugname}, user: {user.info.displayName}</div>
+      <GameApp user={user.info} slugname={slugname} firebaseService={firebaseService}/>
+      // <div>Slugname: {slugname}, user: {user.info.displayName}</div>
     );
 }
 

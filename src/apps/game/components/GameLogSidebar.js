@@ -1,6 +1,3 @@
-// Firebase imports
-import {withFirebase} from '../../../components/firebase/index'
-
 // React imports
 import React, { Component } from 'react';
 
@@ -10,7 +7,7 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import LogItem from './LogItem';
 
 class GameLogSidebar extends Component {
-    
+
     constructor(props) {
         super(props);
         this.state = {
@@ -25,7 +22,7 @@ class GameLogSidebar extends Component {
 
     onListenForGame() {
         this.setState({ loading: true });
-        this.unsubscribe = this.props.firebase.ft.doc(`game/${this.props.game._id}`)
+        this.unsubscribe = this.props.firebaseService.ft.doc(`game/${this.props.game._id}`)
         .onSnapshot(snapshot => {
             if (snapshot) {
             let game = [];
@@ -43,7 +40,7 @@ class GameLogSidebar extends Component {
     componentWillUnmount() {
         this.unsubscribe();
     }
-    
+
     render() {
         return (
             <div>
@@ -51,7 +48,7 @@ class GameLogSidebar extends Component {
             <ListGroup>
                 {
                     this.state.game.history.map(state => {
-                        return (<LogItem icon="fa-info-circle" value={state._id} />);
+                        return (<LogItem icon="fa-info-circle" value={state} />);
                     })
                 }
             </ListGroup>
@@ -60,4 +57,4 @@ class GameLogSidebar extends Component {
     }
 }
 
-export default withFirebase(GameLogSidebar);
+export default GameLogSidebar;

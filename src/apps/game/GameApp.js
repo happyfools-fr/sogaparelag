@@ -3,25 +3,17 @@ import {withFirebase} from '../../components/firebase/index'
 // React imports
 import React, { Component } from 'react';
 
-import GameMenu from '../GameMenu'
-import GameView from './views/GameView'
+import GameView from './views/GameView';
+import GameMenuView from './views/GameMenuView';
 import Game from './model/Game';
 
 class GameApp extends Component {
 
     constructor(props) {
         super(props);
-        const currentGameSlugname = this.props.match
-            ? (
-                this.props.match.params
-                    ? (
-                        this.props.match.params.gameSlugname
-                            ? this.props.match.params.gameSlugname
-                            : 'slugname-undefined'
-                    )
-                    : 'slugname-undefined'
-            )
-            : 'slugname-undefined';
+        const currentGameSlugname = this.props.slugname 
+          ? this.props.slugname 
+          : 'slugname-undefined';
         this.state = {
             currentGame: null,
             currentGameSlugname: currentGameSlugname,
@@ -41,18 +33,8 @@ class GameApp extends Component {
     }
 
     onListenForGame = () => {
-        const db = this.props.firebase.ft;
-        const gameSlugname = this.props.match
-            ? (
-                this.props.match.params
-                    ? (
-                        this.props.match.params.gameSlugname
-                            ? this.props.match.params.gameSlugname
-                            : 'slugname-undefined'
-                    )
-                    : 'slugname-undefined'
-            )
-            : 'slugname-undefined';
+        const db = this.props.firebaseService.ft;
+        const gameSlugname = this.props.slugname ? this.props.slugname : 'slugname-undefined';
 
         this.setState({ loading: true });
         this.unsubscribe = db.collection(`game`).where("slugname", "==", gameSlugname)
@@ -82,8 +64,9 @@ class GameApp extends Component {
         this.unsubscribe();
     }
 
-    async handleClickCreateNewGame(click, user) {
-        const db = this.props.firebase.ft;
+    async handleClickCreateNewGame(click) {
+        const user = this.props.user;
+        const db = this.props.firebaseService.ft;
         const game = await Game.createAndPushNewGame(db, user);
         this.setState({
             currentGame: game,
@@ -100,7 +83,7 @@ class GameApp extends Component {
     }
 
     async onJoinGame(submittedSlugName) {
-        const db = this.props.firebase.ft;
+        const db = this.props.firebaseService.ft;
         const game = await Game.getGameBySlugname(db, submittedSlugName);
         if (game) {
             const user = this.props.user;
@@ -117,7 +100,7 @@ class GameApp extends Component {
     }
 
     async updateGameId(gameId) {
-        const db = this.props.firebase.ft;
+        const db = this.props.firebaseService.ft;
         const gameSnapshot = await Game.getGameSnapshotByGameId(db, gameId);
         if (gameSnapshot.exists) {
             this.setState({
@@ -132,18 +115,25 @@ class GameApp extends Component {
     render() {
         const user = this.props.user;
         const game = this.state.currentGame;
-        if (game) {
-            return (<GameView game={game} user={user} />);
-        } else {
+        const firebaseService = this.props.firebaseService;
+        if (!game) {
             return (
-                <GameMenu
-                    user={user}
+                <GameMenuView
                     handleClickCreateNewGame={this.handleClickCreateNewGame}
                     handleJoinGameSubmit={this.handleJoinGameSubmit}
+                    firebaseService={firebaseService}  
                 />
             );
+        } else {
+            return ( 
+              <GameView 
+                game={game} 
+                user={user} 
+                firebaseService={firebaseService} 
+                /> 
+              );
         };
     }
 }
 
-export default  withFirebase(GameApp);
+export default GameApp;

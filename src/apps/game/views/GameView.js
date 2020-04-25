@@ -1,5 +1,3 @@
-// Firebase imports
-import {withFirebase} from '../../../components/firebase/index'
 // React imports
 import React, { useState, useEffect } from 'react';
 
@@ -10,41 +8,50 @@ import { Card, Container, Col, Row } from 'react-bootstrap';
 // Component imports
 import GameLogSidebar from '../components/GameLogSidebar';
 
-// Model imports
-import Game from '../model/Game';
-
 // Controller imports
 import GameController from '../controller/GameController';
 
+// Import model
+import Game from '../model/Game'
 
 // View imports
 import TurnView from './TurnView';
-import WaitingRoomView from './WaitingRoomView';
 import GameTableView from './GameTableView';
 import AllPlayersView from './AllPlayersView';
+import WaitingRoomView from './WaitingRoomView';
 
 
 function GameView(props) {
     const [game, setGame] = useState(props.game);
+    const [gameId, setGameId] = useState(props.game._id)
     const [showModal, setShowModal] = useState(
         (game.currentState && game.currentState.currentPlayerId)
         ? game.currentState.currentPlayerId === props.user.uid
         : false
     );
 
-    const db = props.firebase.ft;
+    const firebaseService = props.firebaseService;
+    const db = firebaseService.ft;
     const gameController = new GameController(db)
 
     useEffect(
         () => {
-            const unsubscribe = gameController.listen(game, setGame);
+            const unsubscribe = gameController.listen(gameId, setGame);
             return unsubscribe;
         },
-        [gameController, game, setGame]
+        [gameController, gameId, setGame]
     );
 
-    if (game.currentState && game.currentState.isStarted) {
-        const currentState = game.currentState;
+    const currentState = game.currentState;
+
+    const handleAction = (action) => {
+        setShowModal(false);
+        alert(action + ": Game.updateGameState");
+        game.history.push(props.user.nickname + " went for " + action);
+        gameController.update(game);
+    };
+
+    if (currentState && currentState.isStarted) {
         return (
             <Container>
                 <Row>
@@ -55,34 +62,34 @@ function GameView(props) {
                             <GameTableView className='mt-5' game={game}
                                 currentPlayerNickname={currentState.currentPlayerId}
                                 nextPlayerNickname={currentState.nextPlayerId}
+                                firebaseService={firebaseService}
                             />
                             </Card.Body>
                         </Card>
-                        <AllPlayersView game={game} />
+                        <AllPlayersView game={game} firebaseService={props.firebaseService}/>
                         <TurnView
                             show={showModal}
-                            handleAction={
-                                (action) => {
-                                    setShowModal(false);
-                                    alert(action + ": Game.updateGameState");
-                                }
-                            }
+                            onAction={handleAction}
                         />
                     </Col>
                     <Col sm={3}>
-                        <GameLogSidebar game={game} />
+                        <GameLogSidebar game={game} firebaseService={firebaseService}/>
                     </Col>
                 </Row>
             </Container>
         );
     } else {
-        return (
+         return (
             <WaitingRoomView
+                firebaseService={firebaseService}
                 gameSlugname={game.slugname}
                 players={game.players}
-                onClick={() => {Game.startFirstRound(game); alert("Game.startFirstRound");}}
-            />)
+                onClick={
+                    () => {Game.startFirstRound(game); alert("Game.startFirstRound");}
+                }
+            />
+        );
     }
 }
 
-export default withFirebase(GameView);
+export default GameView;

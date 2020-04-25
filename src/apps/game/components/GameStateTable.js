@@ -1,6 +1,3 @@
-// Firebase imports
-import {withFirebase} from '../../../components/firebase/index'
-
 // React imports
 import React, { Component } from 'react';
 import {Card} from 'react-bootstrap';
@@ -32,7 +29,7 @@ class GameStateTable extends Component {
 
   onListenForCurrentPlayer = () => {
     this.setState({ loading: true });
-    this.unsubscribeForCurrentPlayer = this.props.firebase.ft.collection(`player`).doc(this.props.game.currentState.currentPlayerId)
+    this.unsubscribeForCurrentPlayer = this.props.firebaseService.ft.collection(`player`).doc(this.props.game.currentState.currentPlayerId)
       .onSnapshot(snapshot => {
         if (snapshot.exists) {
           let currentPlayerNickname;
@@ -52,7 +49,7 @@ class GameStateTable extends Component {
 
   onListenForNextPlayer = () => {
     this.setState({ loading: true });
-    this.unsubscribeForNextPlayer = this.props.firebase.ft.collection(`player`).doc(this.props.game.currentState.nextPlayerId)
+    this.unsubscribeForNextPlayer = this.props.firebaseService.ft.collection(`player`).doc(this.props.game.currentState.nextPlayerId)
       .onSnapshot(snapshot => {
         if (snapshot.exists) {
           let nextPlayerNickname;
@@ -77,23 +74,27 @@ class GameStateTable extends Component {
 
     async onClickNotStarted() {
       const game = await this.props.game;
-      await Game.startFirstRound(this.props.firebase.ft, game);
+      await Game.startFirstRound(this.props.firebaseService.ft, game);
       alert("Game.startFirstRound");
     };
 
   render() {
     const game = this.props.game;
+    const firebaseService= this.props.firebaseService;
     return (
         <Card border="light">
             <Card.Body>
             <Card.Title>Welcome to Island of {game.slugname} </Card.Title>
             {
                 !game.currentState.isStarted ?
-                    <WaitingRoomView game={game} onClick={this.onClickNotStarted} />
+                    <WaitingRoomView game={game} 
+                    onClick={this.onClickNotStarted}
+                    firebaseService={firebaseService} />
                 :
                     <GameTableView className='mt-5' game={game}
                         currentPlayerNickname={this.state.currentPlayerNickname}
                         nextPlayerNickname={this.state.nextPlayerNickname}
+                        firebaseService={firebaseService}
                     />
             }
             </Card.Body>
