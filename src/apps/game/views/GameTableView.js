@@ -38,10 +38,11 @@ export default function GameTableView(props) {
             </thead>
             <tbody>
               <tr>
-                <td>{game.currentState.roundNumber}</td>
+                //<td>{game.currentState.roundNumber}</td>
+                <td>à définir</td>
                 <td>{game.history.length}</td>
-                <td>{props.currentPlayerNickname}</td>
-                <th>{props.nextPlayerNickname}</th>
+                <td>{props.currentPlayerId}</td>
+                <th>{props.nextPlayerId}</th>
               </tr>
             </tbody>
         </Table>
