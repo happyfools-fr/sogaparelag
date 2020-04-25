@@ -1,9 +1,8 @@
 // React imports
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import GameView from './views/GameView';
 import GameMenuView from './views/GameMenuView';
-import Game from './model/Game';
 import WaitingRoom from './model/WaitingRoom'
 import WaitingRoomController from './controller/WaitingRoomController'
 import WaitingRoomView from './views/WaitingRoomView'
@@ -11,30 +10,34 @@ import WaitingRoomView from './views/WaitingRoomView'
 export default function GameApp(props) {
 
   const user = props.user;
-  const providedSlugname = props.slugname;
   const firebaseService = props.firebaseService;
-  const waitingRoomController = new WaitingRoomController(firebaseService.ft)
 
+  const [currentSlugname, setCurrentSlugname] = useState(props.slugname);
+
+  const waitingRoomController = new WaitingRoomController(firebaseService.ft)
   const [currentWaitingRoom, setCurrentWaitingRoom] = useState();
-  const [currentSlugname, setCurrentSlugname] = useState(providedSlugname);
-  const [error, setError] = useState('');
+  const [currentWaitingRoomId, setCurrentWaitingRoomId] = useState(
+      (currentWaitingRoom) ? currentWaitingRoom._id : undefined
+  );
+
+  //const [error, setError] = useState('');
 
   useEffect(
       () => {
-        //Update WaitingRoom using provided slugname
-        if (currentSlugname){
-          let unsubscribe = waitingRoomController.listenOnSlugname(currentSlugname, (
-            waitingRoom => {
-              setCurrentWaitingRoom(waitingRoom);
-          }));
-          console.log("onEffect: currentSlugname");
-          return () => {unsubscribe()};
+        if (!currentWaitingRoomId) {
+            const unsubscribe = waitingRoomController
+                        .listenOnSlugname(currentSlugname, setCurrentWaitingRoom);
+            return unsubscribe;
+        } else {
+            const unsubscribe = waitingRoomController
+                        .listen(currentWaitingRoomId, setCurrentWaitingRoom);
+            return unsubscribe;
         }
       },
-      [currentSlugname]
+      [currentSlugname, currentWaitingRoomId, waitingRoomController, setCurrentWaitingRoom]
   );
-  
-  useEffect(
+
+ /* useEffect(
       () => {
           // Listen to WaitingRoom updates
           if (currentWaitingRoom) {
@@ -50,22 +53,17 @@ export default function GameApp(props) {
           }
       },
       [currentWaitingRoom]
-  );
-  
-  const onJoinBySlugname = (submittedSlugName, providedUser) => {
-    const waitingRoom = waitingRoomController.getBySlugname(submittedSlugName);
-    let op;
-    if (waitingRoom) {
-      op = waitingRoom.addLoggedInUser(providedUser);
+  );*/
+
+  const onJoinBySlugname = (submittedSlugName) => {
+    setCurrentSlugname(submittedSlugName);
+    if (currentWaitingRoom.addLoggedInUser(props.user)) {
+        waitingRoomController.update(currentWaitingRoom);
+    } else {
+        alert(`Could not add user to game name ${submittedSlugName}!`);
     }
-    if(!op){
-      alert(`Could not add user to game name ${submittedSlugName}!`);
-    }
-    waitingRoomController.update(waitingRoom);
-    setCurrentWaitingRoom(currentWaitingRoom);
-    return waitingRoom;
   }
-  
+
   if(currentSlugname && !currentWaitingRoom){
     return onJoinBySlugname(currentSlugname, user);
   }
@@ -73,48 +71,49 @@ export default function GameApp(props) {
   const handleClickCreateNewGame = (click) => {
       let waitingRoom = new WaitingRoom();
       waitingRoom.addLoggedInUser(user);
-      console.log(waitingRoom);
       waitingRoomController.push(waitingRoom);
-      setCurrentWaitingRoom(currentWaitingRoom);
       alert('New game created, share this: ' + window.location.origin + '/game/' + waitingRoom.slugname);
-      return waitingRoom;
   }
 
   const handleJoinGameSubmit = (submittedSlugName, submit) =>  {
       submit.preventDefault();
-      onJoinBySlugname(submittedSlugName, submit);
+      onJoinBySlugname(submittedSlugName);
   }
-  
+
   const handleStartGame = (click) => {
     currentWaitingRoom.startGame();
     waitingRoomController.push(currentWaitingRoom);
     alert(`Game started for room: ${currentWaitingRoom.slugname}`);
-    setCurrentWaitingRoom(currentWaitingRoom);
     return currentWaitingRoom;
   }
 
 
-  const game = currentWaitingRoom ? currentWaitingRoom.currentGame : null;
+  const game = currentWaitingRoom ? currentWaitingRoom.currentGame : undefined;
+
   if (!currentWaitingRoom) {
       return (
           <GameMenuView
               handleClickCreateNewGame={handleClickCreateNewGame}
               handleJoinGameSubmit={handleJoinGameSubmit}
-              firebaseService={firebaseService}  
+              firebaseService={firebaseService}
           />
       );
   } else {
     if(game){
-      return ( 
-        <GameView 
-          game={game} 
-          user={user} 
-          firebaseService={firebaseService} 
-          /> 
+      return (
+        <GameView
+          game={game}
+          user={user}
+          firebaseService={firebaseService}
+          />
         );
     } else {
       return (
-        <WaitingRoomView gameSlugname={currentSlugname} onClick={handleStartGame}/>
+        <WaitingRoomView
+            gameSlugname={currentSlugname}
+            players={currentWaitingRoom._loggedInUsers}
+            onClick={handleStartGame}
+        />
       )
     }
   };

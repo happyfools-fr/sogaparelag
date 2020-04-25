@@ -29,7 +29,7 @@ export default function App() {
   const [firebaseService, setFirebaseService] = useState(firebaseServiceInstance);
   const [user, setUser] = useState({ loggedIn: false, info: null });
   const [error, setError] = useState('');
-      
+
   useEffect(() => {
     const unsubscribeAuthStateChange = firebaseService.onAuthStateChange((user) => {
       user ? setUser({loggedIn: true, info: user}) : setUser({loggedIn: false, info: null})
@@ -45,7 +45,7 @@ export default function App() {
        setError("error-login");
      });
   }
-  
+
   const logout = () => {
     firebaseService.onSignOut()
     .catch( error => {
@@ -58,22 +58,22 @@ export default function App() {
   const requestLogout = useCallback(() => {
     logout();
   }, []);
-  
+
   function ProtectedGameAppWithSlugname({user, firebaseService}) {
     let match = useRouteMatch("/game/:gameSlugname");
     let slugname = match ? match.params.gameSlugname : null;
     let loggedInUser = user.info ? new LoggedInUser(user.info.uid, user.info.displayName) : null;
     return (
-      user.loggedIn 
-      && 
-      <GameApp 
-        user={loggedInUser} 
-        slugname={slugname} 
+      user.loggedIn
+      &&
+      <GameApp
+        user={loggedInUser}
+        slugname={slugname}
         firebaseService={firebaseService}
-        /> 
+        />
     );
   }
-  
+
   return (
     <Router>
       <div>{error ? error : ""}</div>
@@ -115,9 +115,3 @@ export default function App() {
   );
 
 }
-
-
-
-
-
-
