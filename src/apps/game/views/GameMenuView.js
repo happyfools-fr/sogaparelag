@@ -14,7 +14,6 @@ import PlayerGameList from '../components/PlayerGameList';
 
 function GameMenuView(props) {
 
-    const [game, setGame] = useState();
     const [slugname, setSlugname] = useState('')
 
     const handleJoinGameChange = (change) => {

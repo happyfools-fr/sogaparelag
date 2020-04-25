@@ -10,16 +10,12 @@ import { Card, Container, Col, Row } from 'react-bootstrap';
 // Component imports
 import GameLogSidebar from '../components/GameLogSidebar';
 
-// Model imports
-import Game from '../model/Game';
-
 // Controller imports
 import GameController from '../controller/GameController';
 
 
 // View imports
 import TurnView from './TurnView';
-import WaitingRoomView from './WaitingRoomView';
 import GameTableView from './GameTableView';
 import AllPlayersView from './AllPlayersView';
 
