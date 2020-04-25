@@ -1,4 +1,4 @@
-import {Player} from "./Player";
+import Player from "./Player";
 import {WaterManager} from "./WaterManager";
 import {FoodManager} from "./FoodManager";
 import {WoodManager} from "./WoodManager";
@@ -8,7 +8,7 @@ import {PollManager} from "./PollManager";
 import { v1 as uuidv1 } from 'uuid';
 
 
-export class Game
+export default class Game
 {
     constructor(loggedInUsers, waterManager, foodManager, woodManager)
     {
