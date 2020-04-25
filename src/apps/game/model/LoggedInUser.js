@@ -25,4 +25,12 @@ export default class LoggedInUser
       return true;
   }
   
+  _objectToFirestoreDoc() {
+      let doc = {
+        _id: this._id,
+        nickname: this.nickname,
+      };
+      return doc;
+  }
+  
 }

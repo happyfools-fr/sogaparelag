@@ -40,6 +40,11 @@ class Controller {
     }
 
     async push(object) {
+        console.log(this._database);
+        console.log("_objectType ", this._objectType);
+        console.log("object", object);
+        console.log("this._objectToFirestoreDoc(object) ", JSON.stringify(this._objectToFirestoreDoc(object)));
+
         await this._database.collection(this._objectType)
             .doc(this._getObjectId(object))
             .set(this._objectToFirestoreDoc(object))

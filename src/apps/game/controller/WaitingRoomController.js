@@ -1,13 +1,13 @@
 import Controller from './Controller'
 import WaitingRoom from '../model/WaitingRoom'
+import LoggedInUser from '../model/LoggedInUser'
 
 class WaitingRoomController extends Controller {
 
     constructor(database) {
         super("waiting-room", database);
     };
-
-
+    
     /**
     * To be define in subClass
     */
@@ -19,7 +19,11 @@ class WaitingRoomController extends Controller {
         let doc = {
             _id: waitingRoom._id,
             slugname: waitingRoom.slugname,
-            _loggedInUsers: waitingRoom._loggedInUsers,
+            _loggedInUsers: waitingRoom._loggedInUsers.map(
+              loggedInUser => {
+                return loggedInUser._objectToFirestoreDoc();
+              }
+            ),
             _currentGame: waitingRoom._currentGame,
         };
         return doc;
@@ -32,7 +36,11 @@ class WaitingRoomController extends Controller {
         let waitingRoom = new WaitingRoom();
         waitingRoom._id = data._id;
         waitingRoom.slugname = data.slugname;
-        waitingRoom._loggedInUsers = data._loggedInUsers;
+        waitingRoom._loggedInUsers = data._loggedInUsers.map(
+          loggedInUser => {
+            return new LoggedInUser(loggedInUser._id, loggedInUser.nickname);
+          }
+        );
         waitingRoom._currentGame = data._currentGame;
         return waitingRoom;
     }
@@ -56,8 +64,8 @@ class WaitingRoomController extends Controller {
             .where("slugname", "==", slugname)
             .get()
             .then(
-                (snapshot) => {(snapshot.exists) ?
-                    object = this._objectFromFirestoreDoc(snapshot.data())
+                (snapshot) => {(snapshot.docs.length > 0) ?
+                    object = this._objectFromFirestoreDoc(snapshot.docs[0].data())
                     : console.log("No " + this._objectType + " with ID: ", slugname)
                 }
             )
@@ -66,11 +74,7 @@ class WaitingRoomController extends Controller {
             );
         return object;
     }
-    
-    onJoinBySlugname(){
-      //todo
-      return true;
-    }
+
 }
 
 export default WaitingRoomController;

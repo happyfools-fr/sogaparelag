@@ -24,17 +24,17 @@ describe('WaitingRoom', function()
     {
         let waitingRoom = new WaitingRoom()
         let user1 = new MockLoggedInUser("toto1", "ToTO")
-        waitingRoom.addLoggedInUsers(user1)
+        waitingRoom.addLoggedInUser(user1)
 
         let user2 = new MockLoggedInUser("toto2", "ToTO")
-        waitingRoom.addLoggedInUsers(user2)
+        waitingRoom.addLoggedInUser(user2)
 
         waitingRoom.startGame()
 
         assert.equal(waitingRoom._currentGame.playersCount, 2)
 
         let user3 = new MockLoggedInUser("toto3", "ToTO")
-        waitingRoom.addLoggedInUsers(user3)
+        waitingRoom.addLoggedInUser(user3)
         assert.equal(waitingRoom._loggedInUsers.length, 3)
 
         assert.equal(waitingRoom._currentGame.playersCount, 2)
