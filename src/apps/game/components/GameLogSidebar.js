@@ -10,7 +10,7 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import LogItem from './LogItem';
 
 class GameLogSidebar extends Component {
-    
+
     constructor(props) {
         super(props);
         this.state = {
@@ -43,7 +43,7 @@ class GameLogSidebar extends Component {
     componentWillUnmount() {
         this.unsubscribe();
     }
-    
+
     render() {
         return (
             <div>
@@ -51,7 +51,7 @@ class GameLogSidebar extends Component {
             <ListGroup>
                 {
                     this.state.game.history.map(state => {
-                        return (<LogItem icon="fa-info-circle" value={state._id} />);
+                        return (<LogItem icon="fa-info-circle" value={state} />);
                     })
                 }
             </ListGroup>

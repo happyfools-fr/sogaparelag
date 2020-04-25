@@ -5,7 +5,6 @@ import React, { Component } from 'react';
 
 import GameView from './views/GameView';
 import GameMenuView from './views/GameMenuView';
-import WaitingRoomView from './views/WaitingRoomView';
 
 
 import Game from './model/Game';
