@@ -3,8 +3,11 @@ import {withFirebase} from '../../components/firebase/index'
 // React imports
 import React, { Component } from 'react';
 
-import GameMenu from './GameMenu'
-import GameView from './views/GameView'
+import GameView from './views/GameView';
+import GameMenuView from './views/GameMenuView';
+import WaitingRoomView from './views/WaitingRoomView';
+
+
 import Game from './model/Game';
 
 class GameApp extends Component {
@@ -82,7 +85,8 @@ class GameApp extends Component {
         this.unsubscribe();
     }
 
-    async handleClickCreateNewGame(click, user) {
+    async handleClickCreateNewGame(click) {
+        const user = this.props.user;
         const db = this.props.firebase.ft;
         const game = await Game.createAndPushNewGame(db, user);
         this.setState({
@@ -133,10 +137,22 @@ class GameApp extends Component {
         const user = this.props.user;
         const game = this.state.currentGame;
         if (game) {
-            return (<GameView game={game} user={user} />);
+            if (game.currentState && game.currentState.isStarted) {
+                return (<GameView game={game} user={user} />);
+            } else {
+                 return (
+                    <WaitingRoomView
+                        gameSlugname={game.slugname}
+                        players={game.players}
+                        onClick={
+                            () => {Game.startFirstRound(game); alert("Game.startFirstRound");}
+                        }
+                    />
+                );
+            }
         } else {
             return (
-                <GameMenu
+                <GameMenuView
                     user={user}
                     handleClickCreateNewGame={this.handleClickCreateNewGame}
                     handleJoinGameSubmit={this.handleJoinGameSubmit}

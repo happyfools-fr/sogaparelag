@@ -43,46 +43,37 @@ function GameView(props) {
         [gameController, game, setGame]
     );
 
-    if (game.currentState && game.currentState.isStarted) {
-        const currentState = game.currentState;
-        return (
-            <Container>
-                <Row>
-                    <Col>
-                        <Card border="light">
-                            <Card.Body>
-                            <Card.Title>Welcome to Island of {game.slugname} </Card.Title>
-                            <GameTableView className='mt-5' game={game}
-                                currentPlayerNickname={currentState.currentPlayerId}
-                                nextPlayerNickname={currentState.nextPlayerId}
-                            />
-                            </Card.Body>
-                        </Card>
-                        <AllPlayersView game={game} />
-                        <TurnView
-                            show={showModal}
-                            handleAction={
-                                (action) => {
-                                    setShowModal(false);
-                                    alert(action + ": Game.updateGameState");
-                                }
-                            }
+    const currentState = game.currentState;
+    return (
+        <Container>
+            <Row>
+                <Col>
+                    <Card border="light">
+                        <Card.Body>
+                        <Card.Title>Welcome to Island of {game.slugname} </Card.Title>
+                        <GameTableView className='mt-5' game={game}
+                            currentPlayerNickname={currentState.currentPlayerId}
+                            nextPlayerNickname={currentState.nextPlayerId}
                         />
-                    </Col>
-                    <Col sm={3}>
-                        <GameLogSidebar game={game} />
-                    </Col>
-                </Row>
-            </Container>
-        );
-    } else {
-        return (
-            <WaitingRoomView
-                gameSlugname={game.slugname}
-                players={game.players}
-                onClick={() => {Game.startFirstRound(game); alert("Game.startFirstRound");}}
-            />)
-    }
+                        </Card.Body>
+                    </Card>
+                    <AllPlayersView game={game} />
+                    <TurnView
+                        show={showModal}
+                        handleAction={
+                            (action) => {
+                                setShowModal(false);
+                                alert(action + ": Game.updateGameState");
+                            }
+                        }
+                    />
+                </Col>
+                <Col sm={3}>
+                    <GameLogSidebar game={game} />
+                </Col>
+            </Row>
+        </Container>
+    );
 }
 
 export default withFirebase(GameView);
