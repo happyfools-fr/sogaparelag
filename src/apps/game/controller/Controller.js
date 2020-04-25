@@ -16,9 +16,7 @@ class Controller {
 
 
     _objectToFirestoreDoc(object) {
-        let doc = {};
-        Object.keys(object).forEach( (k) => { doc.k = object.k } )
-        return doc;
+        return {_id: object._id};
     }
 
 
@@ -99,9 +97,9 @@ class Controller {
         return true;
     }
 
-    listen(object, observer) {
+    listen(objectId, observer) {
         return this._database.collection(this._objectType)
-            .doc(this._getObjectId(object))
+            .doc(objectId)
             .onSnapshot(
                 (snapshot) => {
                     let object = this._objectFromFirestoreDoc(snapshot.data());

@@ -15,6 +15,17 @@ class PlayerController extends Controller{
         return player._id();
     }
 
+    _objectToFirestoreDoc(player) {
+        let doc = {
+            _id: player._id,
+            nickname: player.slugname,
+            _sickenessLevel: player._sickenessLevel,
+            isDead: player.isDead,
+            currentHand: player.currentHand,
+        };
+        return doc;
+    }
+
     /**
     *
     */

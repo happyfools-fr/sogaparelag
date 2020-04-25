@@ -25,6 +25,7 @@ import WaitingRoomView from './WaitingRoomView';
 
 function GameView(props) {
     const [game, setGame] = useState(props.game);
+    const [gameId, setGameId] = useState(props.game._id)
     const [showModal, setShowModal] = useState(
         (game.currentState && game.currentState.currentPlayerId)
         ? game.currentState.currentPlayerId === props.user.uid
@@ -36,13 +37,20 @@ function GameView(props) {
 
     useEffect(
         () => {
-            const unsubscribe = gameController.listen(game, setGame);
+            const unsubscribe = gameController.listen(gameId, setGame);
             return unsubscribe;
         },
-        [gameController, game, setGame]
+        [gameController, gameId, setGame]
     );
 
     const currentState = game.currentState;
+
+    const handleAction = (action) => {
+        setShowModal(false);
+        alert(action + ": Game.updateGameState");
+        game.history.push(props.user.nickname + " went for " + action);
+        gameController.update(game);
+    };
 
     if (currentState && currentState.isStarted) {
         return (
@@ -61,12 +69,7 @@ function GameView(props) {
                         <AllPlayersView game={game} />
                         <TurnView
                             show={showModal}
-                            handleAction={
-                                (action) => {
-                                    setShowModal(false);
-                                    alert(action + ": Game.updateGameState");
-                                }
-                            }
+                            onAction={handleAction}
                         />
                     </Col>
                     <Col sm={3}>

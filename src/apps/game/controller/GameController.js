@@ -16,6 +16,18 @@ class GameController extends Controller {
         return game._id;
     }
 
+    _objectToFirestoreDoc(game) {
+        let doc = {
+            _id: game._id,
+            slugname: game.slugname,
+            players: game.players,
+            playerOrder: game.playerOrder,
+            history: game.history,
+            currentState: game.currentState,
+        };
+        return doc;
+    }
+
     /**
     *
     */
@@ -23,10 +35,10 @@ class GameController extends Controller {
         let game = new Game();
         game._id = data._id;
         game.slugname = data.slugname;
-        game.players = data.players;;
-        game.playerOrder = data.playerOrder;;
-        game.history = data.history;;
-        game.currentState = data.currentState;;
+        game.players = data.players;
+        game.playerOrder = data.playerOrder;
+        game.history = data.history;
+        game.currentState = data.currentState;
         return game;
     }
 }
