@@ -13,27 +13,29 @@ import GameLogSidebar from '../components/GameLogSidebar';
 // Controller imports
 import GameController from '../controller/GameController';
 
-// Import model
-import Game from '../model/Game'
-
 // View imports
 import TurnView from './TurnView';
 import GameTableView from './GameTableView';
 import AllPlayersView from './AllPlayersView';
-import WaitingRoomView from './WaitingRoomView';
+//import WaitingRoomView from './WaitingRoomView';
 
-
+/**
+* @params (Game) game
+* @params {LoggedInUsers} user
+* @params {FirebaseService} firebaseService
+*/
 function GameView(props) {
     const [game, setGame] = useState(props.game);
     const [gameId, setGameId] = useState(props.game._id)
     const [showModal, setShowModal] = useState(
-        (game.currentState && game.currentState.currentPlayerId)
-        ? game.currentState.currentPlayerId === props.user.uid
+        (game.currentPlayerId)
+        ? game.currentPlayerId === props.user.uid
         : false
     );
 
-    const db = props.firebase.ft;
-    const gameController = new GameController(db)
+    // const db = props.firebase.ft;
+    const db = props.firebaseService.ft;
+    const gameController = new GameController(db);
 
     useEffect(
         () => {
@@ -43,8 +45,6 @@ function GameView(props) {
         [gameController, gameId, setGame]
     );
 
-    const currentState = game.currentState;
-
     const handleAction = (action) => {
         setShowModal(false);
         alert(action + ": Game.updateGameState");
@@ -52,32 +52,33 @@ function GameView(props) {
         gameController.update(game);
     };
 
-    if (currentState && currentState.isStarted) {
-        return (
-            <Container>
-                <Row>
-                    <Col>
-                        <Card border="light">
-                            <Card.Body>
-                            <Card.Title>Welcome to Island of {game.slugname} </Card.Title>
-                            <GameTableView className='mt-5' game={game}
-                                currentPlayerNickname={currentState.currentPlayerId}
-                                nextPlayerNickname={currentState.nextPlayerId}
-                            />
-                            </Card.Body>
-                        </Card>
-                        <AllPlayersView game={game} />
-                        <TurnView
-                            show={showModal}
-                            onAction={handleAction}
+    return (
+        <Container>
+            <Row>
+                <Col>
+                    <Card border="light">
+                        <Card.Body>
+                        <Card.Title>Welcome to Island of {game.slugname} </Card.Title>
+                        <GameTableView className='mt-5' game={game}
+                            currentPlayerNickname={game.currentPlayerId}
+                            nextPlayerNickname={game.nextPlayerId}
                         />
-                    </Col>
-                    <Col sm={3}>
-                        <GameLogSidebar game={game} />
-                    </Col>
-                </Row>
-            </Container>
-        );
+                        </Card.Body>
+                    </Card>
+                    <AllPlayersView game={game} />
+                    <TurnView
+                        show={showModal}
+                        onAction={handleAction}
+                    />
+                </Col>
+                <Col sm={3}>
+                    <GameLogSidebar game={game} />
+                </Col>
+            </Row>
+        </Container>
+    );
+}
+/*
     } else {
          return (
             <WaitingRoomView
@@ -89,6 +90,6 @@ function GameView(props) {
             />
         );
     }
-}
+}*/
 
 export default withFirebase(GameView);

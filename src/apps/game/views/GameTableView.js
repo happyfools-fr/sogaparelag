@@ -14,13 +14,13 @@ export default function GameTableView(props) {
         <Container>
         <Row>
             <Col sm={3}>
-                <WaterSupplyComponent inventory={game.currentState.waterSupply} />
+                <WaterSupplyComponent inventory={game.waterSupply} />
             </Col>
             <Col sm={3}>
-                <FoodSupplyComponent inventory={game.currentState.foodSupply} />
+                <FoodSupplyComponent inventory={game.foodSupply} />
             </Col>
             <Col sm={3}>
-                <WoodSupplyComponent inventory={0} /> {/*{game.currentState.woodSupply} />*/}
+                <WoodSupplyComponent inventory={game.woodSupply} />*/}
             </Col>
             <Col sm={3}>
                 <RaftComponent inventory={0} />

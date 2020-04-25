@@ -26,6 +26,8 @@ export default class Game
         this._gameTable = new GameTable(players)
         this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
         this._pollManager = new PollManager(this._gameTable);
+
+        this.history = [];
     }
 
     static _createPlayers(loggedInUsers)
@@ -38,6 +40,26 @@ export default class Game
     get playersCount()
     {
       return this._gameTable.playersCount
+    }
+
+    get currentPlayerId() {
+        return this._gameTable._headPlayer.id;
+    }
+
+    get nextPlayerId() {
+        return this._gameTable.players[0].id;
+    }
+
+    get waterSupply() {
+        return this._waterManager.inventory;
+    }
+
+    get foodSupply() {
+        return this._foodManager.inventory;
+    }
+
+    get woodSupply() {
+        return this._woodManager.inventory;
     }
 
     play()
@@ -130,6 +152,5 @@ export default class Game
         let canLeaveWithEnoughFood = this._foodManager.authorizeLeaving(this._gameTable.playersCount)
         let canLeaveWithEnoughWood = this._woodManager.authorizeLeaving(this._gameTable.playersCount)
         return canLeaveWithEnoughWater && canLeaveWithEnoughFood && canLeaveWithEnoughWood
-
     }
 }

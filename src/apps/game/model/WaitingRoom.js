@@ -13,7 +13,7 @@ import {WoodManager} from "./WoodManager";
  * - create WaitingRoom collection
  */
 
-const MIN_NUMBER_PLAYERS = 3;
+const MIN_NUMBER_PLAYERS = 1; // Should be 3
 const MAX_NUMBER_PLAYERS = 12;
 const INITIAL_VALUES = [
 //  water, food
