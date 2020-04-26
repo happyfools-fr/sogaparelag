@@ -101,6 +101,10 @@ export class GameTable
             currentPlayer = currentPlayer.next
         }
     }
+
+    toDoc() {
+        return {players: this.players.map((p) => {return p.toDoc()}), headPlayerId: this._headPlayer.id}
+    }
 }
 
 export default GameTable;

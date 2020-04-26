@@ -84,4 +84,13 @@ export default class WaitingRoom
         const random = Math.round(Math.random() * words.length / 2)
         return words[random] + "-" + words[random * 2]
     }
+
+    toDoc() {
+        return {
+            _id: this._id,
+            slugname: this.slugname,
+            _loggedInUsers: this._loggedInUsers.map((u) => {return u.toDoc()}),
+            _currentGameId: this._currentGameId,
+        }
+    }
 }

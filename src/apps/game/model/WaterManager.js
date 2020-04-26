@@ -40,4 +40,8 @@ export class WaterManager
     {
         return this.inventory >= 2 * playersCount;
     }
+
+    toDoc() {
+        return {waterSupply: this.inventory}
+    }
 }

@@ -15,20 +15,20 @@ class WaitingRoomController extends Controller {
         return waitingRoom._id;
     }
 
-    _objectToFirestoreDoc(waitingRoom) {
-        let doc = {
-            _id: waitingRoom._id,
-            slugname: waitingRoom.slugname,
-            _loggedInUsers: waitingRoom._loggedInUsers.map(
-              loggedInUser => {
-                return loggedInUser._objectToFirestoreDoc();
-              }
-            ),
-            // _currentGame: waitingRoom._currentGame,
-            _currentGameId: waitingRoom._currentGameId,
-        };
-        return doc;
-    }
+    // _objectToFirestoreDoc(waitingRoom) {
+    //     let doc = {
+    //         _id: waitingRoom._id,
+    //         slugname: waitingRoom.slugname,
+    //         _loggedInUsers: waitingRoom._loggedInUsers.map(
+    //           loggedInUser => {
+    //             return loggedInUser._objectToFirestoreDoc();
+    //           }
+    //         ),
+    //         // _currentGame: waitingRoom._currentGame,
+    //         _currentGameId: waitingRoom._currentGameId,
+    //     };
+    //     return doc;
+    // }
 
     /**
     *

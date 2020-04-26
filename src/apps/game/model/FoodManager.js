@@ -23,4 +23,8 @@ export class FoodManager
     {
         return this.inventory >= 2 * playersCount;
     }
+
+    toDoc() {
+        return {foodSupply: this.inventory}
+    }
 }

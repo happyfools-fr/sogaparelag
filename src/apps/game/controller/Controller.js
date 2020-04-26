@@ -11,13 +11,15 @@ class Controller {
 
 
     _objectToFirestoreDoc(object) {
-        return {_id: object._id};
+        console.log("before", object)
+        const data = object.toDoc();
+        console.log("after", data)
+        return data
     }
 
 
     _objectFromFirestoreDoc(doc) {
-        const object = this._createObject(doc);
-        return object ;
+        return this._createObject(doc);
     }
 
     /**
@@ -30,7 +32,7 @@ class Controller {
     /**
     *
     */
-    _createObject() {
+    _createObject(doc) {
         return {_id:"test_id"};
     }
 
