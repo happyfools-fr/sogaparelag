@@ -1,6 +1,5 @@
 import app from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
+import * as firebase from 'firebase';
 
 const config = {
     apiKey: process.env.REACT_APP_API_KEY,
@@ -13,12 +12,47 @@ const config = {
     measurementId: process.env.REACT_MEASUREMENT_ID,
 };
 
-export default class Firebase {
+
+export default class FirebaseService {
     constructor() {
         app.initializeApp(config);
         this.auth = app.auth();
         this.ft = app.firestore();
+    }
+    
+    onAuthStateChange(callback) {
+      return this.auth.onAuthStateChanged(user => callback(user))
     };
+    
+    authenticateWithGoogle() {
+      let provider = new firebase.auth.GoogleAuthProvider();
+      provider.addScope('profile');
+      provider.addScope('email');
+      return new Promise((resolve, reject) => {
+        this.auth.signInWithPopup(provider)
+        .then( (result) => {
+          resolve(result.user);
+         })
+         .catch( (error) => {
+             console.log(error);
+             reject(error);
+        });
+      });
+     }
+
+    onSignOut() {      
+      return new Promise((resolve, reject) => {
+        this.auth.signOut()
+        .then( () => {
+          console.log("Successfully logged out");
+          resolve();
+         })
+         .catch( (error) => {
+             console.log(error);
+             reject(error);
+        });
+      });
+    }
 
     /**
      * Synchronously set (merge mode) document in collection referenced by obj._id
@@ -64,5 +98,4 @@ export default class Firebase {
             return null;
         }
     }
-
 }

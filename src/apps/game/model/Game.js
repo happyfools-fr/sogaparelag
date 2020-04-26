@@ -1,121 +1,153 @@
+import Player from "./Player";
+import {RoundManager} from "./RoundManager";
+import {GameTable} from "./GameTable";
+import {PollManager} from "./PollManager";
 import { v1 as uuidv1 } from 'uuid';
 
-import GameState from './GameState';
-import Player from './Player';
 
-class Game {
-
-    constructor() {
-        this._id = uuidv1();
-        this.slugname = createSlugname();
-        this.players = [];
-        this.playerOrder = [];
-        this.history = [];
-        this.currentState = GameState.getInitialGameState();
-    }
-
-    get id()
+export default class Game
+{
+    constructor(loggedInUsers, waterManager, foodManager, woodManager)
     {
-        return this._id;
+        this._id = uuidv1();
+
+        let players = Game._createPlayers(loggedInUsers)
+        this._lastRound = false
+        this._win = false
+
+        this._waterManager = waterManager
+
+        this._foodManager = foodManager
+        this._woodManager = woodManager
+
+        this._gameTable = new GameTable(players)
+        this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
+        this._pollManager = new PollManager(this._gameTable);
+
+        this.history = [];
     }
 
-    fetch = (fb) => {return fb.getDocSync('game', this)};
-    push = (fb) => {return fb.setDocSync('game', this)};
-
-    static async addNewPlayer(db, game, player, playerState) {
-        console.log("addNewPlayer ", player, playerState);
-        if (!game.players.includes(player.id)) {
-            const updatedGame = JSON.parse(JSON.stringify(game));
-            console.log("addNewPlayer/if: updatedGame ", updatedGame);
-            console.log("addNewPlayer/if: game ", game);
-            const updatedPlayers = updatedGame.players.slice().concat([player.id])
-            updatedGame.players = updatedPlayers;
-            const updatedPlayerOrder = updatedGame.playerOrder.slice().concat([player.id])
-            updatedGame.playerOrder = updatedPlayerOrder;
-            const updatedCurrentState = JSON.parse(JSON.stringify(updatedGame.currentState));
-            updatedCurrentState.playerStatesInGame = updatedGame.currentState.playerStatesInGame.slice().concat([{ ...playerState }]);
-            updatedCurrentState.currentPlayerId = updatedPlayerOrder[0];
-            if (game.players.length === 0) {
-                updatedCurrentState.nextPlayerId = updatedPlayerOrder[0];
-            } else {
-                updatedCurrentState.nextPlayerId = updatedPlayerOrder[1];
-            }
-            updatedGame.currentState = updatedCurrentState;
-            const up = await Game.pushOrUpdateRecord(db, updatedGame);
-            return up;
-        } else {
-            console.log("You are already a player in this game");
-            return game;
-        }
-    };
-
-    static async getGameSnapshotByGameId(db, gameId) {
-        const gameSnapshot = await db.collection("game").doc(gameId).get();
-        return gameSnapshot;
+    static _createPlayers(loggedInUsers)
+    {
+        let players = []
+        loggedInUsers.map( (user) => { players.push(new Player(user)) } )
+        return players
     }
 
-    static async getGameBySlugname(db, gameSlugname) {
-        const query = db.collection("game").where("slugname", "==", gameSlugname);
-        let game;
-        await query.get()
-            .then((querySnapshot) => { game = querySnapshot.docs.map(x => x.data())[0] })
-            .catch((e) => { console.log(e); });
-        return game;
+    get playersCount()
+    {
+      return this._gameTable.playersCount
     }
 
-    static async pushOrUpdateRecord(db, game) {
-        console.log("In pushOrUpdateRecord", JSON.stringify(game));
-        await db.collection("game").doc(game._id).set(
-            game
-        );
-        // .then(function() {
-        //     console.log("Successfully written!");
-        //     alert("Game added to firestore: " + JSON.stringify(game));
-        //     return game;
-        // })
-        // .catch(function(error) {
-        //     console.error("Error writing: ", error);
-        // });
-        return game;
-    };
-
-    static async createAndAddPlayerToGame(db, game, user) {
-        const player = await Player.createAndPushPlayer(db, user);
-        console.log(player);
-        const updatedGame = await Game.addNewPlayer(db, game, player, player);
-        return updatedGame;
+    get currentPlayerId() {
+        return this._gameTable._headPlayer.id;
     }
 
-    static async createAndPushNewGame(db, user) {
-        const game = new Game();
-        console.log("new game is created ", game);
-        console.log("USER = ", JSON.stringify(user));
-        const updatedGame = await Game.createAndAddPlayerToGame(db, game, user);
-        console.log("updatedGame ", updatedGame);
-        const pushed = await Game.pushOrUpdateRecord(db, updatedGame);
-        console.log("Pushed ",  pushed);
-        return pushed;
+    get nextPlayerId() {
+        return this._gameTable.players[0].id;
     }
 
-    static async startFirstRound(db, game) {
-        console.log("startFirstRound: game = ", game);
-        game.currentState.isStarted = !game.currentState.isStarted;
-        await db.collection("game").doc(game._id).set({
-            currentState: game.currentState,
-        },
+    get waterSupply() {
+        return this._waterManager.inventory;
+    }
+
+    get foodSupply() {
+        return this._foodManager.inventory;
+    }
+
+    get woodSupply() {
+        return this._woodManager.inventory;
+    }
+
+    play()
+    {
+        while (!this._lastRound)
+        {
+            this._lastRound = this._waterManager.mustLeave()
+
+            this._roundManager.play()
+
+            //CAN LEAVE?
+            if (this._canLeave())
             {
-                merge: true
+                this._win = true
+                break
             }
-        );
-        return game;
-    };
-}
 
-function createSlugname() {
-    const json = require('../../../assets/words.json');
-    const words = json["words"];
-    const random = Math.round(Math.random() * words.length / 2)
-    return words[random] + "-" + words[random * 2]
-}
+            //SUPPLY MANAGEMENT
+            this._manageWaterEndOfRound()
+            this._manageFoodEndOfRound()
 
-export default Game;
+            //CAN LEAVE?
+            if (this._canLeave())
+            {
+                this._win = true
+                break
+            }
+
+// UNCOMMENT WHEN KILL THEM ALL ACTIVATED
+/*
+            //do you want to kill them all to leave?
+
+
+            //CAN LEAVE?
+            if (this._canLeave())
+            {
+                this._win = true
+                break
+            }
+*/
+
+            //ON END OF ROUND
+            this._onRoundEnded()
+        }
+    }
+
+    _manageWaterEndOfRound()
+    {
+        let it = 0
+        //enough water to play next round?
+        while (this._gameTable.playersCount - this._waterManager.inventory > 0)
+        {
+            let playerIdToKill = this._pollManager.vote()
+            this._gameTable.killPlayer(playerIdToKill)
+        }
+        //everybody drinks
+        this._waterManager.drink(this._gameTable.playersCount)
+    }
+
+    _manageFoodEndOfRound()
+    {
+        //enough food to play next round?
+        while (this._gameTable.playersCount - this._foodManager.inventory > 0)
+        {
+            let playerIdToKill = this._pollManager.vote()
+            this._gameTable.killPlayer(playerIdToKill)
+        }
+        //everybody eats
+        this._foodManager.eat(this._gameTable.playersCount)
+    }
+
+    _onRoundEnded()
+    {
+        this._waterManager.onRoundEnded()
+        let playerEnumerator = this._gameTable.getPlayerEnumerator()
+        while (true)
+        {
+            let currentPlayer = playerEnumerator.next()
+            if (currentPlayer.done)
+                break
+
+            currentPlayer.onRoundEnded()
+        }
+        this._gameTable.assignNextHeadPlayer()
+    }
+
+    _canLeave()
+    {
+        let canLeaveWithEnoughWater = this._waterManager.authorizeLeaving(this._gameTable.playersCount)
+        let canLeaveWithEnoughFood = this._foodManager.authorizeLeaving(this._gameTable.playersCount)
+        let canLeaveWithEnoughWood = this._woodManager.authorizeLeaving(this._gameTable.playersCount)
+        return canLeaveWithEnoughWater && canLeaveWithEnoughFood && canLeaveWithEnoughWood
+    }
+}

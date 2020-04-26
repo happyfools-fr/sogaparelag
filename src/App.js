@@ -1,14 +1,11 @@
 // React imports
-import React, { Component } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link
+    useRouteMatch,
 } from "react-router-dom";
-
-// Firebase imports
-import { createComponentWithFirebaseAuth } from './components/firebase/index';
 
 // Styles imports
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -17,120 +14,104 @@ import Nav from 'react-bootstrap/Nav'
 
 // Relative imports
 import Auth from './apps/auth/Auth'
-// import GameMenu from './apps/game/GameMenu'
-import GameApp from './apps/game/GameApp'
 import LandingPage from './apps/home/LandingPage'
 import About from './apps/about/About'
+import GameApp from './apps/game/GameApp'
+import LoggedInUser from './apps/game/model/LoggedInUser'
 
-class App extends Component {
+//Firebase
+import FirebaseService from './components/firebase/index';
+const firebaseServiceInstance = new FirebaseService();
 
-    render() {
-        const {
-            user,
-            signOut,
-            signInWithGoogle,
-        } = this.props;
 
-        return (
-            <Router>
-                <Navbar sticky="top" bg="light" expand="lg">
-                    <Navbar.Brand href="/">
-                        <i class="fas fa-laugh-beam" />
-                        &nbsp;
-                        Happy Fools
-                    </Navbar.Brand>
-                    <Nav justify classname="mr-auto">
-                        <Nav.Link>
-                            <Link to="/">Home</Link>
-                        </Nav.Link>
-                        <Nav.Link>
-                            <Link to="/game">Game</Link>
-                        </Nav.Link>
-                        <Nav.Link>
-                            <Link to="/about">About</Link>
-                        </Nav.Link>
-                    </Nav>
-                    <Nav className="justify-content-end ml-auto">
-                        <Nav.Link>
-                            {
-                                user ?
-                                    <Link to="/login">Account</Link>
-                                    :
-                                    <Link to="/login">Log in</Link>
-                            }
-                        </Nav.Link>
-                    </Nav>
-                </Navbar>
-                <div>
-                    <Switch>
-                        <Route exact path="/">
-                            {
-                                <LandingPage
-                                    user={user}
-                                    signOut={signOut}
-                                    signInWithGoogle={signInWithGoogle}
-                                />
-                            }
-                        </Route>
-                        <Route path="/about">
-                            <About />
-                        </Route>
-                        <Route path="/login">
-                            <Auth
-                                user={user}
-                                signOut={signOut}
-                                signInWithGoogle={signInWithGoogle}
-                            />
-                        </Route>
-                        {
-                            <Route
-                                exact path="/game"
-                                render={(props) => {
-                                    if (user) {
-                                        return (
-                                            <GameApp {...props} user={user} addUserToGame={false} />
-                                        );
-                                    } else {
-                                        return (<Auth
-                                            user={user}
-                                            signOut={signOut}
-                                            signInWithGoogle={signInWithGoogle}
-                                        />);
-                                    }
-                                }
+export default function App() {
 
-                                }
-                            >
-                            </Route>
-                        }
-                        {
-                            <Route
-                                path="/game/:gameSlugname"
-                                render={(props) => {
-                                    if (user) {
-                                        return (
-                                            <GameApp {...props} user={user} addUserToGame={true}/>
-                                        )                                    
-                                    } else {
-                                        return (<Auth
-                                            user={user}
-                                            signOut={signOut}
-                                            signInWithGoogle={signInWithGoogle}
-                                        />);
-                                    }
-                                }
-                                }
-                            >
-                            </Route>
-                        }
-                    </Switch>
-                </div>
-                <Navbar className='mt-3' sticky="bottom">
-                    <b>Sogaparelag</b>&nbsp;project, a HappyFools.fr initiative in 2020.
-                </Navbar>
-            </Router>
-        );
-    }
+  const [firebaseService, setFirebaseService] = useState(firebaseServiceInstance);
+  const [user, setUser] = useState({ loggedIn: false, info: null });
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const unsubscribeAuthStateChange = firebaseService.onAuthStateChange((user) => {
+      user ? setUser({loggedIn: true, info: user}) : setUser({loggedIn: false, info: null})
+    });
+    return () => {
+      unsubscribeAuthStateChange();
+    };
+  }, []);
+
+  const login = () => {
+    firebaseService.authenticateWithGoogle()
+     .catch( error => {
+       setError("error-login");
+     });
+  }
+
+  const logout = () => {
+    firebaseService.onSignOut()
+    .catch( error => {
+      setError("error-logout");
+    });
+  }
+  const requestLogin = useCallback(() => {
+    login();
+  });
+  const requestLogout = useCallback(() => {
+    logout();
+  }, []);
+
+  function ProtectedGameAppWithSlugname({user, firebaseService}) {
+    let match = useRouteMatch("/game/:gameSlugname");
+    let slugname = match ? match.params.gameSlugname : null;
+    let loggedInUser = user.info ? new LoggedInUser(user.info.uid, user.info.displayName) : null;
+    return (
+      user.loggedIn
+      &&
+      <GameApp
+        user={loggedInUser}
+        slugname={slugname}
+        firebaseService={firebaseService}
+        />
+    );
+  }
+
+  return (
+    <Router>
+      <div>{error ? error : ""}</div>
+
+      <Navbar bg="light" expand="lg">
+        <Navbar.Brand href="/">
+            <i className="fas fa-laugh-beam" />
+            &nbsp;
+            Happy Fools
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+        <Nav className="mr-auto">
+          <Nav.Link href="/home">Home</Nav.Link>
+          <Nav.Link href="/game">Game</Nav.Link>
+          <Nav.Link href="/about">About</Nav.Link>
+        </Nav>
+        <Nav className="justify-content-end ml-auto">
+          <Nav.Link href="/login">{user.loggedIn ? "Account" : "Log in"}</Nav.Link>
+        </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+      <Switch>
+          <Route path='/home'><LandingPage /></Route>
+          <Route path='/about'><About /></Route>
+          <Route path='/login'>
+              <Auth user={user} requestLogin={requestLogin} requestLogout={requestLogout} />
+          </Route>
+          <Route path='/game'>
+            <ProtectedGameAppWithSlugname user={user} firebaseService={firebaseService} />
+          </Route>
+          <Route exact path='/'><LandingPage /></Route>
+          <Route><LandingPage /></Route>
+      </Switch>
+      <Navbar className='mt-3' sticky="bottom">
+          <b>Sogaparelag</b>&nbsp;project, a HappyFools.fr initiative in 2020.
+      </Navbar>
+  </Router>
+  );
+
 }
-
-export default createComponentWithFirebaseAuth(App);

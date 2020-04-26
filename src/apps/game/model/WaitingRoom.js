@@ -1,4 +1,5 @@
-import {Game} from './Game2'
+import Game from './Game'
+
 import { v1 as uuidv1 } from 'uuid';
 import {WaterManager} from "./WaterManager";
 import {FoodManager} from "./FoodManager";
@@ -29,43 +30,50 @@ const INITIAL_VALUES = [
     [24, 20]
 ]
 
-export class WaitingRoom
+export default class WaitingRoom
 {
     constructor()
     {
         this._id = uuidv1();
         this.slugname = this._createSlugname();
         this._loggedInUsers = [];
-        this._currentGame = null
+        // this._currentGame = null;
+        this._currentGameId = null;
+
     }
 
-    addLoggedInPlayer(loggedInPlayer)
+    hasJoined(user) {
+        return this._loggedInUsers.map( x => {return x._id}).includes(user._id)
+    }
+
+    addLoggedInUser(loggedInUserToAdd)
     {
         let numberOfPlayers = this._loggedInUsers.length;
-        if (!this._currentGame && numberOfPlayers < MAX_NUMBER_PLAYERS) {
-            this._loggedInUsers.push(loggedInPlayer)
+        console.log("addLoggedInUser.numberOfPlayers", numberOfPlayers)
+        if (!this.hasJoined(loggedInUserToAdd) && numberOfPlayers < MAX_NUMBER_PLAYERS) {
+            this._loggedInUsers.push(loggedInUserToAdd);
+            return true;
         } else {
-            return null
+            return false;
         }
     }
 
     startGame()
     {
         let numberOfPlayers = this._loggedInUsers.length;
-
         if (numberOfPlayers >= MIN_NUMBER_PLAYERS && numberOfPlayers <= MAX_NUMBER_PLAYERS) {
-
-            [initialWater, initialFood] = INITIAL_VALUES[numberOfPlayers-MIN_NUMBER_PLAYERS]
-            waterManager = new WaterManager(initialWater);
-            foodManager = new FoodManager(initialFood);
-            foodManager = new FoodManager();
-
+            let [initialWater, initialFood] = INITIAL_VALUES[numberOfPlayers-MIN_NUMBER_PLAYERS]
+            let waterManager = new WaterManager(initialWater);
+            let foodManager = new FoodManager(initialFood);
+            let woodManager = new WoodManager(0);
             let game = new Game(this._loggedInUsers, waterManager, foodManager, woodManager);
-            this._currentGame = game;
+            // this._currentGame = game;
+            console.log("this._loggedInUsers instance in startGame:", this._loggedInUsers);
+            console.log("new game instance in startGame:", game);
+            this._currentGameId = game._id;
             return game;
-
         } else {
-            return null
+            return null;
         }
     }
 
@@ -77,5 +85,3 @@ export class WaitingRoom
         return words[random] + "-" + words[random * 2]
     }
 }
-
-export default WaitingRoom

@@ -1,6 +1,6 @@
 import {GameTable} from '../model/GameTable'
 import {Player} from '../model/Player'
-import {Game} from '../model/Game2'
+import {Game} from '../model/Game'
 import {WaterManager} from '../model/WaterManager'
 import {WoodManager} from '../model/WoodManager'
 import {FoodManager} from '../model/FoodManager'

@@ -8,8 +8,8 @@ export default class Player
 {
     constructor(loggedInUser)
     {
-        this.userId = loggedInUser.uid
-        this.nickName = loggedInUser.displayName
+        this.userId = loggedInUser._id
+        this.nickName = loggedInUser.nickname
         this._sickenessLevel = 0
         this.isDead = false
         this.currentHand = null
@@ -66,17 +66,17 @@ export default class Player
     {
       return 0
     }
-
-    static async pushOrUpdateRecord(db, player) {
-      await db.collection("player").doc(player.userId).set(
-        {...player}
-        );
-      return player;
-    }
-
-    static createAndPushPlayer(db, user) {
-      const player = new Player(user);
-      return Player.pushOrUpdateRecord(db, player);
-    }
+    // 
+    // static async pushOrUpdateRecord(db, player) {
+    //   await db.collection("player").doc(player.userId).set(
+    //     {...player}
+    //     );
+    //   return player;
+    // }
+    // 
+    // static createAndPushPlayer(db, user) {
+    //   const player = new Player(user);
+    //   return Player.pushOrUpdateRecord(db, player);
+    // }
 
 }

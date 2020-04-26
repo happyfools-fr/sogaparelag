@@ -12,13 +12,13 @@ class PlayerController extends Controller{
     * To be define in subClass
     */
     _getObjectId(player) {
-        return player._id();
+        return player.userId;
     }
 
     _objectToFirestoreDoc(player) {
         let doc = {
-            _id: player._id,
-            nickname: player.slugname,
+            _id: player.userId,
+            nickname: player.nickName,
             _sickenessLevel: player._sickenessLevel,
             isDead: player.isDead,
             currentHand: player.currentHand,

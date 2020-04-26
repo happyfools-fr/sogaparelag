@@ -5,11 +5,13 @@ import {CardDeck} from 'react-bootstrap';
 import PlayerStateTable from '../../game/components/PlayerStateTable';
 
 export default function AllPlayersView(props) {
+    const game = props.game;
+    const players = game ? game._gameTable.players : [];
     return (
         <CardDeck>
             {
-                props.game.players.map(
-                    (player) => { return (<PlayerStateTable game={props.game} player={player} />) }
+                players.map(
+                    (player,i) => { return (<PlayerStateTable key={i} game={game} player={player} firebaseService={props.firebaseService} />) }
                 )
             }
         </CardDeck>

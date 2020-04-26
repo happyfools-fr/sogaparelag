@@ -18,11 +18,19 @@ export default class LoggedInUser
       return this._id
   }
 
-  connectToGameRoom(slugname){
+  connectToGameWaitingRoom(slugname){
 
 
       //todo
       return true;
+  }
+  
+  _objectToFirestoreDoc() {
+      let doc = {
+        _id: this._id,
+        nickname: this.nickname,
+      };
+      return doc;
   }
   
 }

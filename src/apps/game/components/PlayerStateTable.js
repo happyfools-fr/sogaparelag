@@ -1,6 +1,3 @@
-// Firebase imports
-import {withFirebase} from '../../../components/firebase/index'
-
 // React imports
 import React, { Component } from 'react';
 // Styles imports
@@ -29,7 +26,7 @@ class PlayerStateTable extends Component {
 
 
     onListenForPlayer() {
-        const db = this.props.firebase.ft; 
+        const db = this.props.firebaseService.ft; 
         this.setState({ loading: true });
         this.unsubscribe = db.doc(`player/${this.props.player}`)
             .onSnapshot(snapshot => {
@@ -54,7 +51,8 @@ class PlayerStateTable extends Component {
 
         const game = this.props.game;
         const player = this.state.player;
-
+        const firebaseService = this.props.firebaseService;
+        
         let playerStateInGame;
 
         if (game && player) {
@@ -62,7 +60,7 @@ class PlayerStateTable extends Component {
                 .filter(playerStateInGame => playerStateInGame._id === player._id)[0];
 
             return (
-                <PlayerView player={player} playerStateInGame={playerStateInGame} />
+                <PlayerView player={player} playerStateInGame={playerStateInGame} firebaseService={firebaseService}/>
             );
 
         } else {
@@ -71,4 +69,4 @@ class PlayerStateTable extends Component {
     };
 }
 
-export default withFirebase(PlayerStateTable);
+export default PlayerStateTable;

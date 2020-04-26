@@ -1,5 +1,3 @@
-// Firebase imports
-import {withFirebase} from '../../../components/firebase/index'
 // React imports
 import React, { useState, useEffect } from 'react';
 
@@ -21,21 +19,25 @@ import AllPlayersView from './AllPlayersView';
 
 /**
 * @params (Game) game
-* @params {LoggedInUsers} user
+* @params {LoggedInUser} user
 * @params {FirebaseService} firebaseService
 */
 function GameView(props) {
-    const [game, setGame] = useState(props.game);
-    const [gameId, setGameId] = useState(props.game._id)
+
+    const gameSlugname = props.gameSlugname;
+    // const [game, setGame] = useState(props.game);
+    // const [gameId, setGameId] = useState(props.game._id);
+    const [game, setGame] = useState();
+    const [gameId, setGameId] = useState(props.gameId);
     const [showModal, setShowModal] = useState(
-        (game.currentPlayerId)
-        ? game.currentPlayerId === props.user.uid
+        (game && game.currentPlayerId)
+        ? game.currentPlayerId === props.user.id
         : false
     );
 
-    // const db = props.firebase.ft;
-    const db = props.firebaseService.ft;
-    const gameController = new GameController(db);
+    const firebaseService = props.firebaseService;
+    const db = firebaseService.ft;
+    const gameController = new GameController(db)
 
     useEffect(
         () => {
@@ -51,45 +53,32 @@ function GameView(props) {
         game.history.push(props.user.nickname + " went for " + action);
         gameController.update(game);
     };
-
     return (
         <Container>
             <Row>
                 <Col>
                     <Card border="light">
                         <Card.Body>
-                        <Card.Title>Welcome to Island of {game.slugname} </Card.Title>
+                        <Card.Title>Welcome to Island of {gameSlugname} </Card.Title>
                         <GameTableView className='mt-5' game={game}
-                            currentPlayerNickname={game.currentPlayerId}
-                            nextPlayerNickname={game.nextPlayerId}
+                            currentPlayerNickname={`place holder for currentPlayerNickname`}
+                            nextPlayerNickname={`place holder for next Player`}
                         />
                         </Card.Body>
                     </Card>
-                    <AllPlayersView game={game} />
+                    <AllPlayersView game={game} firebaseService={props.firebaseService}/>
                     <TurnView
                         show={showModal}
                         onAction={handleAction}
                     />
                 </Col>
                 <Col sm={3}>
-                    <GameLogSidebar game={game} />
+                    game ? <GameLogSidebar game={game} /> : <div>Placeholder for GameLogSidebar</div>
                 </Col>
             </Row>
         </Container>
     );
 }
-/*
-    } else {
-         return (
-            <WaitingRoomView
-                gameSlugname={game.slugname}
-                players={game.players}
-                onClick={
-                    () => {Game.startFirstRound(game); alert("Game.startFirstRound");}
-                }
-            />
-        );
-    }
-}*/
 
-export default withFirebase(GameView);
+
+export default GameView;

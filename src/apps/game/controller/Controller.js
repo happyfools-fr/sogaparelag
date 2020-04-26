@@ -7,11 +7,6 @@ class Controller {
     constructor(type, database) {
         this._objectType = type;
         this._database = database;
-        this._loading = false;
-        this._objectConverter = {
-            toFirestore : this._objectToFirestoreDoc,
-            fromFirestore : this._objectFromFirestoreDoc,
-        };
     }
 
 
@@ -40,6 +35,7 @@ class Controller {
     }
 
     async push(object) {
+      console.log("object in Controller.push", object);
         await this._database.collection(this._objectType)
             .doc(this._getObjectId(object))
             .set(this._objectToFirestoreDoc(object))
