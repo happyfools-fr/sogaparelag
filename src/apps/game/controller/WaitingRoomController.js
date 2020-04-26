@@ -75,31 +75,27 @@ class WaitingRoomController extends Controller {
         return object;
     }
 
-    getBySlugnameAsync(slugname) {
-        let object;
-        return new Promise( (resolve, reject) => {
-          this._database.collection(this._objectType)
-              .where("slugname", "==", slugname)
-              .get()
-              .then(
-                  (snapshot) => {
-                    if (snapshot.docs.length > 0)
-                      {
-                        object = this._objectFromFirestoreDoc(snapshot.docs[0].data());
-                        return resolve(object);
-                      }
-                    else {
-                        console.log("No " + this._objectType + " with ID: ", slugname);
-                        return reject("error-toto");
-                    }
-                  }
-              ).catch( error => reject(error))
-        })
-
-
-        return object;
-    }
-
+    // getBySlugnameAsync(slugname) {
+    //     let object;
+    //     return new Promise( (resolve, reject) => {
+    //       this._database.collection(this._objectType)
+    //           .where("slugname", "==", slugname)
+    //           .get()
+    //           .then(
+    //               (snapshot) => {
+    //                 if (snapshot.docs.length > 0)
+    //                   {
+    //                     object = this._objectFromFirestoreDoc(snapshot.docs[0].data());
+    //                     return resolve(object);
+    //                   }
+    //                 else {
+    //                     console.log("No " + this._objectType + " with ID: ", slugname);
+    //                     return reject("error-toto");
+    //                 }
+    //               }
+    //           ).catch( error => reject(error))
+    //     })
+    // }
 }
 
 export default WaitingRoomController;

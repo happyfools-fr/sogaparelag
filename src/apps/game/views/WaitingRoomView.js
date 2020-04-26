@@ -8,7 +8,7 @@ export default function WaitingRoomView(props) {
         <Jumbotron>
           <h3>Welcome to {props.gameSlugname}!</h3>
           {
-              props.players.map((user) => {return (<p>{user.nickname}</p>)})
+              props.players.map((user,i) => {return (<p key={i}>{user.nickname}</p>)})
           }
           <div>
             <Button variant="primary" onClick={() => {props.onClick()}}>
