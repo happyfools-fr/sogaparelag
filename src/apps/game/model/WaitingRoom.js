@@ -65,7 +65,7 @@ export default class WaitingRoom
             let [initialWater, initialFood] = INITIAL_VALUES[numberOfPlayers-MIN_NUMBER_PLAYERS]
             let waterManager = new WaterManager(initialWater);
             let foodManager = new FoodManager(initialFood);
-            let woodManager = new WoodManager();
+            let woodManager = new WoodManager(0);
             let game = new Game(this._loggedInUsers, waterManager, foodManager, woodManager);
             // this._currentGame = game;
             console.log("this._loggedInUsers instance in startGame:", this._loggedInUsers);

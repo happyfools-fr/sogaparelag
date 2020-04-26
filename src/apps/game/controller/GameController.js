@@ -1,6 +1,10 @@
 import Controller from './Controller'
 import PlayerController from './PlayerController'
 import Game from '../model/Game'
+import GameTable from '../model/GameTable'
+import {WaterManager} from '../model/WaterManager'
+import {WoodManager} from '../model/WoodManager'
+import {FoodManager} from '../model/FoodManager'
 
 /** This class handles game CRUD and the database **/
 class GameController extends Controller {
@@ -24,6 +28,11 @@ class GameController extends Controller {
 
         let doc = {
             _id: game._id,
+
+            _lastRound : game._lastRound,
+            _win : game._win,
+            history: game.history,
+
             players: game._gameTable.players.map(
               player => {
                 return this.playerController._objectToFirestoreDoc(player);
@@ -42,16 +51,20 @@ class GameController extends Controller {
     *
     */
     _createObject(data) {
-        let game = new Game();
+
+        const players = data.players.map( p => { return this.playerController._createObject(p) } )
+
+        let game = new Game(players, new WaterManager(0), new FoodManager(0), new WoodManager(0));
+
         game._id = data._id;
-        game._gameTable.players = data.players.map(
-          datum => {
-            return this.playerController._createObject(datum);
-          }
-        );
+
+        game._lastRound = data._lastRound;
+        game._win = data._win;
         game.history = data.history;
+
+        game._gameTable = new GameTable(players);
+
         //todo
-        game.currentState = null;
         return game;
     }
 }

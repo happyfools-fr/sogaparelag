@@ -11,7 +11,7 @@ export default function AllPlayersView(props) {
         <CardDeck>
             {
                 players.map(
-                    (player) => { return (<PlayerStateTable game={game} player={player} firebaseService={props.firebaseService} />) }
+                    (player,i) => { return (<PlayerStateTable key={i} game={game} player={player} firebaseService={props.firebaseService} />) }
                 )
             }
         </CardDeck>

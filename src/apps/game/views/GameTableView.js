@@ -27,7 +27,7 @@ export default function GameTableView(props) {
                   <FoodSupplyComponent inventory={foodSupply} />
               </Col>
               <Col sm={3}>
-                  <WoodSupplyComponent inventory={woodSupply} />*/}
+                  <WoodSupplyComponent inventory={woodSupply} />
               </Col>
               <Col sm={3}>
                   <RaftComponent inventory={0} />

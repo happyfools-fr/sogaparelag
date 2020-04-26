@@ -23,7 +23,7 @@ import AllPlayersView from './AllPlayersView';
 * @params {FirebaseService} firebaseService
 */
 function GameView(props) {
-  
+
     const gameSlugname = props.gameSlugname;
     // const [game, setGame] = useState(props.game);
     // const [gameId, setGameId] = useState(props.game._id);
@@ -66,7 +66,7 @@ function GameView(props) {
                         />
                         </Card.Body>
                     </Card>
-                    <AllPlayersView game={game} />
+                    <AllPlayersView game={game} firebaseService={props.firebaseService}/>
                     <TurnView
                         show={showModal}
                         onAction={handleAction}
