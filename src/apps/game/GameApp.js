@@ -13,6 +13,7 @@ export default function GameApp(props) {
   const firebaseService = props.firebaseService;
 
   const [currentSlugname, setCurrentSlugname] = useState(props.slugname);
+  const [hasJoined, setHasJoined] = useState(false);
 
   const waitingRoomController = new WaitingRoomController(firebaseService.ft)
   const [currentWaitingRoom, setCurrentWaitingRoom] = useState();
@@ -30,14 +31,28 @@ export default function GameApp(props) {
         if (!currentWaitingRoomId) {
             const unsubscribe = waitingRoomController
                         .listenOnSlugname(currentSlugname, setCurrentWaitingRoom);
+            console.log("1 useEffect user", user);
+            console.log("1 useEffect currentWaitingRoomId", currentWaitingRoomId);
+            console.log("1 useEffect currentWaitingRoom", currentWaitingRoom);
+
+            if (user && currentWaitingRoom && !hasJoined) {onJoinCurrentWaitingRoom();}
             return unsubscribe;
         } else {
             const unsubscribe = waitingRoomController
                         .listen(currentWaitingRoomId, setCurrentWaitingRoom);
+            console.log("2 useEffect user", user);
+            console.log("2 useEffect currentWaitingRoomId", currentWaitingRoomId);
+            console.log("2 useEffect currentWaitingRoom", currentWaitingRoom);
+
+            if (user && currentWaitingRoom && !hasJoined) {onJoinCurrentWaitingRoom();}
             return unsubscribe;
-        }
+        };
       },
-      [currentSlugname, currentWaitingRoomId, waitingRoomController, setCurrentWaitingRoom]
+      [
+        currentSlugname, currentWaitingRoomId,
+        waitingRoomController, setCurrentWaitingRoom,
+        hasJoined, setHasJoined,
+      ]
   );
 
  /* useEffect(
@@ -59,11 +74,20 @@ export default function GameApp(props) {
   );*/
 
   const onJoinCurrentWaitingRoom = () => {
-    console.log(currentWaitingRoom)
-    if (currentWaitingRoom.addLoggedInUser(props.user)) {
-        waitingRoomController.push(currentWaitingRoom);
-        setCurrentWaitingRoom(currentWaitingRoom)
-    } else {
+    console.log(currentWaitingRoom);
+    let op = false;
+    console.log(" onJoinCurrentWaitingRoom Before op currentWaitingRoom ", currentWaitingRoom);
+    if (currentWaitingRoom && !hasJoined) {
+        console.log(" onJoinCurrentWaitingRoom user to add ", user);
+        op = currentWaitingRoom.addLoggedInUser(user);
+        if (op) {
+          console.log("op onJoinCurrentWaitingRoom");
+          waitingRoomController.push(currentWaitingRoom);
+          setCurrentWaitingRoom(currentWaitingRoom);
+          setHasJoined(true);
+        }
+    }
+    if (!op) {
         alert(`Could not add user to game name ${currentSlugname}!`);
     }
   }
@@ -72,25 +96,49 @@ export default function GameApp(props) {
     onJoinBySlugname(currentSlugname, user);
 }*/
 
+  // const onJoinBySlugname = (slugname) => {
+  //   setCurrentSlugname(slugname);
+  //   setCurrentWaitingRoom(waitingRoomController.getBySlugname(slugname))
+  //   onJoinCurrentWaitingRoom();
+  // }
+
+
   const handleClickCreateNewGame = (click) => {
       let waitingRoom = new WaitingRoom();
       alert('New game created, share this: ' + window.location.origin + '/game/' + waitingRoom.slugname);
       setCurrentSlugname(waitingRoom.slugname);
       setCurrentWaitingRoom(waitingRoom);
-      onJoinCurrentWaitingRoom();
+      setCurrentWaitingRoomId(waitingRoom._id);
+
+      // onJoinCurrentWaitingRoom();
   }
 
   const handleJoinGameSubmit = (slugname, submit) =>  {
       submit.preventDefault();
       setCurrentSlugname(slugname);
-      setCurrentWaitingRoom(waitingRoomController.getBySlugname(slugname))
-      onJoinCurrentWaitingRoom();
+      // const waitingRoom = waitingRoomController.getBySlugname(slugname);
+      waitingRoomController.getBySlugnameAsync(slugname)
+      .then( object => {
+        console.log("Then handleJoinGameSubmit.object ", object);
+        setCurrentWaitingRoom(object);
+        setCurrentWaitingRoomId(object._id);
+      })
+      // .then( () => {
+      //   console.log("currentWaitingRoom in handleJoinGameSubmit ", currentWaitingRoom);
+      // })
+      .catch((err) => {
+        console.log("error in Promise handleJoinGameSubmit.waitingRoom");
+        alert(err);
+      })
+
+      // onJoinCurrentWaitingRoom();
   }
 
   const handleStartGame = (click) => {
     currentWaitingRoom.startGame();
     waitingRoomController.push(currentWaitingRoom);
     setCurrentWaitingRoom(currentWaitingRoom)
+    setCurrentWaitingRoomId(currentWaitingRoom._id);
     alert(`Game started for room: ${currentWaitingRoom.slugname}`);
   }
 
@@ -105,13 +153,7 @@ export default function GameApp(props) {
               firebaseService={firebaseService}
           />
       );
-  }
-
-  if (currentSlugname && !currentWaitingRoom) {
-      return(<div />);
-  }
-
-  if (currentWaitingRoom && !game) {
+  } else if (hasJoined && currentWaitingRoom && !game) {
     return (
         <WaitingRoomView
             gameSlugname={currentSlugname}
@@ -119,8 +161,7 @@ export default function GameApp(props) {
             onClick={handleStartGame}
         />
     );
-  }
-  if (game) {
+  } else if (game) {
       return (
         <GameView
           game={game}
@@ -128,5 +169,14 @@ export default function GameApp(props) {
           firebaseService={firebaseService}
           />
         );
+  } else {
+    return (<div>currentSlugname && !currentWaitingRoom</div>);
   }
+
+  // if (currentSlugname && !currentWaitingRoom) {
+  //     // onJoinBySlugname(currentSlugname, user);
+  //     return (<div>currentSlugname && !currentWaitingRoom</div>);
+  // }
+
+
 }

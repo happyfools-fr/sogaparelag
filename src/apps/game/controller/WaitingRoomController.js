@@ -7,7 +7,7 @@ class WaitingRoomController extends Controller {
     constructor(database) {
         super("waiting-room", database);
     };
-    
+
     /**
     * To be define in subClass
     */
@@ -44,7 +44,7 @@ class WaitingRoomController extends Controller {
         waitingRoom._currentGame = data._currentGame;
         return waitingRoom;
     }
-    
+
     listenOnSlugname(slugname, observer) {
         return this._database.collection(this._objectType)
             .where("slugname", "==", slugname)
@@ -57,7 +57,7 @@ class WaitingRoomController extends Controller {
                 }
             );
     };
-    
+
     async getBySlugname(slugname) {
         let object;
         await this._database.collection(this._objectType)
@@ -72,6 +72,31 @@ class WaitingRoomController extends Controller {
             .catch(
                 (e) => { console.log("Error getting " + this._objectType + ":", e) }
             );
+        return object;
+    }
+
+    getBySlugnameAsync(slugname) {
+        let object;
+        return new Promise( (resolve, reject) => {
+          this._database.collection(this._objectType)
+              .where("slugname", "==", slugname)
+              .get()
+              .then(
+                  (snapshot) => {
+                    if (snapshot.docs.length > 0)
+                      {
+                        object = this._objectFromFirestoreDoc(snapshot.docs[0].data());
+                        return resolve(object);
+                      }
+                    else {
+                        console.log("No " + this._objectType + " with ID: ", slugname);
+                        return reject("error-toto");
+                    }
+                  }
+              ).catch( error => reject(error))
+        })
+
+
         return object;
     }
 
