@@ -5,6 +5,7 @@ import GameView from './views/GameView';
 import GameMenuView from './views/GameMenuView';
 import WaitingRoom from './model/WaitingRoom'
 import WaitingRoomController from './controller/WaitingRoomController'
+import GameController from './controller/GameController'
 import WaitingRoomView from './views/WaitingRoomView'
 
 export default function GameApp(props) {
@@ -14,12 +15,14 @@ export default function GameApp(props) {
 
   const [currentSlugname, setCurrentSlugname] = useState(props.slugname);
 
-  const waitingRoomController = new WaitingRoomController(firebaseService.ft)
+  const waitingRoomController = new WaitingRoomController(firebaseService.ft);
+  const gameController = new GameController(firebaseService.ft);
+
   const [currentWaitingRoom, setCurrentWaitingRoom] = useState();
   const [currentWaitingRoomId, setCurrentWaitingRoomId] = useState(
       (currentWaitingRoom) ? currentWaitingRoom._id : undefined
   );
-
+  const [currentGameId, setCurrentGameId] = useState();
   //const [error, setError] = useState('');
 
   useEffect(
@@ -69,17 +72,20 @@ export default function GameApp(props) {
   }
 
   const handleStartGame = (click) => {
-    currentWaitingRoom.startGame();
+    const newGame = currentWaitingRoom.startGame();
+    console.log("handleStartGame.newGame before push2", newGame)
+    gameController.push(newGame);
     waitingRoomController.update(currentWaitingRoom);
     setCurrentWaitingRoom(currentWaitingRoom)
     setCurrentWaitingRoomId(currentWaitingRoom._id);
+    setCurrentGameId(newGame._id);
     alert(`Game started for room: ${currentWaitingRoom.slugname}`);
   }
 
 
-  const game = currentWaitingRoom ? currentWaitingRoom.currentGame : undefined;
-
-  if (!currentSlugname) {
+  // const game = currentWaitingRoom ? currentWaitingRoom.currentGame : undefined;
+  const gameId = currentWaitingRoom ? currentWaitingRoom._currentGame : undefined;
+  if (!currentSlugname && !currentGameId) {
       return (
           <GameMenuView
               handleClickCreateNewGame={handleClickCreateNewGame}
@@ -87,7 +93,7 @@ export default function GameApp(props) {
               firebaseService={firebaseService}
           />
       );
-  } else if (currentSlugname && currentWaitingRoom) {
+  } else if (currentSlugname && currentWaitingRoom && !currentGameId) {
         if (!currentWaitingRoom.hasJoined(props.user)){
             onJoinCurrentWaitingRoom();
         }
@@ -98,10 +104,13 @@ export default function GameApp(props) {
                 onClick={handleStartGame}
             />
         );
-  } else if (game) {
+  } else if (currentGameId) {
+      console.log("currentGameId before GameView", currentGameId);
       return (
         <GameView
-          game={game}
+          // game={game}
+          gameSlugname={currentSlugname}
+          gameId={currentGameId}
           user={user}
           firebaseService={firebaseService}
           />

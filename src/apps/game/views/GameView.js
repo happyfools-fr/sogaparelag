@@ -23,10 +23,14 @@ import AllPlayersView from './AllPlayersView';
 * @params {FirebaseService} firebaseService
 */
 function GameView(props) {
-    const [game, setGame] = useState(props.game);
-    const [gameId, setGameId] = useState(props.game._id)
+  
+    const gameSlugname = props.gameSlugname;
+    // const [game, setGame] = useState(props.game);
+    // const [gameId, setGameId] = useState(props.game._id);
+    const [game, setGame] = useState();
+    const [gameId, setGameId] = useState(props.gameId);
     const [showModal, setShowModal] = useState(
-        (game.currentPlayerId)
+        (game && game.currentPlayerId)
         ? game.currentPlayerId === props.user.id
         : false
     );
@@ -55,10 +59,10 @@ function GameView(props) {
                 <Col>
                     <Card border="light">
                         <Card.Body>
-                        <Card.Title>Welcome to Island of {game.slugname} </Card.Title>
+                        <Card.Title>Welcome to Island of {gameSlugname} </Card.Title>
                         <GameTableView className='mt-5' game={game}
-                            currentPlayerNickname={game.currentPlayerId}
-                            nextPlayerNickname={game.nextPlayerId}
+                            currentPlayerNickname={`place holder for currentPlayerNickname`}
+                            nextPlayerNickname={`place holder for next Player`}
                         />
                         </Card.Body>
                     </Card>
@@ -69,7 +73,7 @@ function GameView(props) {
                     />
                 </Col>
                 <Col sm={3}>
-                    <GameLogSidebar game={game} />
+                    game ? <GameLogSidebar game={game} /> : <div>Placeholder for GameLogSidebar</div>
                 </Col>
             </Row>
         </Container>

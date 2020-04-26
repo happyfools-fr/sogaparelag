@@ -37,7 +37,9 @@ export default class WaitingRoom
         this._id = uuidv1();
         this.slugname = this._createSlugname();
         this._loggedInUsers = [];
-        this._currentGame = null
+        // this._currentGame = null;
+        this._currentGameId = null;
+
     }
 
     hasJoined(user) {
@@ -65,7 +67,10 @@ export default class WaitingRoom
             let foodManager = new FoodManager(initialFood);
             let woodManager = new WoodManager();
             let game = new Game(this._loggedInUsers, waterManager, foodManager, woodManager);
-            this._currentGame = game;
+            // this._currentGame = game;
+            console.log("this._loggedInUsers instance in startGame:", this._loggedInUsers);
+            console.log("new game instance in startGame:", game);
+            this._currentGameId = game._id;
             return game;
         } else {
             return null;

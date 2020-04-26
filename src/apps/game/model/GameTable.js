@@ -7,7 +7,7 @@ export class GameTable
         this.players = players
         this.playersCount = players.length
         this._headPlayer = new SittingPlayer(players[0]);
-        this._initTable(players);
+        // this._initTable(players);
     }
 
     get headPlayer()

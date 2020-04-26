@@ -8,8 +8,8 @@ export default class Player
 {
     constructor(loggedInUser)
     {
-        this.userId = loggedInUser.uid
-        this.nickName = loggedInUser.displayName
+        this.userId = loggedInUser._id
+        this.nickName = loggedInUser.nickname
         this._sickenessLevel = 0
         this.isDead = false
         this.currentHand = null

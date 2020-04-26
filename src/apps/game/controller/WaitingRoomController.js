@@ -24,7 +24,8 @@ class WaitingRoomController extends Controller {
                 return loggedInUser._objectToFirestoreDoc();
               }
             ),
-            _currentGame: waitingRoom._currentGame,
+            // _currentGame: waitingRoom._currentGame,
+            _currentGameId: waitingRoom._currentGameId,
         };
         return doc;
     }
@@ -41,7 +42,9 @@ class WaitingRoomController extends Controller {
             return new LoggedInUser(loggedInUser._id, loggedInUser.nickname);
           }
         );
-        waitingRoom._currentGame = data._currentGame;
+        // waitingRoom._currentGame = data._currentGame;
+        waitingRoom._currentGameId = data._currentGameId;
+
         return waitingRoom;
     }
 
