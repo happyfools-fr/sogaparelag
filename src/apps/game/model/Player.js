@@ -66,17 +66,27 @@ export default class Player
     {
       return 0
     }
-    // 
+    //
     // static async pushOrUpdateRecord(db, player) {
     //   await db.collection("player").doc(player.userId).set(
     //     {...player}
     //     );
     //   return player;
     // }
-    // 
+    //
     // static createAndPushPlayer(db, user) {
     //   const player = new Player(user);
     //   return Player.pushOrUpdateRecord(db, player);
     // }
+
+    toDoc() {
+        return {
+            userId : this.userId,
+            nickName : this.nickName,
+            _sickenessLevel : this._sickenessLevel,
+            isDead : this.isDead,
+            currentHand : this.currentHand,
+        }
+    }
 
 }

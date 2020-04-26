@@ -16,9 +16,9 @@ class GameController extends Controller {
         return loggedInUser._id;
     }
 
-    _objectToFirestoreDoc(loggedInUser) {
-        return {uid: loggedInUser._id, nickname: loggedInUser.nickname};
-    }
+    // _objectToFirestoreDoc(loggedInUser) {
+    //     return {uid: loggedInUser._id, nickname: loggedInUser.nickname};
+    // }
 
 
     /**

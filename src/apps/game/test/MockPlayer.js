@@ -1,4 +1,4 @@
-import {Player} from '../model/Player'
+import Player from '../model/Player'
 import {RoundAction} from '../model/RoundAction'
 
 export class MockPlayer extends Player

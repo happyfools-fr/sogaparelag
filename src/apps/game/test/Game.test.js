@@ -1,11 +1,11 @@
 import {GameTable} from '../model/GameTable'
-import {Player} from '../model/Player'
-import {Game} from '../model/Game'
+import Player from '../model/Player'
+import Game from '../model/Game'
+import LoggedInUser from '../model/LoggedInUser'
 import {WaterManager} from '../model/WaterManager'
 import {WoodManager} from '../model/WoodManager'
 import {FoodManager} from '../model/FoodManager'
 import {RoundAction} from '../model/RoundAction'
-import {MockLoggedInUser} from './MockLoggedInUser'
 import {MockRoundManager} from './MockRoundManager'
 import {MockPollManager} from './MockPollManager'
 import {MockPlayer} from './MockPlayer'
@@ -22,9 +22,9 @@ describe('Game', function()
         let id1 = uuidv1();
         let id2 = uuidv1();
         let id3 = uuidv1();
-        let user1 = new MockLoggedInUser(id1, 'toto')
-        let user2 = new MockLoggedInUser(id2, 'tata')
-        let user3 = new MockLoggedInUser(id3, 'titi')
+        let user1 = new LoggedInUser(id1, 'toto')
+        let user2 = new LoggedInUser(id2, 'tata')
+        let user3 = new LoggedInUser(id3, 'titi')
 
         let players = Game._createPlayers([user1, user2, user3])
         assert.equal(players.length, 3)
@@ -38,9 +38,9 @@ describe('Game', function()
         let id1 = uuidv1();
         let id2 = uuidv1();
         let id3 = uuidv1();
-        let user1 = new MockLoggedInUser(id1, 'toto')
-        let user2 = new MockLoggedInUser(id2, 'tata')
-        let user3 = new MockLoggedInUser(id3, 'titi')
+        let user1 = new LoggedInUser(id1, 'toto')
+        let user2 = new LoggedInUser(id2, 'tata')
+        let user3 = new LoggedInUser(id3, 'titi')
 
         let waterManager = new WaterManager()
         let woodManager = new WoodManager()
@@ -62,9 +62,9 @@ describe('Game', function()
         let id1 = uuidv1();
         let id2 = uuidv1();
         let id3 = uuidv1();
-        let user1 = new MockLoggedInUser(id1, 'toto')
-        let user2 = new MockLoggedInUser(id2, 'tata')
-        let user3 = new MockLoggedInUser(id3, 'titi')
+        let user1 = new LoggedInUser(id1, 'toto')
+        let user2 = new LoggedInUser(id2, 'tata')
+        let user3 = new LoggedInUser(id3, 'titi')
 
         let waterManager = new WaterManager()
         let woodManager = new WoodManager()
@@ -92,9 +92,9 @@ describe('Game', function()
         let id1 = uuidv1();
         let id2 = uuidv1();
         let id3 = uuidv1();
-        let user1 = new MockLoggedInUser(id1, 'toto')
-        let user2 = new MockLoggedInUser(id2, 'tata')
-        let user3 = new MockLoggedInUser(id3, 'titi')
+        let user1 = new LoggedInUser(id1, 'toto')
+        let user2 = new LoggedInUser(id2, 'tata')
+        let user3 = new LoggedInUser(id3, 'titi')
 
         let waterManager = new WaterManager()
         let woodManager = new WoodManager()
@@ -120,9 +120,9 @@ describe('Game', function()
         let id1 = uuidv1();
         let id2 = uuidv1();
         let id3 = uuidv1();
-        let user1 = new MockLoggedInUser(id1, 'toto')
-        let user2 = new MockLoggedInUser(id2, 'tata')
-        let user3 = new MockLoggedInUser(id3, 'titi')
+        let user1 = new LoggedInUser(id1, 'toto')
+        let user2 = new LoggedInUser(id2, 'tata')
+        let user3 = new LoggedInUser(id3, 'titi')
 
         let waterManager = new WaterManager()
         let woodManager = new WoodManager()
@@ -148,9 +148,9 @@ describe('Game', function()
         let id1 = uuidv1();
         let id2 = uuidv1();
         let id3 = uuidv1();
-        let user1 = new MockLoggedInUser(id1, 'toto')
-        let user2 = new MockLoggedInUser(id2, 'tata')
-        let user3 = new MockLoggedInUser(id3, 'titi')
+        let user1 = new LoggedInUser(id1, 'toto')
+        let user2 = new LoggedInUser(id2, 'tata')
+        let user3 = new LoggedInUser(id3, 'titi')
 
         let waterManager = new WaterManager()
         let woodManager = new WoodManager()
@@ -176,9 +176,9 @@ describe('Game', function()
         let id1 = uuidv1();
         let id2 = uuidv1();
         let id3 = uuidv1();
-        let user1 = new MockLoggedInUser(id1, 'toto')
-        let user2 = new MockLoggedInUser(id2, 'tata')
-        let user3 = new MockLoggedInUser(id3, 'titi')
+        let user1 = new LoggedInUser(id1, 'toto')
+        let user2 = new LoggedInUser(id2, 'tata')
+        let user3 = new LoggedInUser(id3, 'titi')
 
         let waterManager = new WaterManager()
         let woodManager = new WoodManager()
@@ -204,9 +204,9 @@ describe('Game', function()
         let id1 = uuidv1();
         let id2 = uuidv1();
         let id3 = uuidv1();
-        let user1 = new MockLoggedInUser(id1, 'toto')
-        let user2 = new MockLoggedInUser(id2, 'tata')
-        let user3 = new MockLoggedInUser(id3, 'titi')
+        let user1 = new LoggedInUser(id1, 'toto')
+        let user2 = new LoggedInUser(id2, 'tata')
+        let user3 = new LoggedInUser(id3, 'titi')
 
         let waterManager = new WaterManager()
         waterManager._weathers = [3]
@@ -235,9 +235,9 @@ describe('Game', function()
         let id1 = uuidv1();
         let id2 = uuidv1();
         let id3 = uuidv1();
-        let user1 = new MockLoggedInUser(id1, 'toto')
-        let user2 = new MockLoggedInUser(id2, 'tata')
-        let user3 = new MockLoggedInUser(id3, 'titi')
+        let user1 = new LoggedInUser(id1, 'toto')
+        let user2 = new LoggedInUser(id2, 'tata')
+        let user3 = new LoggedInUser(id3, 'titi')
 
         let waterManager = new WaterManager()
         waterManager._weathers = [3]
@@ -265,9 +265,9 @@ describe('Game', function()
         let id1 = uuidv1();
         let id2 = uuidv1();
         let id3 = uuidv1();
-        let user1 = new MockLoggedInUser(id1, 'toto')
-        let user2 = new MockLoggedInUser(id2, 'tata')
-        let user3 = new MockLoggedInUser(id3, 'titi')
+        let user1 = new LoggedInUser(id1, 'toto')
+        let user2 = new LoggedInUser(id2, 'tata')
+        let user3 = new LoggedInUser(id3, 'titi')
 
         let waterManager = new WaterManager()
         waterManager._weathers = [3]
@@ -295,9 +295,9 @@ describe('Game', function()
         let id1 = uuidv1();
         let id2 = uuidv1();
         let id3 = uuidv1();
-        let user1 = new MockLoggedInUser(id1, 'toto')
-        let user2 = new MockLoggedInUser(id2, 'tata')
-        let user3 = new MockLoggedInUser(id3, 'titi')
+        let user1 = new LoggedInUser(id1, 'toto')
+        let user2 = new LoggedInUser(id2, 'tata')
+        let user3 = new LoggedInUser(id3, 'titi')
 
         let waterManager = new WaterManager()
         waterManager._weathers = [3]
@@ -325,9 +325,9 @@ describe('Game', function()
         let id1 = uuidv1();
         let id2 = uuidv1();
         let id3 = uuidv1();
-        let user1 = new MockLoggedInUser(id1, 'toto')
-        let user2 = new MockLoggedInUser(id2, 'tata')
-        let user3 = new MockLoggedInUser(id3, 'titi')
+        let user1 = new LoggedInUser(id1, 'toto')
+        let user2 = new LoggedInUser(id2, 'tata')
+        let user3 = new LoggedInUser(id3, 'titi')
 
         let waterManager = new WaterManager()
         waterManager._weathers = [3]

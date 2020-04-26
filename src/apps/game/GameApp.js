@@ -22,7 +22,9 @@ export default function GameApp(props) {
   const [currentWaitingRoomId, setCurrentWaitingRoomId] = useState(
       (currentWaitingRoom) ? currentWaitingRoom._id : undefined
   );
-  const [currentGameId, setCurrentGameId] = useState();
+  const [currentGameId, setCurrentGameId] = useState(
+      (currentWaitingRoom) ? currentWaitingRoom._currentGameId : undefined
+  );
   //const [error, setError] = useState('');
 
   useEffect(
@@ -82,9 +84,10 @@ export default function GameApp(props) {
     alert(`Game started for room: ${currentWaitingRoom.slugname}`);
   }
 
+  if (currentWaitingRoom && !currentGameId) {
+      setCurrentGameId(currentWaitingRoom._currentGameId);
+  }
 
-  // const game = currentWaitingRoom ? currentWaitingRoom.currentGame : undefined;
-  const gameId = currentWaitingRoom ? currentWaitingRoom._currentGame : undefined;
   if (!currentSlugname && !currentGameId) {
       return (
           <GameMenuView
@@ -94,6 +97,7 @@ export default function GameApp(props) {
           />
       );
   } else if (currentSlugname && currentWaitingRoom && !currentGameId) {
+        console.log("WaitingRoomView", currentWaitingRoom._id);
         if (!currentWaitingRoom.hasJoined(props.user)){
             onJoinCurrentWaitingRoom();
         }
@@ -108,7 +112,6 @@ export default function GameApp(props) {
       console.log("currentGameId before GameView", currentGameId);
       return (
         <GameView
-          // game={game}
           gameSlugname={currentSlugname}
           gameId={currentGameId}
           user={user}

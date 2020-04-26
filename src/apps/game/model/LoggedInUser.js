@@ -1,12 +1,12 @@
 
-/** 
+/**
  * Features:
  * - connect to a GamingRoom by slugname
  */
-export default class LoggedInUser 
+export default class LoggedInUser
 {
-  
-  constructor (uid, nickname) 
+
+  constructor (uid, nickname)
   {
     this._id = uid;
     this.nickname = nickname;
@@ -14,7 +14,7 @@ export default class LoggedInUser
 
 
   get id()
-  { 
+  {
       return this._id
   }
 
@@ -24,13 +24,14 @@ export default class LoggedInUser
       //todo
       return true;
   }
-  
-  _objectToFirestoreDoc() {
-      let doc = {
+
+  toDoc() {
+      return {
         _id: this._id,
         nickname: this.nickname,
       };
-      return doc;
   }
-  
+
+
+
 }

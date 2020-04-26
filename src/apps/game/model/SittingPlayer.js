@@ -1,4 +1,4 @@
-export class SittingPlayer 
+export class SittingPlayer
 {
     constructor(player)
     {
@@ -32,6 +32,14 @@ export class SittingPlayer
     set next(value)
     {
         this._next = value;
+    }
+
+    toDoc() {
+        return {
+            playerId: this._player.id,
+            next: this._next._id,
+            previous: this._previous._id
+        }
     }
 }
 

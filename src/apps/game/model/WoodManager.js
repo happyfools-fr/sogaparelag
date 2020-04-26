@@ -42,4 +42,8 @@ export class WoodManager {
     {
         return this.inventory >= 6 * playersCount;
     }
+
+    toDoc() {
+        return {woodSupply: this.inventory}
+    }
 }

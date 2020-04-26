@@ -150,4 +150,24 @@ export default class Game
         let canLeaveWithEnoughWood = this._woodManager.authorizeLeaving(this._gameTable.playersCount)
         return canLeaveWithEnoughWater && canLeaveWithEnoughFood && canLeaveWithEnoughWood
     }
+
+    toDoc() {
+        return {
+            _id : this._id,
+
+            _lastRound : this._lastRound,
+            _win : this._win,
+            history: this.history,
+
+            _gameTable: this._gameTable.toDoc(),
+            history: this.history,
+
+            _waterManager : this._waterManager.toDoc(),
+            _foodManager : this._foodManager.toDoc(),
+            _woodManager : this._woodManager.toDoc(),
+
+            // this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
+            // this._pollManager = new PollManager(this._gameTable);
+        }
+    }
 }

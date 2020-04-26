@@ -7,7 +7,7 @@ export class GameTable
         this.players = players
         this.playersCount = players.length
         this._headPlayer = new SittingPlayer(players[0]);
-        // this._initTable(players);
+        this._initTable(players);
     }
 
     get headPlayer()
@@ -15,7 +15,8 @@ export class GameTable
         return this._headPlayer.player
     }
 
-    _initTable(players) {
+    _initTable(players)
+    {
         let previousCreatedPlayerOnTable = this._headPlayer;
         //1 .. N-1
         for (let i = 1; i < players.length; i++) {
@@ -100,6 +101,10 @@ export class GameTable
                 yield currentPlayer;
             currentPlayer = currentPlayer.next
         }
+    }
+
+    toDoc() {
+        return {players: this.players.map((p) => {return p.toDoc()}), headPlayerId: this._headPlayer.id}
     }
 }
 

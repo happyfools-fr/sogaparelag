@@ -5,6 +5,13 @@ const assert = require('assert');
 
 describe('WaterManager', function() 
 {
+  
+    it('default value for inventory is 0', () => 
+    {
+        const _waterManager = new WaterManager();
+        assert.equal(_waterManager.inventory, 0);
+    });
+  
     it('collect 1st weather in list with single item', () => 
     {
         const _waterManager = new WaterManager()
@@ -83,5 +90,14 @@ describe('WaterManager', function()
         const _waterManager = new WaterManager()
         _waterManager._weathers = [2, 3, 0]
         assert.equal(_waterManager.mustLeave(), false)
+    });
+    
+    it('should convert to doc object', () =>
+    {
+        const _waterManager = new WaterManager()
+        _waterManager.inventory = 10;
+        const doc = _waterManager.toDoc()
+        assert.equal(doc['waterSupply'], _waterManager.inventory);
+        assert.deepEqual(Object.keys(doc), ['waterSupply']);
     });
 });

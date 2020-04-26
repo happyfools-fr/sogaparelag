@@ -1,4 +1,4 @@
-import {Player} from '../model/Player'
+import Player from '../model/Player'
 import {MockLoggedInUser} from './MockLoggedInUser'
 import {RoundAction} from '../model/RoundAction'
 

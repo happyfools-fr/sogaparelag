@@ -5,6 +5,12 @@ const assert = require('assert');
 
 describe('FoodManager', function()
 {
+    it('default value is 0', () =>
+    {
+        const _foodManager = new FoodManager();
+        assert.equal(_foodManager.inventory, 0);
+    });
+
     it('collect food gets value in 1-2-3', () =>
     {
         const _foodManager = new FoodManager()
@@ -58,5 +64,14 @@ describe('FoodManager', function()
 
         _foodManager.inventory = 10
         assert.equal(_foodManager.authorizeLeaving(3), true)
+    });
+    
+    it('should convert to doc object', () =>
+    {
+        const _foodManager = new FoodManager()
+        _foodManager.inventory = 10;
+        const doc = _foodManager.toDoc()
+        assert.equal(doc['foodSupply'], _foodManager.inventory);
+        assert.deepEqual(Object.keys(doc), ['foodSupply']);
     });
 });

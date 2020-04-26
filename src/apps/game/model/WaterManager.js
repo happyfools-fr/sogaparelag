@@ -4,7 +4,7 @@ export class WaterManager
 {
     constructor(value)
     {
-        this.inventory = value
+        this.inventory = value ? value : 0;
         this._weathers = []
     }
 
@@ -39,5 +39,11 @@ export class WaterManager
     authorizeLeaving(playersCount)
     {
         return this.inventory >= 2 * playersCount;
+    }
+
+    toDoc() {
+        return {
+          waterSupply: this.inventory
+        };
     }
 }

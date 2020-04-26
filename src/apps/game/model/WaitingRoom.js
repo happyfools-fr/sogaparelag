@@ -14,8 +14,8 @@ import {WoodManager} from "./WoodManager";
  * - create WaitingRoom collection
  */
 
-const MIN_NUMBER_PLAYERS = 1; // Should be 3
-const MAX_NUMBER_PLAYERS = 12;
+export const MIN_NUMBER_PLAYERS = 3; // Should be 3
+export const MAX_NUMBER_PLAYERS = 12;
 const INITIAL_VALUES = [
 //  water, food
     [6, 5],
@@ -37,9 +37,7 @@ export default class WaitingRoom
         this._id = uuidv1();
         this.slugname = this._createSlugname();
         this._loggedInUsers = [];
-        // this._currentGame = null;
-        this._currentGameId = null;
-
+        this._currentGame = null;
     }
 
     hasJoined(user) {
@@ -49,7 +47,6 @@ export default class WaitingRoom
     addLoggedInUser(loggedInUserToAdd)
     {
         let numberOfPlayers = this._loggedInUsers.length;
-        console.log("addLoggedInUser.numberOfPlayers", numberOfPlayers)
         if (!this.hasJoined(loggedInUserToAdd) && numberOfPlayers < MAX_NUMBER_PLAYERS) {
             this._loggedInUsers.push(loggedInUserToAdd);
             return true;
@@ -67,10 +64,7 @@ export default class WaitingRoom
             let foodManager = new FoodManager(initialFood);
             let woodManager = new WoodManager(0);
             let game = new Game(this._loggedInUsers, waterManager, foodManager, woodManager);
-            // this._currentGame = game;
-            console.log("this._loggedInUsers instance in startGame:", this._loggedInUsers);
-            console.log("new game instance in startGame:", game);
-            this._currentGameId = game._id;
+            this._currentGame = game;
             return game;
         } else {
             return null;
@@ -83,5 +77,14 @@ export default class WaitingRoom
         const words = json["words"];
         const random = Math.round(Math.random() * words.length / 2)
         return words[random] + "-" + words[random * 2]
+    }
+
+    toDoc() {
+        return {
+            _id: this._id,
+            slugname: this.slugname,
+            _loggedInUsers: this._loggedInUsers.map((u) => {return u.toDoc()}),
+            _currentGame: this._currentGame.toDoc(),
+        }
     }
 }
