@@ -5,6 +5,12 @@ const assert = require('assert');
 
 describe('FoodManager', function()
 {
+    it('default value is 0', () =>
+    {
+        const _foodManager = new FoodManager();
+        assert.equal(_foodManager.inventory, 0);
+    });
+
     it('collect food gets value in 1-2-3', () =>
     {
         const _foodManager = new FoodManager()

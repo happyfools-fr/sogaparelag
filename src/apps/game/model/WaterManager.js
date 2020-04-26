@@ -4,7 +4,7 @@ export class WaterManager
 {
     constructor(value)
     {
-        this.inventory = value
+        this.inventory = value ? value : 0;
         this._weathers = []
     }
 
@@ -42,6 +42,8 @@ export class WaterManager
     }
 
     toDoc() {
-        return {waterSupply: this.inventory}
+        return {
+          waterSupply: this.inventory
+        };
     }
 }
