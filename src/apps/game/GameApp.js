@@ -8,54 +8,30 @@ import WaitingRoomController from './controller/WaitingRoomController'
 import GameController from './controller/GameController'
 import WaitingRoomView from './views/WaitingRoomView'
 
-export default function GameApp(props) {
+import WaitingRoomApp from './WaitingRoomApp'
 
-  const user = props.user;
-  const firebaseService = props.firebaseService;
+export default function GameApp(props) {
 
   const [currentSlugname, setCurrentSlugname] = useState(props.slugname);
 
-  const waitingRoomController = new WaitingRoomController(firebaseService.ft);
-  const gameController = new GameController(firebaseService.ft);
+  const waitingRoomController = new WaitingRoomController(props.firebaseService.ft);
 
   const [currentWaitingRoom, setCurrentWaitingRoom] = useState();
   const [currentWaitingRoomId, setCurrentWaitingRoomId] = useState(
       (currentWaitingRoom) ? currentWaitingRoom._id : undefined
   );
-  const [currentGameId, setCurrentGameId] = useState(
-      (currentWaitingRoom) ? currentWaitingRoom._currentGameId : undefined
-  );
-  //const [error, setError] = useState('');
 
   useEffect(
       () => {
-        if (!currentWaitingRoomId) {
-            const unsubscribe = waitingRoomController
-                        .listenOnSlugname(currentSlugname, setCurrentWaitingRoom);
-            return unsubscribe;
-        } else {
-            const unsubscribe = waitingRoomController
-                        .listen(currentWaitingRoomId, setCurrentWaitingRoom);
-            return unsubscribe;
-        };
+        const unsubscribe = waitingRoomController
+                    .listenOnSlugname(currentSlugname, setCurrentWaitingRoom);
+        return unsubscribe;
       },
       [
-        currentSlugname, currentWaitingRoomId,
+        currentSlugname,
         waitingRoomController, setCurrentWaitingRoom,
       ]
   );
-
-
-
-  const onJoinCurrentWaitingRoom = () => {
-    if (currentWaitingRoom && currentWaitingRoom.addLoggedInUser(user)) {
-        waitingRoomController.push(currentWaitingRoom);
-        setCurrentWaitingRoom(currentWaitingRoom);
-    } else {
-        console.log('Player' + props.user.nickname +' has already joined' + currentSlugname);
-    }
-  }
-
 
 
   const handleClickCreateNewGame = (click) => {
@@ -68,57 +44,27 @@ export default function GameApp(props) {
       console.log(currentWaitingRoom)
   }
 
+
   const handleJoinGameSubmit = (slugname, submit) =>  {
       submit.preventDefault();
       setCurrentSlugname(slugname);
   }
 
-  const handleStartGame = (click) => {
-    const newGame = currentWaitingRoom.startGame();
-    console.log("handleStartGame.newGame before push2", newGame)
-    gameController.push(newGame);
-    waitingRoomController.update(currentWaitingRoom);
-    setCurrentWaitingRoom(currentWaitingRoom)
-    setCurrentWaitingRoomId(currentWaitingRoom._id);
-    setCurrentGameId(newGame._id);
-    alert(`Game started for room: ${currentWaitingRoom.slugname}`);
-  }
-
-  if (currentWaitingRoom && !currentGameId) {
-      setCurrentGameId(currentWaitingRoom._currentGameId);
-  }
-
-  if (!currentSlugname && !currentGameId) {
+  if (currentWaitingRoom) {
+      return (
+          <WaitingRoomApp
+            user={props.user}
+            waitingRoom={currentWaitingRoom}
+            firebaseService={props.firebaseService}
+          />
+        )
+  } else {
       return (
           <GameMenuView
               handleClickCreateNewGame={handleClickCreateNewGame}
               handleJoinGameSubmit={handleJoinGameSubmit}
-              firebaseService={firebaseService}
+              firebaseService={props.firebaseService}
           />
       );
-  } else if (currentSlugname && currentWaitingRoom && !currentGameId) {
-        console.log("WaitingRoomView", currentWaitingRoom._id);
-        if (!currentWaitingRoom.hasJoined(props.user)){
-            onJoinCurrentWaitingRoom();
-        }
-        return (
-            <WaitingRoomView
-                gameSlugname={currentSlugname}
-                players={currentWaitingRoom._loggedInUsers}
-                onClick={handleStartGame}
-            />
-        );
-  } else if (currentGameId) {
-      console.log("currentGameId before GameView", currentGameId);
-      return (
-        <GameView
-          gameSlugname={currentSlugname}
-          gameId={currentGameId}
-          user={user}
-          firebaseService={firebaseService}
-          />
-        );
-  } else {
-    return (<div />);
   }
 }
