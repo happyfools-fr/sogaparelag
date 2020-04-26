@@ -43,10 +43,12 @@ export default class WaitingRoom
     addLoggedInUser(loggedInUserToAdd)
     {
         let numberOfPlayers = this._loggedInUsers.length;
+        console.log(!this._currentGame, numberOfPlayers)
         if (!this._currentGame && numberOfPlayers < MAX_NUMBER_PLAYERS) {
             this._loggedInUsers.push(loggedInUserToAdd)
+            return true
         } else {
-            return null
+            return false
         }
     }
 
