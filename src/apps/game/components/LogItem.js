@@ -8,7 +8,7 @@ import ListGroup from 'react-bootstrap/ListGroup'
 export default function LogItem(props) {
     return (
         <ListGroup.Item>
-            <i class={"fas " + props.icon} />
+            <i className={"fas " + props.icon} />
             &nbsp;
             {props.value}
         </ListGroup.Item>
