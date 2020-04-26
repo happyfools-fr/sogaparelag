@@ -4,14 +4,14 @@ export class FoodManager
 {
     constructor(value)
     {
-        this._foods = [1, 1, 1, 2, 2, 3]
-        this.inventory = value
+        this._foods = [1, 1, 1, 2, 2, 3];
+        this.inventory = value ? value : 0;
     }
 
     collect()
     {
-        shuffle(this._foods)
-        this.inventory += this._foods[0]
+        shuffle(this._foods);
+        this.inventory += this._foods[0];
     }
 
     eat(playersCount)
@@ -25,6 +25,8 @@ export class FoodManager
     }
 
     toDoc() {
-        return {foodSupply: this.inventory}
+        return {
+          foodSupply: this.inventory
+        };
     }
 }
