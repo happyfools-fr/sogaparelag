@@ -1,6 +1,6 @@
 import {PollManager} from '../model/PollManager'
 import {GameTable} from '../model/GameTable'
-import {Player} from '../model/Player'
+import Player from '../model/Player'
 import {MockLoggedInUser} from './MockLoggedInUser'
 import {MockPlayer} from './MockPlayer'
 import { v1 as uuidv1 } from 'uuid';
