@@ -1,5 +1,8 @@
-import {Game2} from './Game2'
+import {Game} from './Game2'
 import { v1 as uuidv1 } from 'uuid';
+import {WaterManager} from "./WaterManager";
+import {FoodManager} from "./FoodManager";
+import {WoodManager} from "./WoodManager";
 
 /**
  * WaitingRoom
@@ -10,8 +13,21 @@ import { v1 as uuidv1 } from 'uuid';
  * - create WaitingRoom collection
  */
 
-const MIN_NUMBER_PLAYERS = 3;
+const MIN_NUMBER_PLAYERS = 1; // Should be 3
 const MAX_NUMBER_PLAYERS = 12;
+const INITIAL_VALUES = [
+//  water, food
+    [6, 5],
+    [8, 7],
+    [10, 8],
+    [12, 10],
+    [14, 12],
+    [16, 13],
+    [18, 15],
+    [20, 16],
+    [22, 18],
+    [24, 20]
+]
 
 export class WaitingRoom
 {
@@ -25,7 +41,7 @@ export class WaitingRoom
 
     addLoggedInPlayer(loggedInPlayer)
     {
-        const numberOfPlayers = this._loggedInUsers.length;
+        let numberOfPlayers = this._loggedInUsers.length;
         if (!this._currentGame && numberOfPlayers < MAX_NUMBER_PLAYERS) {
             this._loggedInUsers.push(loggedInPlayer)
         } else {
@@ -35,9 +51,19 @@ export class WaitingRoom
 
     startGame()
     {
-        const numberOfPlayers = this._loggedInUsers.length;
+        let numberOfPlayers = this._loggedInUsers.length;
+
         if (numberOfPlayers >= MIN_NUMBER_PLAYERS && numberOfPlayers <= MAX_NUMBER_PLAYERS) {
-            return new Game2(this._loggedInUsers)
+
+            [initialWater, initialFood] = INITIAL_VALUES[numberOfPlayers-MIN_NUMBER_PLAYERS]
+            waterManager = new WaterManager(initialWater);
+            foodManager = new FoodManager(initialFood);
+            foodManager = new FoodManager();
+
+            let game = new Game(this._loggedInUsers, waterManager, foodManager, woodManager);
+            this._currentGame = game;
+            return game;
+
         } else {
             return null
         }

@@ -2,10 +2,10 @@ import shuffle from 'shuffle-array'
 
 export class FoodManager
 {
-    constructor()
+    constructor(value)
     {
         this._foods = [1, 1, 1, 2, 2, 3]
-        this.inventory = 0
+        this.inventory = value
     }
 
     collect()

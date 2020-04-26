@@ -14,13 +14,13 @@ export default function GameTableView(props) {
         <Container>
         <Row>
             <Col sm={3}>
-                <WaterSupplyComponent inventory={game.currentState.waterSupply} />
+                <WaterSupplyComponent inventory={game.waterSupply} />
             </Col>
             <Col sm={3}>
-                <FoodSupplyComponent inventory={game.currentState.foodSupply} />
+                <FoodSupplyComponent inventory={game.foodSupply} />
             </Col>
             <Col sm={3}>
-                <WoodSupplyComponent inventory={0} /> {/*{game.currentState.woodSupply} />*/}
+                <WoodSupplyComponent inventory={game.woodSupply} />*/}
             </Col>
             <Col sm={3}>
                 <RaftComponent inventory={0} />
@@ -38,10 +38,11 @@ export default function GameTableView(props) {
             </thead>
             <tbody>
               <tr>
-                <td>{game.currentState.roundNumber}</td>
+                {/*<td>{game.currentState.roundNumber}</td>*/}
+                <td>à définir</td>
                 <td>{game.history.length}</td>
-                <td>{props.currentPlayerNickname}</td>
-                <th>{props.nextPlayerNickname}</th>
+                <td>{props.currentPlayerId}</td>
+                <th>{props.nextPlayerId}</th>
               </tr>
             </tbody>
         </Table>
