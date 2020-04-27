@@ -78,7 +78,7 @@ describe('FoodManager', function()
     it('should instantiate correctly from doc object', () =>
     {
         const doc = {
-          footSupply: 10,
+          foodSupply: 10,
         };
         const _foodManager = new FoodManager();
         _foodManager.fromDoc(doc);

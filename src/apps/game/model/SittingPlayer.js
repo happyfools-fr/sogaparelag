@@ -1,3 +1,9 @@
+import Player from './Player'
+import LoggedInUser from  './LoggedInUser'
+import Utils from "./Utils";
+
+export const SERDE_KEYS = ['_player', '_next', '_previous']
+
 export class SittingPlayer
 {
     constructor(player)
@@ -36,10 +42,26 @@ export class SittingPlayer
 
     toDoc() {
         return {
-            playerId: this._player.id,
-            next: this._next._id,
-            previous: this._previous._id
+            _player: this._player,
+            _next: this._next,
+            _previous: this._previous,
         }
+    }
+    
+    fromDoc(doc) {
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
+          const player = new Player(new LoggedInUser("", ""))      
+          player.fromDoc(doc['_player'])
+          this._player = doc['_player'] ? player : null;
+
+          const next = new Player(new LoggedInUser("", ""))
+          next.fromDoc(doc['_next'])
+          this._next = doc['_next'] ? next : null;
+
+          const previous = new Player(new LoggedInUser("", ""))
+          previous.fromDoc(doc['_previous'])
+          this._previous = doc['_previous'] ? previous : null;
+      }
     }
 }
 

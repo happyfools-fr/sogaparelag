@@ -1,4 +1,6 @@
+import Utils from './Utils'
 
+const SERDE_KEYS = ['_id', 'nickname'];
 /**
  * Features:
  * - connect to a GamingRoom by slugname
@@ -32,6 +34,11 @@ export default class LoggedInUser
       };
   }
 
-
+  fromDoc(doc) {
+    if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){      
+        this._id = doc['_id'];
+        this.nickname = doc['nickname'];
+      }
+  }
 
 }

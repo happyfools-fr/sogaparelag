@@ -1,4 +1,7 @@
 import shuffle from 'shuffle-array'
+import Utils from "./Utils";
+
+export const SERDE_KEYS = ['woodSupply'];
 
 export class WoodManager {
     constructor()
@@ -48,6 +51,8 @@ export class WoodManager {
     }
     
     fromDoc(doc) {
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
         this.inventory = doc['woodSupply'];
+      }
     }
 }

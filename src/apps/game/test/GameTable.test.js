@@ -1,7 +1,8 @@
 import {GameTable} from '../model/GameTable'
 import Player from '../model/Player';
 import LoggedInUser from '../model/LoggedInUser'
-
+import SittingPlayer from '../model/SittingPlayer'
+import {SERDE_KEYS} from '../model/GameTable'
 
 const user1 = new LoggedInUser(1, 'toto')
 const user2 = new LoggedInUser(2, 'tata')
@@ -205,6 +206,51 @@ describe('GameTable', function()
         assert.equal(thirdPlayer.id, 3)
         assert.equal(thirdPlayer.next.id, 1)
         assert.equal(thirdPlayer.previous.id, 2)
+    });
+    
+    it('convert to valid doc', () =>
+    {
+        let player1 = new Player(user1)
+        let player2 = new Player(user2)
+        let player3 = new Player(user3)
+        const listPlayers = [player1, player2, player3];
+        const gameTable = new GameTable(listPlayers);
+
+        const doc = gameTable.toDoc();
+        
+        assert.deepEqual(Object.keys(doc), SERDE_KEYS);
+        assert.deepEqual(doc['players'], listPlayers.map(p => {return p.toDoc();}));
+        assert.equal(doc['playersCount'], gameTable.playersCount);
+        assert.deepEqual(doc['_headPlayer'], gameTable._headPlayer.toDoc());
+    });
+
+    it('instantiate from doc object', () =>
+    {
+        let player1 = new Player(user1)
+        let player2 = new Player(user2)
+        let player3 = new Player(user3)
+        const listPlayers = [player1, player2, player3];
+        const gameTable = new GameTable(listPlayers);
+
+        const player4 = new Player(new LoggedInUser(4, 'toto'))
+        const player5 = new Player(new LoggedInUser(5, 'tata'))
+        const player6 = new Player(new LoggedInUser(6, 'titi'))
+        const newListPlayers = [player4, player5, player6];
+        const _headPlayer = new SittingPlayer(newListPlayers[0]);
+        
+        const doc = {
+          players: newListPlayers.map((p) => {return p.toDoc();}), 
+          playersCount: newListPlayers.length,
+          _headPlayer: _headPlayer.toDoc(),
+        }
+        gameTable.fromDoc(doc);
+        
+        assert.deepEqual(gameTable.players, newListPlayers);
+        assert.equal(gameTable.playersCount, newListPlayers.length);
+        assert.deepEqual(gameTable._headPlayer.toDoc(), _headPlayer.toDoc());
+        //todo 
+        // assert.deepEqual(gameTable._headPlayer, _headPlayer);
+
     });
 
 });

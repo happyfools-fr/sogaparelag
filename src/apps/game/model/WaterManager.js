@@ -1,4 +1,7 @@
 import { isTSExpressionWithTypeArguments } from "@babel/types";
+import Utils from "./Utils";
+
+export const SERDE_KEYS = ['waterSupply', '_weathers'];
 
 export class WaterManager
 {
@@ -50,7 +53,9 @@ export class WaterManager
     }
     
     fromDoc(doc) {
-       this.inventory = doc['waterSupply'];
-       this._weathers = doc['_weathers'];
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
+         this.inventory = doc['waterSupply'];
+         this._weathers = doc['_weathers'];
+       }
     }
 }

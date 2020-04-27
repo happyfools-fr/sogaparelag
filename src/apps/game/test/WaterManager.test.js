@@ -1,4 +1,4 @@
-import {WaterManager} from '../model/WaterManager'
+import {WaterManager, SERDE_KEYS} from '../model/WaterManager'
 
 const assert = require('assert');
     
@@ -94,10 +94,10 @@ describe('WaterManager', function()
     
     it('should convert to doc object', () =>
     {
-        const _waterManager = new WaterManager()
+        const _waterManager = new WaterManager();
         _waterManager.inventory = 10;
-        const doc = _waterManager.toDoc()
-        assert.deepEqual(Object.keys(doc), ['waterSupply', '_weathers']);
+        const doc = _waterManager.toDoc();
+        assert.deepEqual(Object.keys(doc), SERDE_KEYS);
         assert.equal(doc['waterSupply'], _waterManager.inventory);
         assert.deepEqual(doc['_weathers'], _waterManager._weathers);
     });

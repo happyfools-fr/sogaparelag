@@ -1,9 +1,19 @@
 import Player from "./Player";
+import LoggedInUser from "./LoggedInUser";
 import {RoundManager} from "./RoundManager";
+import {WaterManager} from "./WaterManager";
+import {FoodManager} from "./FoodManager";
+import {WoodManager} from "./WoodManager";
+
 import {GameTable} from "./GameTable";
 import {PollManager} from "./PollManager";
+import Utils from './Utils'
 import { v1 as uuidv1 } from 'uuid';
 
+export const SERDE_KEYS = [
+  '_id', '_lastRound', '_win', '_waterManager',
+  '_foodManager', '_woodManager', '_gameTable', 'history' 
+];
 
 export default class Game
 {
@@ -156,16 +166,50 @@ export default class Game
 
             _lastRound : this._lastRound,
             _win : this._win,
-            history: this.history,
-
-            _gameTable: this._gameTable.toDoc(),
 
             _waterManager : this._waterManager.toDoc(),
             _foodManager : this._foodManager.toDoc(),
             _woodManager : this._woodManager.toDoc(),
-
+            
+            _gameTable: this._gameTable.toDoc(),
             // this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
             // this._pollManager = new PollManager(this._gameTable);
+            
+            history: this.history,
+
         }
+    }
+    
+    fromDoc(doc) {
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){      
+          this._id = doc['_id'];
+
+          this._lastRound = doc['_lastRound'];
+          this._win = doc['_win'];
+
+          const waterManager = new WaterManager() 
+          waterManager.fromDoc(doc['_waterManager'])
+          this._waterManager = waterManager
+          const foodManager = new FoodManager() 
+          foodManager.fromDoc(doc['_foodManager'])
+          this._foodManager = foodManager
+          const woodManager = new WoodManager() 
+          woodManager.fromDoc(doc['_woodManager'])
+          this._woodManager = woodManager
+
+          // new GameTable(players)
+          let players = [
+            new Player(new LoggedInUser('tototo', 'ddd')),
+            new Player(new LoggedInUser('tototo1', 'ddd')),
+            new Player(new LoggedInUser('tototo2', 'ddd'))
+          ];
+          let gameTable = new GameTable(players);
+          gameTable.fromDoc(doc['_gameTable']);
+          this._gameTable = gameTable;
+          // this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
+          // this._pollManager = new PollManager(this._gameTable);
+
+          this.history = doc['history'];
+      }
     }
 }

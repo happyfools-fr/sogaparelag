@@ -1,5 +1,5 @@
 import LoggedInUser from  '../model/LoggedInUser'
-import WaitingRoom, {MIN_NUMBER_PLAYERS, MAX_NUMBER_PLAYERS} from '../model/WaitingRoom'
+import WaitingRoom, {SERDE_KEYS, MIN_NUMBER_PLAYERS, MAX_NUMBER_PLAYERS} from '../model/WaitingRoom'
 import Game from '../model/Game'
 
 const assert = require('assert');
@@ -74,7 +74,7 @@ describe('WaitingRoom', function()
         let waitingRoom = new WaitingRoom()
       
         assert(waitingRoom._currentGame == null);
-        for(var i = MIN_NUMBER_PLAYERS; i < MAX_NUMBER_PLAYERS; i++){
+        for(var i = 0; i < MAX_NUMBER_PLAYERS; i++){
           const userId = 'toto' + i;
           const user = new LoggedInUser(userId, "ToTO");
           waitingRoom.addLoggedInUser(user);
@@ -105,8 +105,7 @@ describe('WaitingRoom', function()
         let waitingRoom = new WaitingRoom()
         
         assert(waitingRoom._currentGame == null);
-        const min =  MIN_NUMBER_PLAYERS;
-        for(var i = MIN_NUMBER_PLAYERS; i < MAX_NUMBER_PLAYERS; i++){
+        for(var i = 0; i < MAX_NUMBER_PLAYERS; i++){
           const userId = 'toto' + i;
           const user = new LoggedInUser(userId, "ToTO");
           waitingRoom.addLoggedInUser(user);
@@ -114,13 +113,40 @@ describe('WaitingRoom', function()
         
         waitingRoom.startGame()   
         const doc = waitingRoom.toDoc();
-        assert.deepEqual(Object.keys(doc), 
-          ['_id', 'slugname', '_loggedInUsers', '_currentGame']
-        );
+        assert.deepEqual(Object.keys(doc), SERDE_KEYS);
         assert.equal(doc['_id'], waitingRoom._id);
         assert.equal(doc['slugname'], waitingRoom.slugname);
         assert.deepEqual(doc['_loggedInUsers'], waitingRoom._loggedInUsers.map((u) => {return u.toDoc()}));  
         assert.deepEqual(doc['_currentGame'], waitingRoom._currentGame.toDoc());
+    });
+    
+    it('intantiate from doc object', () =>
+    {
+        let waitingRoom = new WaitingRoom()
+        let listLoggedInUsers = [];
+        for(var i = 0; i < MAX_NUMBER_PLAYERS; i++){
+          const user = new LoggedInUser(`toto${i}`, "ToTO");
+          listLoggedInUsers.push(user);
+          waitingRoom.addLoggedInUser(user);
+        }
+        waitingRoom.startGame()   
+        
+        const doc = {
+          _id: "hello",
+          slugname: "slug",
+          _loggedInUsers: listLoggedInUsers.map( u => {return u.toDoc();}),
+          _currentGame: waitingRoom._currentGame.toDoc(),
+        }
+
+        let waitingRoom2 = new WaitingRoom();
+        waitingRoom2.fromDoc(doc);
+        assert.equal(doc['_id'], waitingRoom2._id);
+        assert.equal(doc['slugname'], waitingRoom2.slugname);
+        assert.deepEqual(listLoggedInUsers, waitingRoom2._loggedInUsers);  
+        assert.deepEqual(waitingRoom._currentGame.toDoc(), waitingRoom2._currentGame.toDoc());
+        //todo
+        // assert.deepEqual(waitingRoom._currentGame, waitingRoom2._currentGame);
+
         
     });
 

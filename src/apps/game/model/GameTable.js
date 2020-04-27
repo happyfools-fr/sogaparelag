@@ -1,4 +1,9 @@
 import SittingPlayer from './SittingPlayer'
+import LoggedInUser from './LoggedInUser'
+import Player from './Player'
+import Utils from './Utils'
+
+export const SERDE_KEYS = ['players', 'playersCount', '_headPlayer'];
 
 export class GameTable
 {
@@ -105,9 +110,27 @@ export class GameTable
 
     toDoc() {
         return {
-          players: this.players.map((p) => {return p.toDoc()}), 
-          headPlayerId: this._headPlayer.id
+          players: this.players.map((p) => {return p.toDoc();}), 
+          playersCount: this.playersCount,
+          _headPlayer: this._headPlayer.toDoc(),
         }
+    }
+    
+    fromDoc(doc) {
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){      
+        const players = doc['players'].map((pDoc) => {
+          const p = new Player(new LoggedInUser("",""));
+          p.fromDoc(pDoc);
+          return p;
+        })
+        this.players = players;
+        this.playersCount = doc['playersCount'];
+        
+        const _headPlayer = new SittingPlayer(players[0]);
+        _headPlayer.fromDoc(doc['_headPlayer']);
+        this._headPlayer = _headPlayer;
+        this._initTable(players);
+      }
     }
 }
 

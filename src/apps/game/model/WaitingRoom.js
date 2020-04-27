@@ -4,7 +4,10 @@ import { v1 as uuidv1 } from 'uuid';
 import {WaterManager} from "./WaterManager";
 import {FoodManager} from "./FoodManager";
 import {WoodManager} from "./WoodManager";
+import LoggedInUser from "./LoggedInUser";
+import Utils from "./Utils";
 
+export const SERDE_KEYS = ['_id', 'slugname', '_loggedInUsers', '_currentGame'];
 /**
  * WaitingRoom
  * - Can add loggedInPlayer only if game has not started (if !this_currentGame)
@@ -86,5 +89,20 @@ export default class WaitingRoom
             _loggedInUsers: this._loggedInUsers.map((u) => {return u.toDoc()}),
             _currentGame: this._currentGame.toDoc(),
         }
+    }
+    
+    fromDoc(doc) {
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
+        this._id = doc['_id'];
+        this.slugname = doc['slugname'];
+        this._loggedInUsers = doc['_loggedInUsers'].map((uDoc) => {
+          const user = new LoggedInUser("alpha", "beta");
+          user.fromDoc(uDoc);
+          return user;
+        });
+        const game = new Game(this._loggedInUsers, null, null, null);
+        game.fromDoc(doc['_currentGame']);
+        this._currentGame = game;
+      }
     }
 }

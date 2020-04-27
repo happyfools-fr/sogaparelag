@@ -1,5 +1,7 @@
 import {RoundAction} from './RoundAction'
+import Utils from './Utils'
 
+const SERDE_KEYS = ['userId', 'nickName', '_sickenessLevel', 'isDead', 'currentHand'];
 /**
  * Player holds player state in game
  *
@@ -14,7 +16,6 @@ export default class Player
         this.isDead = false
         this.currentHand = null
     }
-
 
     get id()
     {
@@ -78,11 +79,13 @@ export default class Player
     }
     
     fromDoc(doc) {
-      this.userId = doc['userId'];
-      this.nickName = doc['nickName'];
-      this._sickenessLevel = doc['_sickenessLevel'];
-      this.isDead = doc['isDead'];
-      this.currentHand = doc['currentHand'];
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
+          this.userId = doc['userId'];
+          this.nickName = doc['nickName'];
+          this._sickenessLevel = doc['_sickenessLevel'];
+          this.isDead = doc['isDead'];
+          this.currentHand = doc['currentHand'];
+      }
     }
 
 }

@@ -1,5 +1,5 @@
 import shuffle from 'shuffle-array'
-import {WoodManager} from '../model/WoodManager'
+import {WoodManager, SERDE_KEYS} from '../model/WoodManager'
 
 const assert = require('assert');
 
@@ -99,7 +99,7 @@ describe('WoodManager', function()
     {
         const _woodManager = new WoodManager()
         const doc = _woodManager.toDoc()
-        assert.deepEqual(Object.keys(doc), ['woodSupply']);
+        assert.deepEqual(Object.keys(doc), SERDE_KEYS);
         assert.equal(doc['woodSupply'], _woodManager.inventory);
     });
     
