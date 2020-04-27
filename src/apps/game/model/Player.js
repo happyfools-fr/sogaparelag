@@ -66,18 +66,6 @@ export default class Player
     {
       return 0
     }
-    //
-    // static async pushOrUpdateRecord(db, player) {
-    //   await db.collection("player").doc(player.userId).set(
-    //     {...player}
-    //     );
-    //   return player;
-    // }
-    //
-    // static createAndPushPlayer(db, user) {
-    //   const player = new Player(user);
-    //   return Player.pushOrUpdateRecord(db, player);
-    // }
 
     toDoc() {
         return {
@@ -87,6 +75,14 @@ export default class Player
             isDead : this.isDead,
             currentHand : this.currentHand,
         }
+    }
+    
+    fromDoc(doc) {
+      this.userId = doc['userId'];
+      this.nickName = doc['nickName'];
+      this._sickenessLevel = doc['_sickenessLevel'];
+      this.isDead = doc['isDead'];
+      this.currentHand = doc['currentHand'];
     }
 
 }
