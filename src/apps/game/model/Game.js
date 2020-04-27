@@ -11,15 +11,14 @@ export default class Game
     {
         this._id = uuidv1();
 
-        let players = Game._createPlayers(loggedInUsers)
         this._lastRound = false
         this._win = false
 
         this._waterManager = waterManager
-
         this._foodManager = foodManager
         this._woodManager = woodManager
 
+        let players = Game._createPlayers(loggedInUsers)
         this._gameTable = new GameTable(players)
         this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
         this._pollManager = new PollManager(this._gameTable);
@@ -160,7 +159,6 @@ export default class Game
             history: this.history,
 
             _gameTable: this._gameTable.toDoc(),
-            history: this.history,
 
             _waterManager : this._waterManager.toDoc(),
             _foodManager : this._foodManager.toDoc(),

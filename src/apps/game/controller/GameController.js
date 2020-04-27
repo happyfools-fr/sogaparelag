@@ -14,7 +14,6 @@ class GameController extends Controller {
         this.playerController = new PlayerController(database);
     };
 
-
     /**
     * To be define in subClass
     */
