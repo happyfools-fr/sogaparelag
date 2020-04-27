@@ -10,7 +10,8 @@ export class WaterManager
 
     get currentWeather()
     {
-        return this._weathers[0]
+        //todo init WaterManager._weathers ??
+        return this._weathers.length > 0 ? this._weathers[0] : 0;
     }
 
     collect()
@@ -43,7 +44,13 @@ export class WaterManager
 
     toDoc() {
         return {
-          waterSupply: this.inventory
+          waterSupply: this.inventory,
+          _weathers: this._weathers,
         };
+    }
+    
+    fromDoc(doc) {
+       this.inventory = doc['waterSupply'];
+       this._weathers = doc['_weathers'];
     }
 }

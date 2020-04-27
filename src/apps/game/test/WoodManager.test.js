@@ -94,4 +94,22 @@ describe('WoodManager', function()
         }
         throw Error
     });
+    
+    it('should convert to doc object', () =>
+    {
+        const _woodManager = new WoodManager()
+        const doc = _woodManager.toDoc()
+        assert.deepEqual(Object.keys(doc), ['woodSupply']);
+        assert.equal(doc['woodSupply'], _woodManager.inventory);
+    });
+    
+    it('should instantiate correctly from doc object', () =>
+    {
+        const doc = {
+          woodSupply: 10
+        };
+        const _woodManager = new WoodManager();
+        _woodManager.fromDoc(doc);
+        assert.equal(doc['woodSupply'], _woodManager.inventory);
+    });
 });

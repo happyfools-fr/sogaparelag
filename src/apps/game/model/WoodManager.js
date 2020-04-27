@@ -46,4 +46,8 @@ export class WoodManager {
     toDoc() {
         return {woodSupply: this.inventory}
     }
+    
+    fromDoc(doc) {
+        this.inventory = doc['woodSupply'];
+    }
 }

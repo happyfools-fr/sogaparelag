@@ -104,7 +104,10 @@ export class GameTable
     }
 
     toDoc() {
-        return {players: this.players.map((p) => {return p.toDoc()}), headPlayerId: this._headPlayer.id}
+        return {
+          players: this.players.map((p) => {return p.toDoc()}), 
+          headPlayerId: this._headPlayer.id
+        }
     }
 }
 
