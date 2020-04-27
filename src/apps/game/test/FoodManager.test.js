@@ -74,4 +74,14 @@ describe('FoodManager', function()
         assert.equal(doc['foodSupply'], _foodManager.inventory);
         assert.deepEqual(Object.keys(doc), ['foodSupply']);
     });
+    
+    it('should instantiate correctly from doc object', () =>
+    {
+        const doc = {
+          footSupply: 10,
+        };
+        const _foodManager = new FoodManager();
+        _foodManager.fromDoc(doc);
+        assert.equal(doc['foodSupply'], _foodManager.inventory);
+    });
 });

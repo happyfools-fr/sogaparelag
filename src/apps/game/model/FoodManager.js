@@ -29,4 +29,8 @@ export class FoodManager
           foodSupply: this.inventory
         };
     }
+    
+    fromDoc(doc) {
+      this.inventory = doc['foodSupply'];
+    }
 }

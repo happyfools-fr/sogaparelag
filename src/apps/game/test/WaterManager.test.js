@@ -112,6 +112,5 @@ describe('WaterManager', function()
         _waterManager.fromDoc(doc);
         assert.equal(doc['waterSupply'], _waterManager.inventory);
         assert.deepEqual(doc['_weathers'], _waterManager._weathers);
-
     });
 });
