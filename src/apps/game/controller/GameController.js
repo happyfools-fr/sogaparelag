@@ -22,37 +22,16 @@ class GameController extends Controller {
         return game._id;
     }
 
-    // _flattenObject(game) {
-    //     console.log("_objectToFirestoreDoc game", game);
-    //     console.log("_objectToFirestoreDoc game._gameTable", game._gameTable);
-    //
-    //     let doc = {
-    //         _id: game._id,
-    //
-    //         _lastRound : game._lastRound,
-    //         _win : game._win,
-    //         history: game.history,
-    //
-    //         players: game._gameTable.players.map(
-    //           player => {
-    //             return this.playerController._objectToFirestoreDoc(player);
-    //           }
-    //         ),
-    //         history: game.history,
-    //         //todo
-    //         currentState: null,
-    //     };
-    //     console.log("_objectToFirestoreDoc game as doc", doc);
-    //
-    //     return doc;
-    // }
 
     /**
     *
     */
     _createObject(data) {
 
-        const players = data._gameTable.players.map( p => { return this.playerController._createObject(p) } )
+        const players = data._gameTable.players
+            .map(
+                (p) => { return this.playerController._createObject(p) }
+            );
 
         let game = new Game(
             players,
@@ -69,7 +48,6 @@ class GameController extends Controller {
 
         game._gameTable = new GameTable(players);
 
-        console.log("game table", game._gameTable)
         return game;
     }
 }
