@@ -1,12 +1,9 @@
 // React imports
 import React, { useState, useEffect } from 'react';
 
-import GameView from './views/GameView';
 import GameMenuView from './views/GameMenuView';
 import WaitingRoom from './model/WaitingRoom'
 import WaitingRoomController from './controller/WaitingRoomController'
-import GameController from './controller/GameController'
-import WaitingRoomView from './views/WaitingRoomView'
 
 import WaitingRoomApp from './WaitingRoomApp'
 

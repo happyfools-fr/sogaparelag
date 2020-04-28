@@ -5,7 +5,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ListGroup from 'react-bootstrap/ListGroup'
 
-export default function LogItem(props) {
+export default function HistoryItemView(props) {
     return (
         <ListGroup.Item>
             <i className={"fas " + props.icon} />
