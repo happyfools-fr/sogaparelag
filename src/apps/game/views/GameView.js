@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Col, Row } from 'react-bootstrap';
 
 // Component imports
-import GameLogSidebar from '../components/GameLogSidebar';
+import GameHistoryView from './GameHistoryView';
 
 // Controller imports
 import GameController from '../controller/GameController';
@@ -69,7 +69,7 @@ function GameView(props) {
                         />
                     </Col>
                     <Col sm={3}>
-                        <GameLogSidebar game={game} />
+                        <GameHistoryView game={game} />
                     </Col>
                 </Row>
             </Container>
