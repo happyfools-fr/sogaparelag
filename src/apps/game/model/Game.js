@@ -12,7 +12,7 @@ import { v1 as uuidv1 } from 'uuid';
 
 export const SERDE_KEYS = [
   '_id', '_lastRound', '_win', '_waterManager',
-  '_foodManager', '_woodManager', '_gameTable', 'history' 
+  '_foodManager', '_woodManager', '_gameTable', 'history'
 ];
 
 export default class Game
@@ -170,31 +170,31 @@ export default class Game
             _waterManager : this._waterManager ? this._waterManager.toDoc() : null,
             _foodManager : this._foodManager ? this._foodManager.toDoc() : null,
             _woodManager : this._woodManager ? this._woodManager.toDoc() : null,
-            
+
             _gameTable: this._gameTable ? this._gameTable.toDoc() : null,
             // this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
             // this._pollManager = new PollManager(this._gameTable);
             history: this.history,
         }
     }
-    
+
     static fromDoc(doc) {
       let game;
-      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){      
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
           const loggedInUsers = [new LoggedInUser('tototo', 'ddd')];
           const waterManager = WaterManager.fromDoc(doc['_waterManager']);
           const foodManager = FoodManager.fromDoc(doc['_foodManager']);
           const woodManager = WoodManager.fromDoc(doc['_woodManager']);
-          
+
           game = new Game(loggedInUsers, waterManager, foodManager, woodManager);
           game._id = doc['_id'];
           game._lastRound = doc['_lastRound'];
-          game._win = doc['_win'];          
+          game._win = doc['_win'];
           let gameTable = GameTable.fromDoc(doc['_gameTable']);
           game._gameTable = gameTable;
           // this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
           // this._pollManager = new PollManager(this._gameTable);
-          game.history = doc['history'];          
+          game.history = doc['history'];
       }
       return game;
     }

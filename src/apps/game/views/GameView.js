@@ -30,12 +30,7 @@ function GameView(props) {
     const [game, setGame] = useState();
 
 
-    const [showModal, setShowModal] = useState(
-        (game && game.currentPlayerId)
-        ? game.currentPlayerId === props.user.id
-        : false
-    );
-
+    const show = (game) ? game.currentPlayerId === props.user.id : false;
 
 
     useEffect(
@@ -47,10 +42,10 @@ function GameView(props) {
     );
 
 
-    const handleAction = (action) => {
-        setShowModal(false);
+    const handleAction = (action, show) => {
         alert(action + ": Game.updateGameState");
         game.history.push(props.user.nickname + " went for " + action);
+        game.currentPlayerId = "Tjll6gANvoZhoH7lCRO7xtkBy4M2";
         gameController.update(game);
     };
 
@@ -64,7 +59,7 @@ function GameView(props) {
                                     headPlayer={game._gameTable.headPlayer._id}
                                     firebaseService={props.firebaseService}/>
                         <TurnView
-                            show={showModal}
+                            show={show}
                             onAction={handleAction}
                         />
                     </Col>
