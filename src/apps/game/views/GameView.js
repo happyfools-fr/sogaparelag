@@ -43,9 +43,9 @@ function GameView(props) {
 
 
     const handleAction = (action, show) => {
-        alert(action + ": Game.updateGameState");
+        alert("You have chosen to go to "+ action);
         game.history.push(props.user.nickname + " went for " + action);
-        game.currentPlayerId = "Tjll6gANvoZhoH7lCRO7xtkBy4M2";
+        game._waterManager.collect();
         gameController.update(game);
     };
 

@@ -8,7 +8,7 @@ export class WaterManager
     constructor(value)
     {
         this.inventory = value ? value : 0;
-        this._weathers = []
+        this._weathers = [3]
     }
 
     get currentWeather()
@@ -51,7 +51,7 @@ export class WaterManager
           _weathers: this._weathers,
         };
     }
-    
+
     static fromDoc(doc) {
       let waterManager;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
