@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import PlayerView from '../views/PlayerView';
 
 class PlayerStateTable extends Component {
-  
+
     constructor(props){
         super(props);
         this.state = {
@@ -26,7 +26,7 @@ class PlayerStateTable extends Component {
 
 
     onListenForPlayer() {
-        const db = this.props.firebaseService.ft; 
+        const db = this.props.firebaseService.ft;
         this.setState({ loading: true });
         this.unsubscribe = db.doc(`player/${this.props.player}`)
             .onSnapshot(snapshot => {
@@ -52,7 +52,7 @@ class PlayerStateTable extends Component {
         const game = this.props.game;
         const player = this.state.player;
         const firebaseService = this.props.firebaseService;
-        
+
         let playerStateInGame;
 
         if (game && player) {

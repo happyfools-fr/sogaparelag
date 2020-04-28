@@ -16,11 +16,11 @@ class GameLogSidebar extends Component {
     //         leading : false,
     //     }
     // }
-    // 
+    //
     // componentDidMount() {
     //     this.onListenForGame();
     // }
-    // 
+    //
     // onListenForGame() {
     //     this.setState({ loading: true });
     //     this.unsubscribe = this.props.firebaseService.ft.doc(`game/${this.props.game._id}`)
@@ -37,7 +37,7 @@ class GameLogSidebar extends Component {
     //         }
     //     });
     // };
-    // 
+    //
     // componentWillUnmount() {
     //     this.unsubscribe();
     // }
@@ -48,7 +48,7 @@ class GameLogSidebar extends Component {
             <h3>Game Log</h3>
             <ListGroup>
                 {
-                  
+
                     this.props.game ? (this.props.game.history.map(state => {
                         return (<LogItem icon="fa-info-circle" value={state} />);
                     })) : <LogItem icon="fa-info-circle" value="Placegholder for game.history.state" />

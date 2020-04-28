@@ -24,28 +24,27 @@ import AllPlayersView from './AllPlayersView';
 */
 function GameView(props) {
 
-    const gameSlugname = props.gameSlugname;
-    // const [game, setGame] = useState(props.game);
-    // const [gameId, setGameId] = useState(props.game._id);
-    const [game, setGame] = useState();
+    const gameController = new GameController(props.firebaseService.ft)
     const [gameId, setGameId] = useState(props.gameId);
+    const [game, setGame] = useState();
+
+
     const [showModal, setShowModal] = useState(
         (game && game.currentPlayerId)
         ? game.currentPlayerId === props.user.id
         : false
     );
 
-    const firebaseService = props.firebaseService;
-    const db = firebaseService.ft;
-    const gameController = new GameController(db)
+
 
     useEffect(
         () => {
             const unsubscribe = gameController.listen(gameId, setGame);
             return unsubscribe;
         },
-        [gameController, gameId, setGame]
+        [gameId, setGame]
     );
+
 
     const handleAction = (action) => {
         setShowModal(false);
@@ -53,31 +52,31 @@ function GameView(props) {
         game.history.push(props.user.nickname + " went for " + action);
         gameController.update(game);
     };
-    return (
-        <Container>
-            <Row>
-                <Col>
-                    <Card border="light">
-                        <Card.Body>
-                        <Card.Title>Welcome to Island of {gameSlugname} </Card.Title>
-                        <GameTableView className='mt-5' game={game}
+
+    if (game) {
+        return (
+            <Container>
+                <Row>
+                    <Col>
+                        <GameTableView className='mt-5' slugname={props.slugname} game={game}
                             currentPlayerNickname={`place holder for currentPlayerNickname`}
                             nextPlayerNickname={`place holder for next Player`}
                         />
-                        </Card.Body>
-                    </Card>
-                    <AllPlayersView game={game} firebaseService={props.firebaseService}/>
-                    <TurnView
-                        show={showModal}
-                        onAction={handleAction}
-                    />
-                </Col>
-                <Col sm={3}>
-                    game ? <GameLogSidebar game={game} /> : <div>Placeholder for GameLogSidebar</div>
-                </Col>
-            </Row>
-        </Container>
-    );
+                        <AllPlayersView game={game} firebaseService={props.firebaseService}/>
+                        <TurnView
+                            show={showModal}
+                            onAction={handleAction}
+                        />
+                    </Col>
+                    <Col sm={3}>
+                        <GameLogSidebar game={game} />
+                    </Col>
+                </Row>
+            </Container>
+        );
+    } else {
+        return(<div />)
+    }
 }
 
 
