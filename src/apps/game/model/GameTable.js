@@ -77,7 +77,7 @@ export class GameTable
                 previousPlayer.next = nextPlayer
                 nextPlayer.previous = previousPlayer
 
-                if (this._headPlayer.player == currentPlayer.value.player)
+                if (this._headPlayer.player === currentPlayer.value.player)
                     this._headPlayer = this._headPlayer.next
 
                 this._refreshPlayers()
@@ -90,16 +90,16 @@ export class GameTable
     // {
     //     this.players = []
     //     let playerEnumerator = this.getPlayerEnumerator()
-    // 
+    //
     //     while (true)
     //     {
     //         let currentPlayer = playerEnumerator.next()
     //         if (currentPlayer.done)
     //             break
-    // 
+    //
     //         this.players.push(currentPlayer.value.player)
     //     }
-    // 
+    //
     //     this.playersCount = this.players.length
     // }
 
@@ -124,7 +124,7 @@ export class GameTable
 
             this.playersCount = this.players.length
         }
-        
+
     assignNextHeadPlayer()
     {
         this._headPlayer = this._headPlayer.previous;
@@ -157,22 +157,22 @@ export class GameTable
 
     toDoc() {
         return {
-          players: this.players.map((p) => {return p.toDoc();}), 
+          players: this.players.map((p) => {return p.toDoc();}),
           playersCount: this.playersCount,
           indexOfHeadPlayer: this.indexOfHeadPlayer,
           // _headPlayer: this._headPlayer.toDoc(),
         }
     }
-    
+
     static fromDoc(doc) {
       let gameTable;
-      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){      
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
         const players = doc['players'].map((pDoc) => {
           return Player.fromDoc(pDoc);
         })
         const indexOfHeadPlayer = doc['indexOfHeadPlayer'];
         gameTable = new GameTable(players, indexOfHeadPlayer);
-        // gameTable = new GameTable(players);        
+        // gameTable = new GameTable(players);
         // let _headPlayer = SittingPlayer.fromDoc(doc['_headPlayer']);
       }
       return gameTable;
