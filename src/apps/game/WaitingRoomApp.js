@@ -57,11 +57,11 @@ export default function WaitingRoomApp(props) {
 
 
     if(waitingRoom) {
-        if (waitingRoom._currentGameId) {
+        if (waitingRoom._currentGame) {
             return (
                 <GameView
                 slugname={waitingRoom.slugname}
-                gameId={waitingRoom._currentGameId}
+                gameId={waitingRoom._currentGame._id}
                 user={props.user}
                 firebaseService={props.firebaseService}
                 />
