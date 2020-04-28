@@ -11,9 +11,7 @@ class Controller {
 
 
     _objectToFirestoreDoc(object) {
-        console.log("before", object)
         const data = object.toDoc();
-        console.log("after", data)
         return data
     }
 

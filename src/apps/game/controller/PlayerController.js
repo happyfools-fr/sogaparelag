@@ -1,5 +1,6 @@
 import Controller from './Controller'
 import Player from '../model/Player'
+import LoggedInUser from '../model/LoggedInUser'
 
 /** This class handles game CRUD and the database **/
 class PlayerController extends Controller{
@@ -15,25 +16,16 @@ class PlayerController extends Controller{
         return player.userId;
     }
 
-    // _objectToFirestoreDoc(player) {
-    //     let doc = {
-    //         _id: player.userId,
-    //         nickname: player.nickName,
-    //         _sickenessLevel: player._sickenessLevel,
-    //         isDead: player.isDead,
-    //         currentHand: player.currentHand,
-    //     };
-    //     return doc;
-    // }
-
     /**
     *
     */
     _createObject(data) {
-        let player = new Player(Object.create(data))
-        player._sickenessLevel = data["_sickenessLevel"]
-        player.isDead = data["isDead"]
-        player.currentHand = data["currentHand"]
+        let player = new Player(
+            new LoggedInUser(data.userId, data.nickname)
+        )
+        player._sickenessLevel = data._sickenessLevel
+        player.isDead = data.isDead
+        player.currentHand = data.currentHand
         return player;
     }
 }

@@ -12,7 +12,7 @@ export default class Player
     constructor(loggedInUser)
     {
         this.userId = loggedInUser._id
-        this.nickName = loggedInUser.nickname
+        this.nickname = loggedInUser.nickname
         this._sickenessLevel = 0
         this.isDead = false
         this.currentHand = null
@@ -72,7 +72,7 @@ export default class Player
     toDoc() {
         return {
             userId : this.userId,
-            nickName : this.nickName,
+            nickname : this.nickname,
             _sickenessLevel : this._sickenessLevel,
             isDead : this.isDead,
             currentHand : this.currentHand,
