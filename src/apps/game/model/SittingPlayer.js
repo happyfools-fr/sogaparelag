@@ -42,9 +42,9 @@ export class SittingPlayer
 
     toDoc() {
         return {
-          _next: this._next,
-          _player: this._player,
-          _previous: this._previous,
+          _next: null,
+          _player: this._player.toDoc(),
+          _previous: null,
         }
     }
     
@@ -52,11 +52,9 @@ export class SittingPlayer
       let sittingPlayer = null;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
           const player = Player.fromDoc(doc['_player']);
-          const next = Player.fromDoc(doc['_next']);
-          const previous = Player.fromDoc(doc['_previous']);
           sittingPlayer = new SittingPlayer(player);
-          sittingPlayer._previous = previous;
-          sittingPlayer._next = next;          
+          sittingPlayer._previous = null;
+          sittingPlayer._next = null;          
       }
       return sittingPlayer;
     }
