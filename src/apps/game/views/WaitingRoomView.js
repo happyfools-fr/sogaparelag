@@ -6,7 +6,7 @@ import {Jumbotron, Button}  from 'react-bootstrap';
 export default function WaitingRoomView(props) {
     return (
         <Jumbotron>
-          <h3>Welcome to {props.gameSlugname}!</h3>
+          <h3>Welcome to {props.slugname}!</h3>
           {
               props.players.map((user,i) => {return (<p key={i}>{user.nickname}</p>)})
           }

@@ -44,7 +44,7 @@ function GameView(props) {
             const unsubscribe = gameController.listen(gameId, setGame);
             return unsubscribe;
         },
-        [gameController, gameId, setGame]
+        [gameId, setGame]
     );
 
     const handleAction = (action) => {

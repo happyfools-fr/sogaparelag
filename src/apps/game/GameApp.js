@@ -12,25 +12,21 @@ import WaitingRoomApp from './WaitingRoomApp'
 
 export default function GameApp(props) {
 
-  const [currentSlugname, setCurrentSlugname] = useState(props.slugname);
-
   const waitingRoomController = new WaitingRoomController(props.firebaseService.ft);
 
-  const [currentWaitingRoom, setCurrentWaitingRoom] = useState();
-  const [currentWaitingRoomId, setCurrentWaitingRoomId] = useState(
-      (currentWaitingRoom) ? currentWaitingRoom._id : undefined
-  );
+  const [waitingRoomId, setWaitingRoomId] = useState();
+
+  const [slugname, setSlugname] = useState(props.slugname);
 
   useEffect(
       () => {
         const unsubscribe = waitingRoomController
-                    .listenOnSlugname(currentSlugname, setCurrentWaitingRoom);
+                    .listenOnSlugname(slugname,
+                        (waitingRoom) => {setWaitingRoomId(waitingRoom._id);
+                    });
         return unsubscribe;
       },
-      [
-        currentSlugname,
-        waitingRoomController, setCurrentWaitingRoom,
-      ]
+      [slugname, setWaitingRoomId]
   );
 
 
@@ -38,23 +34,22 @@ export default function GameApp(props) {
       let waitingRoom = new WaitingRoom();
       waitingRoomController.push(waitingRoom);
       alert('New game created, share this: ' + window.location.origin + '/game/' + waitingRoom.slugname);
-      setCurrentWaitingRoom(waitingRoom);
-      setCurrentSlugname(waitingRoom.slugname);
-      setCurrentWaitingRoomId(waitingRoom._id);
-      console.log(currentWaitingRoom)
+      setSlugname(waitingRoom.slugname);
+      setWaitingRoomId(waitingRoom._id);
   }
 
 
   const handleJoinGameSubmit = (slugname, submit) =>  {
       submit.preventDefault();
-      setCurrentSlugname(slugname);
+      setSlugname(slugname);
   }
 
-  if (currentWaitingRoom) {
+  if (waitingRoomId) {
       return (
           <WaitingRoomApp
             user={props.user}
-            waitingRoom={currentWaitingRoom}
+            slugname = {slugname}
+            waitingRoomId={waitingRoomId}
             firebaseService={props.firebaseService}
           />
         )
