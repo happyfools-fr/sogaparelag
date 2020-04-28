@@ -9,9 +9,9 @@ import PlayerController from "../controller/PlayerController"
 
 export default function PlayerView(props) {
 
-    const playerController = new PlayerController(props.firebaseService.ft);
+    const playerId = props.playerId;
 
-    const [playerId, setPlayerId] = useState(props.playerId)
+    const playerController = new PlayerController(props.firebaseService.ft);
 
     const [player, setPlayer] = useState();
 
@@ -35,13 +35,13 @@ export default function PlayerView(props) {
             <Card.Body>
                 <Card.Title>
                     {
-                        (props.headPlayer == player.id)
+                        (props.headPlayer === player.id)
                         ? <i className="fas fa-user-ninja" />
                         : <span />
                     }
                     &nbsp;&nbsp;&nbsp;
                     {
-                        (props.currentPlayerId == player.id)
+                        (props.currentPlayerId === player.id)
                         ? <i className="fas fa-hand-paper" />
                         : <span />
                     }

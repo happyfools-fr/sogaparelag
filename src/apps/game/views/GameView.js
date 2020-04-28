@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 // Bootstrap imports
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Card, Container, Col, Row } from 'react-bootstrap';
+import { Container, Col, Row } from 'react-bootstrap';
 
 // Component imports
 import GameLogSidebar from '../components/GameLogSidebar';
@@ -15,7 +15,7 @@ import GameController from '../controller/GameController';
 import TurnView from './TurnView';
 import GameTableView from './GameTableView';
 import AllPlayersView from './AllPlayersView';
-//import WaitingRoomView from './WaitingRoomView';
+
 
 /**
 * @params (Game) game
@@ -24,8 +24,9 @@ import AllPlayersView from './AllPlayersView';
 */
 function GameView(props) {
 
+    const gameId = props.gameId;
+
     const gameController = new GameController(props.firebaseService.ft)
-    const [gameId, setGameId] = useState(props.gameId);
     const [game, setGame] = useState();
 
 

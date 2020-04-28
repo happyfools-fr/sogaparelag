@@ -26,7 +26,7 @@ const firebaseServiceInstance = new FirebaseService();
 
 export default function App() {
 
-  const [firebaseService, setFirebaseService] = useState(firebaseServiceInstance);
+  const firebaseService = new FirebaseService();
   const [user, setUser] = useState({ loggedIn: false, info: null });
   const [error, setError] = useState('');
 
