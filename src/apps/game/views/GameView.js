@@ -58,11 +58,10 @@ function GameView(props) {
             <Container>
                 <Row>
                     <Col>
-                        <GameTableView className='mt-5' slugname={props.slugname} game={game}
-                            currentPlayerNickname={`place holder for currentPlayerNickname`}
-                            nextPlayerNickname={`place holder for next Player`}
-                        />
-                        <AllPlayersView game={game} firebaseService={props.firebaseService}/>
+                        <GameTableView className='mt-5' slugname={props.slugname} game={game}/>
+                        <AllPlayersView players={game._gameTable.players} currentPlayerId={game.currentPlayerId}
+                                    headPlayer={game._gameTable.headPlayer._id}
+                                    firebaseService={props.firebaseService}/>
                         <TurnView
                             show={showModal}
                             onAction={handleAction}
