@@ -1,7 +1,9 @@
 import {GameTable} from '../model/GameTable'
 import Player from '../model/Player';
 import LoggedInUser from '../model/LoggedInUser'
-
+import SittingPlayer from '../model/SittingPlayer'
+import {SERDE_KEYS} from '../model/GameTable'
+import {MIN_NUMBER_PLAYERS, MAX_NUMBER_PLAYERS} from '../model/WaitingRoom'
 
 const user1 = new LoggedInUser(1, 'toto')
 const user2 = new LoggedInUser(2, 'tata')
@@ -205,6 +207,45 @@ describe('GameTable', function()
         assert.equal(thirdPlayer.id, 3)
         assert.equal(thirdPlayer.next.id, 1)
         assert.equal(thirdPlayer.previous.id, 2)
+    });
+    
+    it('convert to valid doc', () =>
+    {
+        let player1 = new Player(user1)
+        let player2 = new Player(user2)
+        let player3 = new Player(user3)
+        const listPlayers = [player1, player2, player3];
+        const gameTable = new GameTable(listPlayers, 1);
+
+        const doc = gameTable.toDoc();
+        
+        assert.deepEqual(Object.keys(doc), SERDE_KEYS);
+        assert.deepEqual(doc['players'], listPlayers.map(p => {return p.toDoc();}));
+        assert.equal(doc['playersCount'], gameTable.playersCount);
+        assert.deepEqual(doc['indexOfHeadPlayer'], gameTable.indexOfHeadPlayer);
+    });
+
+    it('instantiate from doc object', () =>
+    {
+
+        let newListPlayers = [];
+        for(var i = 0; i < MAX_NUMBER_PLAYERS-5; i++){
+          let player = new Player(new LoggedInUser(`titi${i}`, "ToTO"));
+          newListPlayers.push(player);
+        }
+        let indexOfHeadPlayer = 4;
+
+        const doc = {
+          players: newListPlayers.map((p) => {return p.toDoc();}), 
+          playersCount: newListPlayers.length,
+          indexOfHeadPlayer: indexOfHeadPlayer,
+        }
+        
+        let gameTable = GameTable.fromDoc(doc);
+        assert.deepEqual(gameTable.players, newListPlayers);
+        assert.equal(gameTable.playersCount, newListPlayers.length);
+        assert.deepEqual(gameTable.indexOfHeadPlayer, indexOfHeadPlayer);
+
     });
 
 });

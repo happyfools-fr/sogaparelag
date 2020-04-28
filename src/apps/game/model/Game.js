@@ -1,9 +1,19 @@
 import Player from "./Player";
+import LoggedInUser from "./LoggedInUser";
 import {RoundManager} from "./RoundManager";
+import {WaterManager} from "./WaterManager";
+import {FoodManager} from "./FoodManager";
+import {WoodManager} from "./WoodManager";
+
 import {GameTable} from "./GameTable";
 import {PollManager} from "./PollManager";
+import Utils from './Utils'
 import { v1 as uuidv1 } from 'uuid';
 
+export const SERDE_KEYS = [
+  '_id', '_lastRound', '_win', '_waterManager',
+  '_foodManager', '_woodManager', '_gameTable', 'history' 
+];
 
 export default class Game
 {
@@ -11,15 +21,14 @@ export default class Game
     {
         this._id = uuidv1();
 
-        let players = Game._createPlayers(loggedInUsers)
         this._lastRound = false
         this._win = false
 
         this._waterManager = waterManager
-
         this._foodManager = foodManager
         this._woodManager = woodManager
 
+        let players = Game._createPlayers(loggedInUsers)
         this._gameTable = new GameTable(players)
         this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
         this._pollManager = new PollManager(this._gameTable);
@@ -157,17 +166,36 @@ export default class Game
 
             _lastRound : this._lastRound,
             _win : this._win,
-            history: this.history,
 
-            _gameTable: this._gameTable.toDoc(),
-            history: this.history,
-
-            _waterManager : this._waterManager.toDoc(),
-            _foodManager : this._foodManager.toDoc(),
-            _woodManager : this._woodManager.toDoc(),
-
+            _waterManager : this._waterManager ? this._waterManager.toDoc() : null,
+            _foodManager : this._foodManager ? this._foodManager.toDoc() : null,
+            _woodManager : this._woodManager ? this._woodManager.toDoc() : null,
+            
+            _gameTable: this._gameTable ? this._gameTable.toDoc() : null,
             // this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
             // this._pollManager = new PollManager(this._gameTable);
+            history: this.history,
         }
+    }
+    
+    static fromDoc(doc) {
+      let game;
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){      
+          const loggedInUsers = [new LoggedInUser('tototo', 'ddd')];
+          const waterManager = WaterManager.fromDoc(doc['_waterManager']);
+          const foodManager = FoodManager.fromDoc(doc['_foodManager']);
+          const woodManager = WoodManager.fromDoc(doc['_woodManager']);
+          
+          game = new Game(loggedInUsers, waterManager, foodManager, woodManager);
+          game._id = doc['_id'];
+          game._lastRound = doc['_lastRound'];
+          game._win = doc['_win'];          
+          let gameTable = GameTable.fromDoc(doc['_gameTable']);
+          game._gameTable = gameTable;
+          // this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
+          // this._pollManager = new PollManager(this._gameTable);
+          game.history = doc['history'];          
+      }
+      return game;
     }
 }

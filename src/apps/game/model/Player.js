@@ -1,5 +1,8 @@
 import {RoundAction} from './RoundAction'
+import LoggedInUser from  './LoggedInUser'
+import Utils from './Utils'
 
+const SERDE_KEYS = ['userId', 'nickname', '_sickenessLevel', 'isDead', 'currentHand'];
 /**
  * Player holds player state in game
  *
@@ -14,7 +17,6 @@ export default class Player
         this.isDead = false
         this.currentHand = null
     }
-
 
     get id()
     {
@@ -66,18 +68,6 @@ export default class Player
     {
       return 0
     }
-    //
-    // static async pushOrUpdateRecord(db, player) {
-    //   await db.collection("player").doc(player.userId).set(
-    //     {...player}
-    //     );
-    //   return player;
-    // }
-    //
-    // static createAndPushPlayer(db, user) {
-    //   const player = new Player(user);
-    //   return Player.pushOrUpdateRecord(db, player);
-    // }
 
     toDoc() {
         return {
@@ -87,6 +77,18 @@ export default class Player
             isDead : this.isDead,
             currentHand : this.currentHand,
         }
+    }
+    
+    static fromDoc(doc) {
+      let player = null;
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
+          const loggedInUser = new LoggedInUser(doc['userId'], doc['nickname']);
+          player = new Player(loggedInUser);
+          player._sickenessLevel = doc['_sickenessLevel'];
+          player.isDead = doc['isDead'];
+          player.currentHand = doc['currentHand'];
+      }
+      return player;
     }
 
 }

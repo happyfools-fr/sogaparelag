@@ -33,19 +33,22 @@ class WaitingRoomController extends Controller {
     /**
     *
     */
+    // _createObject(data) {
+    //     let waitingRoom = new WaitingRoom();
+    //     waitingRoom._id = data._id;
+    //     waitingRoom.slugname = data.slugname;
+    //     waitingRoom._loggedInUsers = data._loggedInUsers.map(
+    //       loggedInUser => {
+    //         return new LoggedInUser(loggedInUser._id, loggedInUser.nickname);
+    //       }
+    //     );
+    //     // waitingRoom._currentGame = data._currentGame;
+    //     waitingRoom._currentGameId = data._currentGameId;
+    // 
+    //     return waitingRoom;
+    // }
     _createObject(data) {
-        let waitingRoom = new WaitingRoom();
-        waitingRoom._id = data._id;
-        waitingRoom.slugname = data.slugname;
-        waitingRoom._loggedInUsers = data._loggedInUsers.map(
-          loggedInUser => {
-            return new LoggedInUser(loggedInUser._id, loggedInUser.nickname);
-          }
-        );
-        // waitingRoom._currentGame = data._currentGame;
-        waitingRoom._currentGameId = data._currentGameId;
-
-        return waitingRoom;
+        return WaitingRoom.fromDoc(data);
     }
 
     listenOnSlugname(slugname, observer) {

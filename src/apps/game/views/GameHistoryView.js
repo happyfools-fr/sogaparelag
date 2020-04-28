@@ -15,7 +15,7 @@ export default function GameHistoryView(props) {
         <ListGroup>
             {
 
-                this.props.game ? (this.props.game.history.map(state => {
+                props.game ? (props.game.history.map(state => {
                     return (<HistoryItemView icon="fa-info-circle" value={state} />);
                 })) : <HistoryItemView icon="fa-info-circle" value="Placeholder for game.history.state" />
             }

@@ -1,4 +1,7 @@
 import shuffle from 'shuffle-array'
+import Utils from './Utils'
+
+export const SERDE_KEYS = ['foodSupply']; 
 
 export class FoodManager
 {
@@ -28,5 +31,13 @@ export class FoodManager
         return {
           foodSupply: this.inventory
         };
+    }
+    
+    static fromDoc(doc) {
+      let foodManager;
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){  
+        foodManager = new FoodManager(doc['foodSupply']);
+      }
+      return foodManager;
     }
 }

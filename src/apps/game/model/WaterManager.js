@@ -1,4 +1,7 @@
 import { isTSExpressionWithTypeArguments } from "@babel/types";
+import Utils from "./Utils";
+
+export const SERDE_KEYS = ['waterSupply', '_weathers'];
 
 export class WaterManager
 {
@@ -10,7 +13,8 @@ export class WaterManager
 
     get currentWeather()
     {
-        return this._weathers[0]
+        //todo init WaterManager._weathers ??
+        return this._weathers.length > 0 ? this._weathers[0] : 0;
     }
 
     collect()
@@ -43,7 +47,17 @@ export class WaterManager
 
     toDoc() {
         return {
-          waterSupply: this.inventory
+          waterSupply: this.inventory,
+          _weathers: this._weathers,
         };
+    }
+    
+    static fromDoc(doc) {
+      let waterManager;
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
+        waterManager = new WaterManager(doc['waterSupply']);
+        waterManager._weathers = doc['_weathers'];
+       }
+       return waterManager;
     }
 }

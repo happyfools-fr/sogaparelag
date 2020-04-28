@@ -1,10 +1,10 @@
 import Player from '../model/Player'
-import {MockLoggedInUser} from './MockLoggedInUser'
+import LoggedInUser from '../model/LoggedInUser'
 import {RoundAction} from '../model/RoundAction'
 
 const assert = require('assert');
 
-const loggedInUser = new MockLoggedInUser('fake-uid', 'fake-displayName');
+const loggedInUser = new LoggedInUser('fake-uid', 'fake-displayName');
 
 describe('Player', function()
 {
@@ -61,5 +61,42 @@ describe('Player', function()
     {
         const _player = new Player(loggedInUser);
         assert.equal(_player.additionalWoodRequest(), 0)
+    });
+    
+    it('should convert to doc object', () =>
+    {
+        const _player = new Player(loggedInUser);
+        const doc = _player.toDoc()
+        this.userId = doc['userId'];
+        this.nickname = doc['nickname'];
+        this._sickenessLevel = doc['_sickenessLevel'];
+        this.isDead = doc['isDead'];
+        this.currentHand = doc['currentHand'];
+        assert.deepEqual(Object.keys(doc), 
+        [
+          'userId', 'nickname', '_sickenessLevel', 'isDead', 'currentHand'
+        ]);
+        assert.equal(doc['userId'], _player.userId);
+        assert.equal(doc['nickname'], _player.nickname);
+        assert.equal(doc['_sickenessLevel'], _player._sickenessLevel);
+        assert.equal(doc['isDead'], _player.isDead);
+        assert.deepEqual(doc['currentHand'], _player.currentHand);
+    });
+    
+    it('should instantiate correctly from doc object', () =>
+    {
+        const doc = {
+            userId: 'dfg',
+            nickname: 'fdg',
+            _sickenessLevel: 2,
+            isDead: true,
+            currentHand: [2, 4],
+        };
+        const _player = Player.fromDoc(doc);
+        assert.equal(doc['userId'], _player.userId);
+        assert.equal(doc['nickname'], _player.nickname);
+        assert.equal(doc['_sickenessLevel'], _player._sickenessLevel);
+        assert.equal(doc['isDead'], _player.isDead);
+        assert.deepEqual(doc['currentHand'], _player.currentHand);
     });
 });

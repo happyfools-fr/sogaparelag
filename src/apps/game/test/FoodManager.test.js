@@ -65,7 +65,7 @@ describe('FoodManager', function()
         _foodManager.inventory = 10
         assert.equal(_foodManager.authorizeLeaving(3), true)
     });
-    
+
     it('should convert to doc object', () =>
     {
         const _foodManager = new FoodManager()
@@ -73,5 +73,14 @@ describe('FoodManager', function()
         const doc = _foodManager.toDoc()
         assert.equal(doc['foodSupply'], _foodManager.inventory);
         assert.deepEqual(Object.keys(doc), ['foodSupply']);
+    });
+
+    it('should instantiate correctly from doc object', () =>
+    {
+        const doc = {
+          foodSupply: 10,
+        };
+        const _foodManager = FoodManager.fromDoc(doc);
+        assert.equal(doc['foodSupply'], _foodManager.inventory);
     });
 });

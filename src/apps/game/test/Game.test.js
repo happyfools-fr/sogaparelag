@@ -1,6 +1,6 @@
 import {GameTable} from '../model/GameTable'
 import Player from '../model/Player'
-import Game from '../model/Game'
+import Game, {SERDE_KEYS} from '../model/Game'
 import LoggedInUser from '../model/LoggedInUser'
 import {WaterManager} from '../model/WaterManager'
 import {WoodManager} from '../model/WoodManager'
@@ -9,6 +9,7 @@ import {RoundAction} from '../model/RoundAction'
 import {MockRoundManager} from './MockRoundManager'
 import {MockPollManager} from './MockPollManager'
 import {MockPlayer} from './MockPlayer'
+import {MIN_NUMBER_PLAYERS, MAX_NUMBER_PLAYERS} from '../model/WaitingRoom'
 import { v1 as uuidv1 } from 'uuid';
 
 
@@ -349,5 +350,93 @@ describe('Game', function()
         assert.equal(game._gameTable.playersCount, 2)
         assert.equal(game._foodManager.inventory, 0)
     });
+    
+    it('convertion to doc is valid', () =>
+    {
+      
+      let id1 = uuidv1();
+      let id2 = uuidv1();
+      let id3 = uuidv1();
+      let user1 = new LoggedInUser(id1, 'toto')
+      let user2 = new LoggedInUser(id2, 'tata')
+      let user3 = new LoggedInUser(id3, 'titi')
+
+      let waterManager = new WaterManager()
+      let woodManager = new WoodManager()
+      let foodManager = new FoodManager()
+
+      let game = new Game([user1, user2, user3], waterManager, foodManager, woodManager)
+      const doc = game.toDoc();
+      
+      assert.deepEqual(Object.keys(doc), SERDE_KEYS);
+      assert.equal(doc['_id'], game._id);
+      assert.equal(doc['_lastRound'], game._lastRound);
+      assert.equal(doc['_win'], game._win);
+      assert.deepEqual(doc['history'], game.history);
+      assert.deepEqual(doc['_gameTable'], game._gameTable.toDoc());
+      assert.deepEqual(doc['_waterManager'], game._waterManager.toDoc());
+      assert.deepEqual(doc['_foodManager'], game._foodManager.toDoc());
+      assert.deepEqual(doc['_woodManager'], game._woodManager.toDoc());
+      /**
+      * TODO
+      * assert.deepEqual(doc['_roundManager'], game._roundManager.toDoc());
+      * assert.deepEqual(doc['_pollManager'], game._pollManager.toDoc());
+      */
+    });
+    
+    it('instantiate from doc object', () =>
+    {
+      let players = [];
+      for(var i = 0; i < MAX_NUMBER_PLAYERS; i++){
+        let player = new Player(new LoggedInUser(`toto${i}`, "ToTO"));
+        players.push(player);
+      }
+      
+      let waterManager = new WaterManager(3);
+      let woodManager = new WoodManager();
+      let foodManager = new FoodManager(3);
+      let _gameTable = new GameTable(players);  
+      const doc = {
+        _id : 'dfgh',
+
+        _lastRound : false,
+        _win : false,
+        
+        _waterManager : waterManager.toDoc(),
+        _foodManager : foodManager.toDoc(),
+        _woodManager : woodManager.toDoc(),
+        
+        _gameTable: _gameTable.toDoc(),
+
+        history: [],
+      }
+      
+      let game = Game.fromDoc(doc);      
+      assert.deepEqual(Object.keys(doc), SERDE_KEYS);
+      //TODO '_roundManager','_pollManager',
+      assert.equal(doc['_id'], game._id);
+      assert.equal(doc['_lastRound'], game._lastRound);
+      assert.equal(doc['_win'], game._win);
+      assert.deepEqual(doc['_gameTable'], game._gameTable.toDoc());
+      assert.deepEqual(doc['_waterManager'], game._waterManager.toDoc());
+      assert.deepEqual(doc['_foodManager'], game._foodManager.toDoc());
+      assert.deepEqual(doc['_woodManager'], game._woodManager.toDoc());
+      assert.deepEqual(doc['history'], game.history);
+      assert.deepEqual(_gameTable, game._gameTable);
+      assert.deepEqual(waterManager, game._waterManager);
+      assert.deepEqual(foodManager, game._foodManager);
+      assert.deepEqual(woodManager, game._woodManager);
+      /**
+      * TODO
+      * assert.deepEqual(doc['_roundManager'], game._roundManager.toDoc());
+      * assert.deepEqual(doc['_pollManager'], game._pollManager.toDoc());
+      */
+    });
+
+
+
+
+
+
 
 });
