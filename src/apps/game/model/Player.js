@@ -2,7 +2,7 @@ import {RoundAction} from './RoundAction'
 import LoggedInUser from  './LoggedInUser'
 import Utils from './Utils'
 
-const SERDE_KEYS = ['userId', 'nickName', '_sickenessLevel', 'isDead', 'currentHand'];
+const SERDE_KEYS = ['userId', 'nickname', '_sickenessLevel', 'isDead', 'currentHand'];
 /**
  * Player holds player state in game
  *
@@ -82,7 +82,7 @@ export default class Player
     static fromDoc(doc) {
       let player = null;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
-          const loggedInUser = new LoggedInUser(doc['userId'], doc['nickName']);
+          const loggedInUser = new LoggedInUser(doc['userId'], doc['nickname']);
           player = new Player(loggedInUser);
           player._sickenessLevel = doc['_sickenessLevel'];
           player.isDead = doc['isDead'];

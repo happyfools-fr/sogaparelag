@@ -40,24 +40,24 @@ export class SittingPlayer
         this._next = value;
     }
 
-    toDoc() {
-        return {
-          _next: null,
-          _player: this._player.toDoc(),
-          _previous: null,
-        }
-    }
-    
-    static fromDoc(doc) {
-      let sittingPlayer = null;
-      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
-          const player = Player.fromDoc(doc['_player']);
-          sittingPlayer = new SittingPlayer(player);
-          sittingPlayer._previous = null;
-          sittingPlayer._next = null;          
-      }
-      return sittingPlayer;
-    }
+    // toDoc() {
+    //     return {
+    //       _next: null,
+    //       _player: this._player.toDoc(),
+    //       _previous: null,
+    //     }
+    // }
+    // 
+    // static fromDoc(doc) {
+    //   let sittingPlayer = null;
+    //   if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
+    //       const player = Player.fromDoc(doc['_player']);
+    //       sittingPlayer = new SittingPlayer(player);
+    //       sittingPlayer._previous = null;
+    //       sittingPlayer._next = null;          
+    //   }
+    //   return sittingPlayer;
+    // }
 }
 
 export default SittingPlayer;

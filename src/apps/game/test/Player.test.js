@@ -68,16 +68,16 @@ describe('Player', function()
         const _player = new Player(loggedInUser);
         const doc = _player.toDoc()
         this.userId = doc['userId'];
-        this.nickName = doc['nickName'];
+        this.nickname = doc['nickname'];
         this._sickenessLevel = doc['_sickenessLevel'];
         this.isDead = doc['isDead'];
         this.currentHand = doc['currentHand'];
         assert.deepEqual(Object.keys(doc), 
         [
-          'userId', 'nickName', '_sickenessLevel', 'isDead', 'currentHand'
+          'userId', 'nickname', '_sickenessLevel', 'isDead', 'currentHand'
         ]);
         assert.equal(doc['userId'], _player.userId);
-        assert.equal(doc['nickName'], _player.nickName);
+        assert.equal(doc['nickname'], _player.nickname);
         assert.equal(doc['_sickenessLevel'], _player._sickenessLevel);
         assert.equal(doc['isDead'], _player.isDead);
         assert.deepEqual(doc['currentHand'], _player.currentHand);
@@ -87,14 +87,14 @@ describe('Player', function()
     {
         const doc = {
             userId: 'dfg',
-            nickName: 'fdg',
+            nickname: 'fdg',
             _sickenessLevel: 2,
             isDead: true,
             currentHand: [2, 4],
         };
         const _player = Player.fromDoc(doc);
         assert.equal(doc['userId'], _player.userId);
-        assert.equal(doc['nickName'], _player.nickName);
+        assert.equal(doc['nickname'], _player.nickname);
         assert.equal(doc['_sickenessLevel'], _player._sickenessLevel);
         assert.equal(doc['isDead'], _player.isDead);
         assert.deepEqual(doc['currentHand'], _player.currentHand);
