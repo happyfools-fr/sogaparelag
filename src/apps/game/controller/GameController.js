@@ -54,7 +54,12 @@ class GameController extends Controller {
 
         const players = data._gameTable.players.map( p => { return this.playerController._createObject(p) } )
 
-        let game = new Game(players, new WaterManager(0), new FoodManager(0), new WoodManager(0));
+        let game = new Game(
+            players,
+            new WaterManager(data._waterManager.waterSupply),
+            new FoodManager(data._foodManager.foodSupply),
+            new WoodManager(data._woodManager.woodSupply)
+        );
 
         game._id = data._id;
 
@@ -64,7 +69,7 @@ class GameController extends Controller {
 
         game._gameTable = new GameTable(players);
 
-        //todo
+        console.log("game table", game._gameTable)
         return game;
     }
 }
