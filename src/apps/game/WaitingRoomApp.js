@@ -1,10 +1,7 @@
 // React imports
 import React, { useState, useEffect } from 'react';
 
-import WaitingRoom from './model/WaitingRoom'
-
 import GameView from './views/GameView';
-import GameMenuView from './views/GameMenuView';
 import WaitingRoomView from './views/WaitingRoomView'
 
 import WaitingRoomController from './controller/WaitingRoomController'
@@ -14,15 +11,15 @@ import PlayerController from './controller/PlayerController'
 
 export default function WaitingRoomApp(props) {
 
+    const waitingRoomId = props.waitingRoomId;
+
     const waitingRoomController = new WaitingRoomController(props.firebaseService.ft);
-    const [waitingRoomId, setWaitingRoomId] = useState(props.waitingRoomId);
+
     const [waitingRoom, setWaitingRoom] = useState();
 
     const gameController = new GameController(props.firebaseService.ft);
 
     const playerController = new PlayerController(props.firebaseService.ft);
-
-    const slugname = props.slugname
 
     useEffect(
         () => {
