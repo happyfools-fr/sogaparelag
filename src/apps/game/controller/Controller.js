@@ -32,6 +32,8 @@ class Controller {
     */
     _createObject(doc) {
         return {_id:"test_id"};
+        // return ;
+
     }
 
     async push(object) {

@@ -16,17 +16,24 @@ class PlayerController extends Controller{
         return player.userId;
     }
 
+    // /**
+    // *
+    // */
+    // _createObject(data) {
+    //     let player = new Player(
+    //         new LoggedInUser(data.userId, data.nickname)
+    //     )
+    //     player._sickenessLevel = data._sickenessLevel
+    //     player.isDead = data.isDead
+    //     player.currentHand = data.currentHand
+    //     return player;
+    // }
+    
     /**
     *
     */
     _createObject(data) {
-        let player = new Player(
-            new LoggedInUser(data.userId, data.nickname)
-        )
-        player._sickenessLevel = data._sickenessLevel
-        player.isDead = data.isDead
-        player.currentHand = data.currentHand
-        return player;
+      return Player.fromDoc(data);
     }
 }
 

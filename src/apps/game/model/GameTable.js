@@ -157,10 +157,9 @@ export class GameTable
 
     toDoc() {
         return {
-          players: this.players.map((p) => {return p.toDoc();}), 
+          players: this.players.map((p) => {return p ? p.toDoc() : null;}), 
           playersCount: this.playersCount,
           indexOfHeadPlayer: this.indexOfHeadPlayer,
-          // _headPlayer: this._headPlayer.toDoc(),
         }
     }
     
@@ -172,8 +171,6 @@ export class GameTable
         })
         const indexOfHeadPlayer = doc['indexOfHeadPlayer'];
         gameTable = new GameTable(players, indexOfHeadPlayer);
-        // gameTable = new GameTable(players);        
-        // let _headPlayer = SittingPlayer.fromDoc(doc['_headPlayer']);
       }
       return gameTable;
     }

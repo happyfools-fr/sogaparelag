@@ -167,11 +167,11 @@ export default class Game
             _lastRound : this._lastRound,
             _win : this._win,
 
-            _waterManager : this._waterManager.toDoc(),
-            _foodManager : this._foodManager.toDoc(),
-            _woodManager : this._woodManager.toDoc(),
+            _waterManager : this._waterManager ? this._waterManager.toDoc() : null,
+            _foodManager : this._foodManager ? this._foodManager.toDoc() : null,
+            _woodManager : this._woodManager ? this._woodManager.toDoc() : null,
             
-            _gameTable: this._gameTable.toDoc(),
+            _gameTable: this._gameTable ? this._gameTable.toDoc() : null,
             // this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
             // this._pollManager = new PollManager(this._gameTable);
             history: this.history,

@@ -22,32 +22,39 @@ class GameController extends Controller {
     }
 
 
+    // /**
+    // *
+    // */
+    // _createObject(data) {
+    // 
+    //     const players = data._gameTable.players
+    //         .map(
+    //             (p) => { return this.playerController._createObject(p) }
+    //         );
+    // 
+    //     let game = new Game(
+    //         players,
+    //         new WaterManager(data._waterManager.waterSupply),
+    //         new FoodManager(data._foodManager.foodSupply),
+    //         new WoodManager(data._woodManager.woodSupply)
+    //     );
+    // 
+    //     game._id = data._id;
+    // 
+    //     game._lastRound = data._lastRound;
+    //     game._win = data._win;
+    //     game.history = data.history;
+    // 
+    //     game._gameTable = new GameTable(players);
+    // 
+    //     return game;
+    // }
+    
     /**
     *
     */
     _createObject(data) {
-
-        const players = data._gameTable.players
-            .map(
-                (p) => { return this.playerController._createObject(p) }
-            );
-
-        let game = new Game(
-            players,
-            new WaterManager(data._waterManager.waterSupply),
-            new FoodManager(data._foodManager.foodSupply),
-            new WoodManager(data._woodManager.woodSupply)
-        );
-
-        game._id = data._id;
-
-        game._lastRound = data._lastRound;
-        game._win = data._win;
-        game.history = data.history;
-
-        game._gameTable = new GameTable(players);
-
-        return game;
+        return Game.fromDoc(data);
     }
 }
 

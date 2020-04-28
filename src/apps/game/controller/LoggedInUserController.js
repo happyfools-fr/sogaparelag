@@ -21,12 +21,18 @@ class GameController extends Controller {
     // }
 
 
+    // /**
+    // *
+    // */
+    // _createObject(data) {
+    //     let user = {uid: data.uid, nickname: data.nickname};
+    //     return new LoggedInUser(user);
+    // }
     /**
     *
     */
     _createObject(data) {
-        let user = {uid: data.uid, nickname: data.nickname};
-        return new LoggedInUser(user);
+        return LoggedInUser.fromDoc(data);
     }
 }
 
