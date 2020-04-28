@@ -92,8 +92,7 @@ describe('Player', function()
             isDead: true,
             currentHand: [2, 4],
         };
-        const _player = new Player(loggedInUser);
-        _player.fromDoc(doc);
+        const _player = Player.fromDoc(doc);
         assert.equal(doc['userId'], _player.userId);
         assert.equal(doc['nickName'], _player.nickName);
         assert.equal(doc['_sickenessLevel'], _player._sickenessLevel);

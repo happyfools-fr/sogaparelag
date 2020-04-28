@@ -91,18 +91,18 @@ export default class WaitingRoom
         }
     }
     
-    fromDoc(doc) {
+    static fromDoc(doc) {
+      let waitingRoom;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
-        this._id = doc['_id'];
-        this.slugname = doc['slugname'];
-        this._loggedInUsers = doc['_loggedInUsers'].map((uDoc) => {
-          const user = new LoggedInUser("alpha", "beta");
-          user.fromDoc(uDoc);
-          return user;
+        waitingRoom = new WaitingRoom();
+        waitingRoom._id = doc['_id'];
+        waitingRoom.slugname = doc['slugname'];
+        waitingRoom._loggedInUsers = doc['_loggedInUsers'].map((uDoc) => {
+          return LoggedInUser.fromDoc(uDoc);
         });
-        const game = new Game(this._loggedInUsers, null, null, null);
-        game.fromDoc(doc['_currentGame']);
-        this._currentGame = game;
+        const game = Game.fromDoc(doc['_currentGame']);
+        waitingRoom._currentGame = game;
       }
+      return waitingRoom;
     }
 }

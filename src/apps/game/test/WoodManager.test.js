@@ -108,8 +108,7 @@ describe('WoodManager', function()
         const doc = {
           woodSupply: 10
         };
-        const _woodManager = new WoodManager();
-        _woodManager.fromDoc(doc);
+        const _woodManager = WoodManager.fromDoc(doc);
         assert.equal(doc['woodSupply'], _woodManager.inventory);
     });
 });

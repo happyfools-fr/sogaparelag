@@ -50,9 +50,12 @@ export class WoodManager {
         return {woodSupply: this.inventory}
     }
     
-    fromDoc(doc) {
+    static fromDoc(doc) {
+      let woodManager;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
-        this.inventory = doc['woodSupply'];
+        woodManager = new WoodManager();
+        woodManager.inventory = doc['woodSupply'];
       }
+      return woodManager;
     }
 }

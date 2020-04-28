@@ -46,11 +46,30 @@ describe('SittingPlayer', function()
         _next: _player3.toDoc(),
       };
       
-      const _sittingPlayer = new SittingPlayer()
-      _sittingPlayer.fromDoc(doc);
+      const _sittingPlayer = SittingPlayer.fromDoc(doc);
       assert.deepEqual(_player1, _sittingPlayer._previous);
       assert.deepEqual(_player2, _sittingPlayer._player);
       assert.deepEqual(_player3, _sittingPlayer._next);
+
+    });
+    
+    
+    it('should instantiate correctly from doc object with null next and previous', () =>
+    {
+      
+      const loggedInUser2 = new LoggedInUser('fake-uid2', 'fake-displayName');   
+      const _player2 = new Player(loggedInUser2);
+      
+      const doc = {
+        _previous: null,
+        _player: _player2.toDoc(),
+        _next: null,
+      };
+      
+      const _sittingPlayer = SittingPlayer.fromDoc(doc);
+      assert.deepEqual(null, _sittingPlayer._previous);
+      assert.deepEqual(_player2, _sittingPlayer._player);
+      assert.deepEqual(null, _sittingPlayer._next);
 
     });
 });

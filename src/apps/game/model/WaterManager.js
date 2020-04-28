@@ -52,10 +52,12 @@ export class WaterManager
         };
     }
     
-    fromDoc(doc) {
+    static fromDoc(doc) {
+      let waterManager;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
-         this.inventory = doc['waterSupply'];
-         this._weathers = doc['_weathers'];
+        waterManager = new WaterManager(doc['waterSupply']);
+        waterManager._weathers = doc['_weathers'];
        }
+       return waterManager;
     }
 }

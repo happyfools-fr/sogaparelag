@@ -2,7 +2,7 @@ import Player from './Player'
 import LoggedInUser from  './LoggedInUser'
 import Utils from "./Utils";
 
-export const SERDE_KEYS = ['_player', '_next', '_previous']
+export const SERDE_KEYS = ['_next', '_player', '_previous']
 
 export class SittingPlayer
 {
@@ -42,26 +42,23 @@ export class SittingPlayer
 
     toDoc() {
         return {
-            _player: this._player,
-            _next: this._next,
-            _previous: this._previous,
+          _next: this._next,
+          _player: this._player,
+          _previous: this._previous,
         }
     }
     
-    fromDoc(doc) {
+    static fromDoc(doc) {
+      let sittingPlayer = null;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
-          const player = new Player(new LoggedInUser("", ""))      
-          player.fromDoc(doc['_player'])
-          this._player = doc['_player'] ? player : null;
-
-          const next = new Player(new LoggedInUser("", ""))
-          next.fromDoc(doc['_next'])
-          this._next = doc['_next'] ? next : null;
-
-          const previous = new Player(new LoggedInUser("", ""))
-          previous.fromDoc(doc['_previous'])
-          this._previous = doc['_previous'] ? previous : null;
+          const player = Player.fromDoc(doc['_player']);
+          const next = Player.fromDoc(doc['_next']);
+          const previous = Player.fromDoc(doc['_previous']);
+          sittingPlayer = new SittingPlayer(player);
+          sittingPlayer._previous = previous;
+          sittingPlayer._next = next;          
       }
+      return sittingPlayer;
     }
 }
 

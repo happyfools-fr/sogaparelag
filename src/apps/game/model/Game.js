@@ -174,42 +174,28 @@ export default class Game
             _gameTable: this._gameTable.toDoc(),
             // this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
             // this._pollManager = new PollManager(this._gameTable);
-            
             history: this.history,
-
         }
     }
     
-    fromDoc(doc) {
+    static fromDoc(doc) {
+      let game;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){      
-          this._id = doc['_id'];
-
-          this._lastRound = doc['_lastRound'];
-          this._win = doc['_win'];
-
-          const waterManager = new WaterManager() 
-          waterManager.fromDoc(doc['_waterManager'])
-          this._waterManager = waterManager
-          const foodManager = new FoodManager() 
-          foodManager.fromDoc(doc['_foodManager'])
-          this._foodManager = foodManager
-          const woodManager = new WoodManager() 
-          woodManager.fromDoc(doc['_woodManager'])
-          this._woodManager = woodManager
-
-          // new GameTable(players)
-          let players = [
-            new Player(new LoggedInUser('tototo', 'ddd')),
-            new Player(new LoggedInUser('tototo1', 'ddd')),
-            new Player(new LoggedInUser('tototo2', 'ddd'))
-          ];
-          let gameTable = new GameTable(players);
-          gameTable.fromDoc(doc['_gameTable']);
-          this._gameTable = gameTable;
+          const loggedInUsers = [new LoggedInUser('tototo', 'ddd')];
+          const waterManager = WaterManager.fromDoc(doc['_waterManager']);
+          const foodManager = FoodManager.fromDoc(doc['_foodManager']);
+          const woodManager = WoodManager.fromDoc(doc['_woodManager']);
+          
+          game = new Game(loggedInUsers, waterManager, foodManager, woodManager);
+          game._id = doc['_id'];
+          game._lastRound = doc['_lastRound'];
+          game._win = doc['_win'];          
+          let gameTable = GameTable.fromDoc(doc['_gameTable']);
+          game._gameTable = gameTable;
           // this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
           // this._pollManager = new PollManager(this._gameTable);
-
-          this.history = doc['history'];
+          game.history = doc['history'];          
       }
+      return game;
     }
 }

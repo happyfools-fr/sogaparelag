@@ -116,21 +116,17 @@ export class GameTable
         }
     }
     
-    fromDoc(doc) {
+    static fromDoc(doc) {
+      let gameTable;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){      
         const players = doc['players'].map((pDoc) => {
-          const p = new Player(new LoggedInUser("",""));
-          p.fromDoc(pDoc);
-          return p;
+          return Player.fromDoc(pDoc);
         })
-        this.players = players;
-        this.playersCount = doc['playersCount'];
-        
-        const _headPlayer = new SittingPlayer(players[0]);
-        _headPlayer.fromDoc(doc['_headPlayer']);
-        this._headPlayer = _headPlayer;
-        this._initTable(players);
+        gameTable = new GameTable(players);        
+        let _headPlayer = SittingPlayer.fromDoc(doc['_headPlayer']);
+        gameTable._headPlayer = _headPlayer;
       }
+      return gameTable;
     }
 }
 

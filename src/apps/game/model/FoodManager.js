@@ -33,9 +33,11 @@ export class FoodManager
         };
     }
     
-    fromDoc(doc) {
-      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){      
-        this.inventory = doc['foodSupply'];
+    static fromDoc(doc) {
+      let foodManager;
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){  
+        foodManager = new FoodManager(doc['foodSupply']);
       }
+      return foodManager;
     }
 }

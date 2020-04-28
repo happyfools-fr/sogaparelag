@@ -108,8 +108,7 @@ describe('WaterManager', function()
           waterSupply: 10,
           _weathers: [0, 4, 2],
         };
-        const _waterManager = new WaterManager();
-        _waterManager.fromDoc(doc);
+        const _waterManager = WaterManager.fromDoc(doc);
         assert.equal(doc['waterSupply'], _waterManager.inventory);
         assert.deepEqual(doc['_weathers'], _waterManager._weathers);
     });

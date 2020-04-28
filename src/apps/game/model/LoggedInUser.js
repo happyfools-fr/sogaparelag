@@ -34,11 +34,12 @@ export default class LoggedInUser
       };
   }
 
-  fromDoc(doc) {
+  static fromDoc(doc) {
+    let loggedInUser;
     if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){      
-        this._id = doc['_id'];
-        this.nickname = doc['nickname'];
+        loggedInUser = new LoggedInUser(doc['_id'], doc['nickname']);
       }
+    return loggedInUser;
   }
 
 }

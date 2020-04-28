@@ -1,4 +1,5 @@
 import {RoundAction} from './RoundAction'
+import LoggedInUser from  './LoggedInUser'
 import Utils from './Utils'
 
 const SERDE_KEYS = ['userId', 'nickName', '_sickenessLevel', 'isDead', 'currentHand'];
@@ -78,14 +79,16 @@ export default class Player
         }
     }
     
-    fromDoc(doc) {
+    static fromDoc(doc) {
+      let player = null;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
-          this.userId = doc['userId'];
-          this.nickName = doc['nickName'];
-          this._sickenessLevel = doc['_sickenessLevel'];
-          this.isDead = doc['isDead'];
-          this.currentHand = doc['currentHand'];
+          const loggedInUser = new LoggedInUser(doc['userId'], doc['nickName']);
+          player = new Player(loggedInUser);
+          player._sickenessLevel = doc['_sickenessLevel'];
+          player.isDead = doc['isDead'];
+          player.currentHand = doc['currentHand'];
       }
+      return player;
     }
 
 }

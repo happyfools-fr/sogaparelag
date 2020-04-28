@@ -411,21 +411,7 @@ describe('Game', function()
         history: [],
       }
       
-      
-      let tmpUsers = [];
-      for(var i = 0; i < MAX_NUMBER_PLAYERS; i++){
-        let user = new LoggedInUser(`tototototo${i}`, "ToTO");
-        tmpUsers.push(user);
-      }
-      let tmpWaterManager = new WaterManager(6)
-      let tmpWoodManager = new WoodManager()
-      let tmpFoodManager = new FoodManager(8)
-
-      let game = new Game(tmpUsers, tmpWaterManager, tmpFoodManager, tmpWoodManager)
-      
-      game.fromDoc(doc);
-      // const gameDoc = game.toDoc();
-      
+      let game = Game.fromDoc(doc);      
       assert.deepEqual(Object.keys(doc), SERDE_KEYS);
       //TODO '_roundManager','_pollManager',
       assert.equal(doc['_id'], game._id);

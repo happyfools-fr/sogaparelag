@@ -138,8 +138,7 @@ describe('WaitingRoom', function()
           _currentGame: waitingRoom._currentGame.toDoc(),
         }
 
-        let waitingRoom2 = new WaitingRoom();
-        waitingRoom2.fromDoc(doc);
+        let waitingRoom2 = WaitingRoom.fromDoc(doc);
         assert.equal(doc['_id'], waitingRoom2._id);
         assert.equal(doc['slugname'], waitingRoom2.slugname);
         assert.deepEqual(listLoggedInUsers, waitingRoom2._loggedInUsers);  
