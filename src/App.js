@@ -31,12 +31,14 @@ export default function App() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const unsubscribeAuthStateChange = firebaseService.onAuthStateChange((user) => {
-      user ? setUser({loggedIn: true, info: user}) : setUser({loggedIn: false, info: null})
-    });
-    return () => {
-      unsubscribeAuthStateChange();
-    };
+    const unsubscribeAuthStateChange = firebaseService.onAuthStateChange(
+        (user) => {
+            (user)
+            ? setUser({loggedIn: true, info: user})
+            : setUser({loggedIn: false, info: null})
+        }
+    );
+    return unsubscribeAuthStateChange;
   }, []);
 
   const login = () => {
@@ -52,12 +54,11 @@ export default function App() {
       setError("error-logout");
     });
   }
-  const requestLogin = useCallback(() => {
-    login();
-  });
-  const requestLogout = useCallback(() => {
-    logout();
-  }, []);
+
+  const requestLogin = useCallback(login, [login]);
+
+  const requestLogout = useCallback(logout, [logout]);
+
 
   function ProtectedGameAppWithSlugname({user, firebaseService}) {
     let match = useRouteMatch("/game/:gameSlugname");

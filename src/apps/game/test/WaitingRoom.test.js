@@ -49,12 +49,12 @@ describe('WaitingRoom', function()
           const user = new LoggedInUser(userId, "ToTO");
           waitingRoom.addLoggedInUser(user);
         }
-        
+
         assert(waitingRoom._currentGame == null)
         waitingRoom.startGame()
         assert(waitingRoom._currentGame != null)
     });
-    
+
     it('game does not start with less that ' + MIN_NUMBER_PLAYERS + 'players', () =>
     {
         let waitingRoom = new WaitingRoom()
@@ -68,33 +68,33 @@ describe('WaitingRoom', function()
         waitingRoom.startGame()
         assert.equal(waitingRoom._currentGame, null)
     });
-    
+
     it('game starts with players between ' + MIN_NUMBER_PLAYERS + ' and ' + MAX_NUMBER_PLAYERS, () =>
     {
         let waitingRoom = new WaitingRoom()
-      
+
         assert(waitingRoom._currentGame == null);
         for(var i = 0; i < MAX_NUMBER_PLAYERS; i++){
           const userId = 'toto' + i;
           const user = new LoggedInUser(userId, "ToTO");
           waitingRoom.addLoggedInUser(user);
         }
-        
+
         waitingRoom.startGame()
         assert(waitingRoom._currentGame != null)
     });
-    
+
     it('rejects loggedInUser if over quota = ' + MAX_NUMBER_PLAYERS, () =>
     {
         let waitingRoom = new WaitingRoom()
-      
+
         assert(waitingRoom._currentGame == null);
         for(var i = 0; i < MAX_NUMBER_PLAYERS; i++){
           const userId = 'toto' + i;
           const user = new LoggedInUser(userId, "ToTO");
           waitingRoom.addLoggedInUser(user);
         }
-        
+
         const user = new LoggedInUser("userCannotEnter", "ToTO");
         let res = waitingRoom.addLoggedInUser(user);
         assert.equal(res, false);
@@ -103,23 +103,23 @@ describe('WaitingRoom', function()
     it('doc convertion is valid', () =>
     {
         let waitingRoom = new WaitingRoom()
-        
+
         assert(waitingRoom._currentGame == null);
         for(var i = 0; i < MAX_NUMBER_PLAYERS; i++){
           const userId = 'toto' + i;
           const user = new LoggedInUser(userId, "ToTO");
           waitingRoom.addLoggedInUser(user);
         }
-        
-        waitingRoom.startGame()   
+
+        waitingRoom.startGame()
         const doc = waitingRoom.toDoc();
         assert.deepEqual(Object.keys(doc), SERDE_KEYS);
         assert.equal(doc['_id'], waitingRoom._id);
         assert.equal(doc['slugname'], waitingRoom.slugname);
-        assert.deepEqual(doc['_loggedInUsers'], waitingRoom._loggedInUsers.map((u) => {return u.toDoc()}));  
+        assert.deepEqual(doc['_loggedInUsers'], waitingRoom._loggedInUsers.map((u) => {return u.toDoc()}));
         assert.deepEqual(doc['_currentGame'], waitingRoom._currentGame.toDoc());
     });
-    
+
     it('intantiate from doc object', () =>
     {
         let waitingRoom = new WaitingRoom()
@@ -129,8 +129,8 @@ describe('WaitingRoom', function()
           listLoggedInUsers.push(user);
           waitingRoom.addLoggedInUser(user);
         }
-        waitingRoom.startGame()   
-        
+        waitingRoom.startGame()
+
         const doc = {
           _id: "hello",
           slugname: "slug",
@@ -141,12 +141,12 @@ describe('WaitingRoom', function()
         let waitingRoom2 = WaitingRoom.fromDoc(doc);
         assert.equal(doc['_id'], waitingRoom2._id);
         assert.equal(doc['slugname'], waitingRoom2.slugname);
-        assert.deepEqual(listLoggedInUsers, waitingRoom2._loggedInUsers);  
+        assert.deepEqual(listLoggedInUsers, waitingRoom2._loggedInUsers);
         assert.deepEqual(waitingRoom._currentGame.toDoc(), waitingRoom2._currentGame.toDoc());
         //todo
         // assert.deepEqual(waitingRoom._currentGame, waitingRoom2._currentGame);
 
-        
+
     });
 
 });

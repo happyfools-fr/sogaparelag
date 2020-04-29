@@ -1,6 +1,5 @@
-import Player from './Player'
-import LoggedInUser from  './LoggedInUser'
-import Utils from "./Utils";
+// import Player from './Player'
+// import Utils from "./Utils";
 
 export const SERDE_KEYS = ['_next', '_player', '_previous']
 
@@ -47,14 +46,14 @@ export class SittingPlayer
     //       _previous: null,
     //     }
     // }
-    // 
+    //
     // static fromDoc(doc) {
     //   let sittingPlayer = null;
     //   if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
     //       const player = Player.fromDoc(doc['_player']);
     //       sittingPlayer = new SittingPlayer(player);
     //       sittingPlayer._previous = null;
-    //       sittingPlayer._next = null;          
+    //       sittingPlayer._next = null;
     //   }
     //   return sittingPlayer;
     // }

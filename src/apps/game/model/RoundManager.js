@@ -1,8 +1,3 @@
-import PollManager from './PollManager'
-import WaterManager from './WaterManager'
-import FoodManager from './FoodManager'
-import WoodManager from './WoodManager'
-import Player from './Player'
 import {RoundAction} from './RoundAction'
 
 
@@ -48,6 +43,9 @@ export class RoundManager
                       currentPlayer.value.player.onGetSick()
                     }
                     break
+
+                default :
+                    throw new Error('Default case in RoundManager for player', currentPlayer);
             }
         }
     }

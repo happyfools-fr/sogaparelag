@@ -9,28 +9,10 @@ class GameController extends Controller {
     };
 
 
-    /**
-    * To be define in subClass
-    */
     _getObjectId(loggedInUser) {
         return loggedInUser._id;
     }
 
-    // _objectToFirestoreDoc(loggedInUser) {
-    //     return {uid: loggedInUser._id, nickname: loggedInUser.nickname};
-    // }
-
-
-    // /**
-    // *
-    // */
-    // _createObject(data) {
-    //     let user = {uid: data.uid, nickname: data.nickname};
-    //     return new LoggedInUser(user);
-    // }
-    /**
-    *
-    */
     _createObject(data) {
         return LoggedInUser.fromDoc(data);
     }

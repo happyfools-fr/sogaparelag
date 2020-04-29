@@ -12,7 +12,7 @@ import GameHistoryView from './GameHistoryView';
 import GameController from '../controller/GameController';
 
 // View imports
-import TurnView from './TurnView';
+import TurnModal from './TurnModal';
 import GameTableView from './GameTableView';
 import AllPlayersView from './AllPlayersView';
 
@@ -30,12 +30,7 @@ function GameView(props) {
     const [game, setGame] = useState();
 
 
-    const [showModal, setShowModal] = useState(
-        (game && game.currentPlayerId)
-        ? game.currentPlayerId === props.user.id
-        : false
-    );
-
+    const show = (game) ? game.currentPlayerId === props.user.id : false;
 
 
     useEffect(
@@ -47,10 +42,10 @@ function GameView(props) {
     );
 
 
-    const handleAction = (action) => {
-        setShowModal(false);
-        alert(action + ": Game.updateGameState");
+    const handleAction = (action, show) => {
+        alert("You have chosen to go to "+ action);
         game.history.push(props.user.nickname + " went for " + action);
+        game._waterManager.collect();
         gameController.update(game);
     };
 
@@ -63,8 +58,8 @@ function GameView(props) {
                         <AllPlayersView players={game._gameTable.players} currentPlayerId={game.currentPlayerId}
                                     headPlayer={game._gameTable.headPlayer._id}
                                     firebaseService={props.firebaseService}/>
-                        <TurnView
-                            show={showModal}
+                        <TurnModal
+                            show={show}
                             onAction={handleAction}
                         />
                     </Col>

@@ -30,7 +30,10 @@ const INITIAL_VALUES = [
     [18, 15],
     [20, 16],
     [22, 18],
-    [24, 20]
+    [24, 20],
+    [26, 21],
+    [28, 23],
+    [30, 25]
 ]
 
 export default class WaitingRoom
@@ -90,7 +93,7 @@ export default class WaitingRoom
             _currentGame: this._currentGame ? this._currentGame.toDoc() : null,
         }
     }
-    
+
     static fromDoc(doc) {
       let waitingRoom;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){

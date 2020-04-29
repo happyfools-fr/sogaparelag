@@ -1,5 +1,4 @@
 import SittingPlayer from './SittingPlayer'
-import LoggedInUser from './LoggedInUser'
 import Player from './Player'
 import Utils from './Utils'
 
@@ -35,6 +34,8 @@ export class GameTable
     //     this._headPlayer.previous = previousCreatedPlayerOnTable;
     //     previousCreatedPlayerOnTable.next = this._headPlayer;
     // }
+
+
     _initTable(players, indexOfHeadPlayer = 0)
         {
             let previousCreatedPlayerOnTable = this._headPlayer;
@@ -62,7 +63,6 @@ export class GameTable
 
     killPlayer(playerIdToKill)
     {
-        let checkedPlayerCount = 0;
         let playerEnumerator = this.getPlayerEnumerator()
         while (true)
         {
@@ -70,7 +70,7 @@ export class GameTable
             if (currentPlayer.done)
                 return false
 
-            if (currentPlayer.value.id == playerIdToKill)
+            if (currentPlayer.value.id === playerIdToKill)
             {
                 let previousPlayer = currentPlayer.value.previous
                 let nextPlayer = currentPlayer.value.next
@@ -134,7 +134,7 @@ export class GameTable
     {
         yield this._headPlayer;
         let currentPlayer = this._headPlayer.next;
-        while (currentPlayer.player != this._headPlayer.player)
+        while (currentPlayer.player !== this._headPlayer.player)
         {
             yield currentPlayer;
             currentPlayer = currentPlayer.next
@@ -147,7 +147,7 @@ export class GameTable
             yield this._headPlayer;
 
         let currentPlayer = this._headPlayer.next;
-        while (currentPlayer.player != this._headPlayer.player)
+        while (currentPlayer.player !== this._headPlayer.player)
         {
             if (!currentPlayer.player.isSick)
                 yield currentPlayer;
@@ -157,7 +157,7 @@ export class GameTable
 
     toDoc() {
         return {
-          players: this.players.map((p) => {return p ? p.toDoc() : null;}), 
+          players: this.players.map((p) => {return p ? p.toDoc() : null;}),
           playersCount: this.playersCount,
           indexOfHeadPlayer: this.indexOfHeadPlayer,
         }

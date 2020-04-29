@@ -12,7 +12,7 @@ export class WoodManager {
 
     tryCollect(additionalRequest)
     {
-        if (additionalRequest == 0)
+        if (additionalRequest === 0)
         {
             this.inventory += 1
             return true
@@ -49,7 +49,7 @@ export class WoodManager {
     toDoc() {
         return {woodSupply: this.inventory}
     }
-    
+
     static fromDoc(doc) {
       let woodManager;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){

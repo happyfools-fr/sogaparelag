@@ -3,7 +3,7 @@ import React from 'react';
 
 import {Modal, ButtonGroup, Button} from 'react-bootstrap';
 
-export default function TurnView(props) {
+export default function TurnModal(props) {
 
     return (
         <Modal show={props.show} onHide={() => props.onAction("pass")}>
