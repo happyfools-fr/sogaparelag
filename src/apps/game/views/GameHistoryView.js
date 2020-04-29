@@ -1,5 +1,5 @@
 // React imports
-import React, { Component } from 'react';
+import React from 'react';
 
 // Style imports
 import ListGroup from 'react-bootstrap/ListGroup'

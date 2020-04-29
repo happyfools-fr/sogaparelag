@@ -39,7 +39,7 @@ export default class Game
     static _createPlayers(loggedInUsers)
     {
         let players = []
-        loggedInUsers.map( (user) => { players.push(new Player(user)) } )
+        loggedInUsers.map( (user) => { return players.push(new Player(user))} )
         return players
     }
 
@@ -114,7 +114,6 @@ export default class Game
 
     _manageWaterEndOfRound()
     {
-        let it = 0
         //enough water to play next round?
         while (this._gameTable.playersCount - this._waterManager.inventory > 0)
         {

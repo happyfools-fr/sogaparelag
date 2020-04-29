@@ -12,7 +12,7 @@ import GameHistoryView from './GameHistoryView';
 import GameController from '../controller/GameController';
 
 // View imports
-import TurnView from './TurnView';
+import TurnModal from './TurnModal';
 import GameTableView from './GameTableView';
 import AllPlayersView from './AllPlayersView';
 
@@ -58,7 +58,7 @@ function GameView(props) {
                         <AllPlayersView players={game._gameTable.players} currentPlayerId={game.currentPlayerId}
                                     headPlayer={game._gameTable.headPlayer._id}
                                     firebaseService={props.firebaseService}/>
-                        <TurnView
+                        <TurnModal
                             show={show}
                             onAction={handleAction}
                         />
