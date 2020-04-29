@@ -10,11 +10,14 @@ import GameHistoryView from './GameHistoryView';
 
 // Controller imports
 import GameController from '../controller/GameController';
+import PlayerController from '../controller/PlayerController';
 
 // View imports
 import TurnModal from './TurnModal';
 import GameTableView from './GameTableView';
 import AllPlayersView from './AllPlayersView';
+
+import {RoundAction} from '../model/RoundManager'
 
 
 /**
@@ -29,6 +32,7 @@ function GameView(props) {
     const gameController = new GameController(props.firebaseService.ft)
     const [game, setGame] = useState();
 
+    const playerController = new PlayerController(props.firebaseService.ft)
 
     const show = (game) ? game.currentPlayerId === props.user.id : false;
 
@@ -42,11 +46,25 @@ function GameView(props) {
     );
 
 
+
     const handleAction = (action, show) => {
+      
+        const player = game._gameTable.currentPlayer;
+        // const listPotentialActionsToPerform = player.getListPotentialActionsToPerform(game)
+        console.log("Selected action = ", action)
         alert("You have chosen to go to "+ action);
-        game.history.push(props.user.nickname + " went for " + action);
-        game._waterManager.collect();
-        gameController.update(game);
+        // game.history.push(props.user.nickname + " went for " + action);
+        // game._waterManager.collect();
+
+        let updatedGame = player.performAction(game, action, 0)
+        // Post save
+        gameController.update(updatedGame);
+        // Update all players if needed
+        updatedGame._gameTable.players.forEach((p, i) => {
+          playerController.update(p)
+        });
+        // Update game in waiting room if needed
+        //???
     };
 
     if (game) {

@@ -53,7 +53,26 @@ export default class Game
     }
 
     get nextPlayerId() {
-        return this._gameTable.players[0].id;
+        // return this._gameTable.players[0].id;
+        let iter = this._gameTable.getPositionedHealthyPlayerEnumerator();
+        let nextSittingPlayer = iter.next();
+        console.log("A nextPlayerId.nextSittingPlayer", nextSittingPlayer)
+        if (nextSittingPlayer.done){
+          iter = this._gameTable.getHealthyPlayerEnumerator();
+          nextSittingPlayer = iter.next();
+          console.log("B in if nextPlayerId.nextSittingPlayer", nextSittingPlayer)
+        }
+        return nextSittingPlayer.value._player.userId;
+    }
+    get nextPlayer() {
+        // return this._gameTable.players[0].id;
+        let iter = this._gameTable.getPositionedHealthyPlayerEnumerator();
+        let nextSittingPlayer = iter.next();
+        if (nextSittingPlayer.done){
+          iter = this._gameTable.getHealthyPlayerEnumerator();
+          nextSittingPlayer = iter.next();
+        }
+        return nextSittingPlayer.value._player;
     }
 
     get waterSupply() {
@@ -159,6 +178,23 @@ export default class Game
         return canLeaveWithEnoughWater && canLeaveWithEnoughFood && canLeaveWithEnoughWood
     }
 
+    updateAfterRoundAction(updatedRoundManager, updatedCurrentPlayer)
+    {
+      // todo
+      // this._lastRound = false
+      // this._win = false
+
+      this._waterManager = updatedRoundManager._waterManager
+      this._foodManager = updatedRoundManager._foodManager
+      this._woodManager =updatedRoundManager._woodManager
+
+      this._gameTable = updatedRoundManager._gameTable
+      this._roundManager = updatedRoundManager
+      this._pollManager = new PollManager(this._gameTable);
+
+      this.history.push(`Action performed by ${updatedCurrentPlayer.nickname}`);
+    }
+
     toDoc() {
         return {
             _id : this._id,
@@ -191,8 +227,8 @@ export default class Game
           game._win = doc['_win'];
           let gameTable = GameTable.fromDoc(doc['_gameTable']);
           game._gameTable = gameTable;
-          // this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
-          // this._pollManager = new PollManager(this._gameTable);
+          game._roundManager = new RoundManager(game._gameTable, waterManager, foodManager, woodManager)
+          game._pollManager = new PollManager(game._gameTable);
           game.history = doc['history'];
       }
       return game;

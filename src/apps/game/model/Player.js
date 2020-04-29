@@ -69,6 +69,37 @@ export default class Player
       return 0
     }
 
+
+    getListPotentialActionsToPerform(game)
+    {
+      //todo
+      return [
+        RoundAction.Nothing,
+        RoundAction.CollectWater,
+        RoundAction.CollectFood,
+        RoundAction.CollectWood
+      ]
+    }
+
+    performAction(game, selectedAction, additionalRequest=0)
+    {
+      console.log("B performAction.game", game)
+      console.log("B performAction.selectedAction", selectedAction)
+      console.log("B performAction.additionalRequest", additionalRequest)
+
+      const [updatedRoundManager, updatedPlayer] = game._roundManager.playAction(this, selectedAction, additionalRequest);
+      // updateGameAfterAction
+      game.updateAfterRoundAction(updatedRoundManager, updatedPlayer);
+
+      console.log("A performAction.roundManager", updatedRoundManager)
+      console.log("A performAction.currentPlayer", updatedPlayer)
+      console.log("A performAction.game", game)
+
+      return game;
+
+    }
+
+
     toDoc() {
         return {
             userId : this.userId,
@@ -78,7 +109,7 @@ export default class Player
             currentHand : this.currentHand,
         }
     }
-    
+
     static fromDoc(doc) {
       let player = null;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){

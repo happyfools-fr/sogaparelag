@@ -49,4 +49,62 @@ export class RoundManager
             }
         }
     }
+    
+    playAction(player, actionToPerform, additionalRequest=0) {
+      let healthyPlayerEnumerator = this._gameTable.getPositionedHealthyPlayerEnumerator()
+      
+      let currentPlayer = this._gameTable.currentPlayer;
+      console.log("playAction.currentPlayer", currentPlayer)
+      console.log("playAction.player", player)
+
+      if (currentPlayer.userId === player.userId)
+      {
+        console.log("actionToPerform", actionToPerform);
+        // switch (actionToPerform)
+        // {
+        //     case RoundAction.CollectWater:
+        //         this._waterManager.collect()
+        // 
+        //     case RoundAction.CollectFood:
+        //         this._foodManager.collect()
+        // 
+        //     case RoundAction.CollectWood:
+        //         let additionalRequest = currentPlayer.additionalWoodRequest()
+        //         if (!this._woodManager.tryCollect(additionalRequest))
+        //         {
+        //           currentPlayer.onGetSick()
+        //         }
+        // 
+        //     default :
+        //         throw new Error('Default case in RoundManager for player', player);
+        //   }
+        if(actionToPerform == RoundAction.CollectWater)
+        {
+          this._waterManager.collect()
+        } else if (actionToPerform == RoundAction.CollectFood)
+        {
+          this._foodManager.collect()
+        } else if (actionToPerform == RoundAction.CollectWood)
+        {
+            let additionalRequest = currentPlayer.additionalWoodRequest()
+            if (!this._woodManager.tryCollect(additionalRequest))
+            {
+              currentPlayer.onGetSick()
+            }
+        } else 
+        {
+          throw new Error('Not your turn to play in the round', player);
+        }
+        
+          // update _gameTable
+          // let nextPlayer = healthyPlayerEnumerator.next().value._player
+          this._gameTable.updateAfterRoundAction(currentPlayer);
+          return [this, currentPlayer]
+          
+        } 
+        else 
+        {
+            throw new Error('Not your turn to play in the round', player);
+        }
+    }
 }

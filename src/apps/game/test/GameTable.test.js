@@ -215,7 +215,7 @@ describe('GameTable', function()
         let player2 = new Player(user2)
         let player3 = new Player(user3)
         const listPlayers = [player1, player2, player3];
-        const gameTable = new GameTable(listPlayers, 1);
+        const gameTable = new GameTable(listPlayers, 1, player2);
 
         const doc = gameTable.toDoc();
         
@@ -223,6 +223,9 @@ describe('GameTable', function()
         assert.deepEqual(doc['players'], listPlayers.map(p => {return p.toDoc();}));
         assert.equal(doc['playersCount'], gameTable.playersCount);
         assert.deepEqual(doc['indexOfHeadPlayer'], gameTable.indexOfHeadPlayer);
+        //
+        assert.deepEqual(doc['currentPlayer'], gameTable.currentPlayer.toDoc());
+
     });
 
     it('instantiate from doc object', () =>
@@ -239,13 +242,14 @@ describe('GameTable', function()
           players: newListPlayers.map((p) => {return p.toDoc();}), 
           playersCount: newListPlayers.length,
           indexOfHeadPlayer: indexOfHeadPlayer,
+          currentPlayer: newListPlayers[1].toDoc(),
         }
         
         let gameTable = GameTable.fromDoc(doc);
         assert.deepEqual(gameTable.players, newListPlayers);
         assert.equal(gameTable.playersCount, newListPlayers.length);
         assert.deepEqual(gameTable.indexOfHeadPlayer, indexOfHeadPlayer);
-
+        assert.deepEqual(gameTable.currentPlayer, newListPlayers[1]);
     });
 
 });
