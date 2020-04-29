@@ -2,10 +2,10 @@ import React from 'react';
 
 import {Card, Container, Col, Row, Table} from 'react-bootstrap';
 
-import FoodSupplyComponent from "../components/supply-components/FoodSupplyComponent";
-import WaterSupplyComponent from '../components/supply-components/WaterSupplyComponent';
-import WoodSupplyComponent from '../components/supply-components/WoodSupplyComponent';
-import RaftComponent from '../components/supply-components/RaftComponent';
+import FoodSupplyComponent from "./supply-components/FoodSupplyComponent";
+import WaterSupplyComponent from './supply-components/WaterSupplyComponent';
+import WoodSupplyComponent from './supply-components/WoodSupplyComponent';
+import RaftComponent from './supply-components/RaftComponent';
 
 
 export default function GameTableView(props) {

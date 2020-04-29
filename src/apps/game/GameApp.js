@@ -38,7 +38,7 @@ export default function GameApp(props) {
 
   const handleJoinGameSubmit = (slugname, submit) =>  {
       submit.preventDefault();
-      setSlugname(slugname);
+      setSlugname(slugname.toLowerCase());
   }
 
   if (waitingRoomId) {
