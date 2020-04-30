@@ -155,20 +155,20 @@ export default class Game
         this._foodManager.eat(this._gameTable.playersCount)
     }
 
-    _onRoundEnded()
-    {
-        this._waterManager.onRoundEnded()
-        let playerEnumerator = this._gameTable.getPlayerEnumerator()
-        while (true)
-        {
-            let currentPlayer = playerEnumerator.next()
-            if (currentPlayer.done)
-                break
-
-            currentPlayer.value._player.onRoundEnded()
-        }
-        this._gameTable.assignNextHeadPlayer()
-    }
+    // _onRoundEnded()
+    // {
+    //     this._waterManager.onRoundEnded()
+    //     let playerEnumerator = this._gameTable.getPlayerEnumerator()
+    //     while (true)
+    //     {
+    //         let currentPlayer = playerEnumerator.next()
+    //         if (currentPlayer.done)
+    //             break
+    //
+    //         currentPlayer.value._player.onRoundEnded()
+    //     }
+    //     this._gameTable.assignNextHeadPlayer()
+    // }
 
     _canLeave()
     {
@@ -178,23 +178,32 @@ export default class Game
         return canLeaveWithEnoughWater && canLeaveWithEnoughFood && canLeaveWithEnoughWood
     }
 
-    updateAfterRoundAction(updatedRoundManager, updatedCurrentPlayer, endOfRound)
+    registerAction(player, selectedAction, additionalRequest)
     {
+      const endOfRound = this._roundManager.playAction(player, selectedAction, additionalRequest);
+      this.updateAfterRoundAction(endOfRound);
+    }
 
+    pullChangesFromRoundManager()
+    {
+      this._lastRound = this._roundManager._waterManager.mustLeave()
+
+      this._waterManager = this._roundManager._waterManager
+      this._foodManager = this._roundManager._foodManager
+      this._woodManager = this._roundManager._woodManager
+
+      this._gameTable = this._roundManager._gameTable
+      this._pollManager = new PollManager(this._gameTable);
+
+    }
+
+    updateAfterRoundAction(endOfRound)
+    {
       // if(!this._lastRound)
       if(true)
       {
-        this._lastRound = updatedRoundManager._waterManager.mustLeave()
-
-        this._waterManager = updatedRoundManager._waterManager
-        this._foodManager = updatedRoundManager._foodManager
-        this._woodManager =updatedRoundManager._woodManager
-
-        this._gameTable = updatedRoundManager._gameTable
-        this._roundManager = updatedRoundManager
-        this._pollManager = new PollManager(this._gameTable);
-
-        Array.prototype.push.apply(this.history, updatedRoundManager.actionsPerformedByPlayer);
+        // Propagate changes in RoundManager to upper level: game
+        this.pullChangesFromRoundManager()
 
         //if end of Round, apply updates
         if (endOfRound)
@@ -231,8 +240,18 @@ export default class Game
   */
 
           //ON END OF ROUND
-          // this._onRoundEnded()
+          this._roundManager._onRoundEnded()
+          this.roundIndex = this.roundIndex + 1;
+          this.pullChangesFromRoundManager()
+      } else
+      {
+        //Simple End of Action
+        //Update next current player
+        let nextSittingPlayer = this._roundManager._gameTable.getNextSittingPlayer();
+        this._roundManager._gameTable.currentPlayer = nextSittingPlayer.value._player;
+        this.pullChangesFromRoundManager();
       }
+      Array.prototype.push.apply(this.history, this._roundManager.actionsPerformedByPlayer);
     }
   }
 

@@ -83,8 +83,9 @@ export default class Player
 
     performAction(game, selectedAction, additionalRequest=0)
     {
-      const [updatedRoundManager, updatedPlayer, endOfRound] = game._roundManager.playAction(this, selectedAction, additionalRequest);
-      game.updateAfterRoundAction(updatedRoundManager, updatedPlayer, endOfRound);
+      // const [updatedRoundManager, updatedPlayer, endOfRound] = game._roundManager.playAction(this, selectedAction, additionalRequest);
+      // game.updateAfterRoundAction(updatedRoundManager, updatedPlayer, endOfRound);
+      game.registerAction(this, selectedAction, additionalRequest)
       return game;
     }
 

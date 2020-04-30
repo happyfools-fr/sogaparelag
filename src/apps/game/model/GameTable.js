@@ -179,26 +179,45 @@ export class GameTable
       return healthyPlayerEnumerator;
     }
 
-    assignNextHeadPlayer()
-    {
-        // this._headPlayer = this._headPlayer.previous;
-        let indexOfHeadPlayer =
-          this.indexOfHeadPlayer == 0
-          ? this.playersCount - 1
-          : this.indexOfHeadPlayer - 1
-        this._initTable(this.players, indexOfHeadPlayer)
+    getInfinitePositionedHealthyPlayerEnumerator(){
+      let healthyPlayerEnumerator;
+      if (this.isEndOfRound()){
+        healthyPlayerEnumerator = this.getHealthyPlayerEnumerator();
+      } else {
+        healthyPlayerEnumerator = this.getPositionedHealthyPlayerEnumerator();
+      }
+      return healthyPlayerEnumerator;
     }
 
-    assignNextCurrentPlayer()
+    assignNextHeadPlayer()
     {
-      let healthyPlayerEnumerator = this.getHealthyPlayerEnumerator()
-      let nextSittingPlayer = healthyPlayerEnumerator.next()
-      this.currentPlayer = nextSittingPlayer.value._player
+        this._headPlayer = this._headPlayer.previous;
+        // let indexOfHeadPlayer =
+        //   this.indexOfHeadPlayer == 0
+        //   ? this.playersCount - 1
+        //   : this.indexOfHeadPlayer - 1
+        // this._initTable(this.players, indexOfHeadPlayer)
     }
+
+    isEndOfRound()
+    {
+      let iter = this.getPositionedHealthyPlayerEnumerator();
+      let nextSittingPlayer = iter.next();
+      return nextSittingPlayer.done;
+    }
+
+    getNextSittingPlayer()
+    {
+      let healthyPlayerEnumerator = this.getInfinitePositionedHealthyPlayerEnumerator();
+      let nextSittingPlayer = healthyPlayerEnumerator.next();
+      return nextSittingPlayer;
+    }
+
+
 
     updateAfterRoundAction(currentPlayerUpdated)
     {
-        //Update current player state
+        // Update current player state
         // Todo unless current player alter some other player states...
         this.players = this.players.map( p => {
           if(p.userId === currentPlayerUpdated.userId){
@@ -207,27 +226,9 @@ export class GameTable
             return p;
           }
         })
+        //Should not change
         this.playersCount = this.players.length
-
-        let iter = this.getPositionedHealthyPlayerEnumerator();
-        let nextSittingPlayer = iter.next();
-        let endOfRound = false;
-        if (nextSittingPlayer.done){
-          //New round starts
-          this.roundIndex = this.roundIndex + 1;
-          // iter = this.getHealthyPlayerEnumerator();
-          // nextSittingPlayer = iter.next();
-          // this.currentPlayer = nextSittingPlayer.value._player;
-          //Change headplayer
-          this.assignNextHeadPlayer()
-          // Change next player
-          this.assignNextCurrentPlayer()
-          endOfRound = true;
-        } else {
-          this.currentPlayer = nextSittingPlayer.value._player;
-        }
-
-        return endOfRound;
+        return this.isEndOfRound();
     }
 
     toDoc() {

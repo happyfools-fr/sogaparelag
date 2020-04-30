@@ -50,12 +50,13 @@ function GameView(props) {
     const handleAction = (action, show) => {
       
         const player = game._gameTable.currentPlayer;
+        /**
+        * Model should be function of getListPotentialActionsToPerform
+        */
         // const listPotentialActionsToPerform = player.getListPotentialActionsToPerform(game)
         console.log("Selected action = ", action)
         alert("You have chosen to go to "+ action);
-        // game.history.push(props.user.nickname + " went for " + action);
-        // game._waterManager.collect();
-
+        
         let updatedGame = player.performAction(game, action, 0)
         console.log("handleAction.updatedGame", updatedGame);
         // Post save

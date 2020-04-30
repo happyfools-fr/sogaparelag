@@ -50,6 +50,31 @@ export class RoundManager
         }
     }
     
+    getActionSummary(player, actionToPerform, additionalRequest=0)
+    {
+      let actionSummary;
+      let actionSummaryPrefix = `${player.nickname} chose to `;
+      switch (actionToPerform)
+      {
+          case RoundAction.CollectWater:
+              actionSummary = actionSummaryPrefix + "collect some water.";
+              break;
+      
+          case RoundAction.CollectFood:
+              actionSummary = actionSummaryPrefix + "collect some food.";
+              break;
+
+          case RoundAction.CollectWood:
+              actionSummary = actionSummaryPrefix + `collect some wood with additional request of ${additionalRequest} logs.`;
+              break;
+
+          default :
+              throw new Error('Default case in getActionSummary for player and action', player, actionToPerform);
+        }
+        return actionSummary;
+    }
+    
+    
     playAction(player, actionToPerform, additionalRequest=0) {
       let healthyPlayerEnumerator = this._gameTable.getPositionedHealthyPlayerEnumerator()
       
@@ -57,18 +82,14 @@ export class RoundManager
       if (currentPlayer.userId === player.userId)
       {
         console.log("actionToPerform", actionToPerform);
-        let actionSummaryPrefix = `${player.nickname}-${player.userId} chose to `;
-        let actionSummary;
         switch (actionToPerform)
         {
             case RoundAction.CollectWater:
                 this._waterManager.collect()
-                actionSummary = actionSummaryPrefix + "collect some water.";
                 break;
         
             case RoundAction.CollectFood:
                 this._foodManager.collect()
-                actionSummary = actionSummaryPrefix + "collect some food.";
                 break;
 
             case RoundAction.CollectWood:
@@ -77,7 +98,6 @@ export class RoundManager
                 {
                   currentPlayer.onGetSick()
                 }
-                actionSummary = actionSummaryPrefix + `collect some wood with additional request of ${additionalRequest} logs.`;
                 break;
 
             default :
@@ -85,16 +105,30 @@ export class RoundManager
           }
         
           // Push action logs
+          let actionSummary = this.getActionSummary(player, actionToPerform, additionalRequest);
           this.actionsPerformedByPlayer.push(actionSummary);
           console.log("after push this.actionsPerformedByPlayer", this.actionsPerformedByPlayer);
-          // update _gameTable
-          let endOfRound = this._gameTable.updateAfterRoundAction(currentPlayer);
-          return [this, currentPlayer, endOfRound]
-          
         } 
         else 
         {
             throw new Error('Not your turn to play in the round', player);
         }
+    }
+    
+    _onRoundEnded()
+    {
+        this._waterManager.onRoundEnded()
+        let playerEnumerator = this._gameTable.getPlayerEnumerator()
+        while (true)
+        {
+            let currentPlayer = playerEnumerator.next()
+            if (currentPlayer.done)
+                break
+
+            currentPlayer.value._player.onRoundEnded()
+        }
+        this._gameTable.assignNextHeadPlayer()
+        this._gameTable.currentPlayer = this._gameTable._headPlayer.player
+
     }
 }
