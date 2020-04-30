@@ -48,8 +48,12 @@ export default class Game
       return this._gameTable.playersCount
     }
 
+    // get currentPlayerId() {
+    //     return this._gameTable._headPlayer.id;
+    // }
+
     get currentPlayerId() {
-        return this._gameTable._headPlayer.id;
+        return this._gameTable.currentPlayer.userId;
     }
 
     get nextPlayerId() {
@@ -180,20 +184,61 @@ export default class Game
 
     updateAfterRoundAction(updatedRoundManager, updatedCurrentPlayer)
     {
-      // todo
-      // this._lastRound = false
-      // this._win = false
 
-      this._waterManager = updatedRoundManager._waterManager
-      this._foodManager = updatedRoundManager._foodManager
-      this._woodManager =updatedRoundManager._woodManager
+      if(!this._lastRound)
+      {
+        this._lastRound = updatedRoundManager._waterManager.mustLeave()
 
-      this._gameTable = updatedRoundManager._gameTable
-      this._roundManager = updatedRoundManager
-      this._pollManager = new PollManager(this._gameTable);
+        this._waterManager = updatedRoundManager._waterManager
+        this._foodManager = updatedRoundManager._foodManager
+        this._woodManager =updatedRoundManager._woodManager
 
-      this.history.push(`Action performed by ${updatedCurrentPlayer.nickname}`);
+        this._gameTable = updatedRoundManager._gameTable
+        this._roundManager = updatedRoundManager
+        this._pollManager = new PollManager(this._gameTable);
+
+        this.history.push(`Action performed by ${updatedCurrentPlayer.nickname}`);
+
+        //if end of Round, apply updates
+        let endOfRound;
+        if (endOfRound)
+        {
+          //CAN LEAVE?
+          if (this._canLeave())
+          {
+              this._win = true
+              return;
+          }
+
+          //SUPPLY MANAGEMENT
+          this._manageWaterEndOfRound()
+          this._manageFoodEndOfRound()
+
+          //CAN LEAVE?
+          if (this._canLeave())
+          {
+              this._win = true
+              return;
+          }
+
+  // UNCOMMENT WHEN KILL THEM ALL ACTIVATED
+  /*
+          //do you want to kill them all to leave?
+
+
+          //CAN LEAVE?
+          if (this._canLeave())
+          {
+              this._win = true
+              break
+          }
+  */
+
+          //ON END OF ROUND
+          this._onRoundEnded()
+      }
     }
+  }
 
     toDoc() {
         return {
