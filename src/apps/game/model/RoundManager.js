@@ -75,13 +75,10 @@ export class RoundManager
     }
     
     
-    playAction(player, actionToPerform, additionalRequest=0) {
-      let healthyPlayerEnumerator = this._gameTable.getPositionedHealthyPlayerEnumerator()
-      
+    playAction(player, actionToPerform, additionalRequest=0) {      
       let currentPlayer = this._gameTable.currentPlayer;
       if (currentPlayer.userId === player.userId)
       {
-        console.log("actionToPerform", actionToPerform);
         switch (actionToPerform)
         {
             case RoundAction.CollectWater:
@@ -95,7 +92,6 @@ export class RoundManager
             case RoundAction.CollectWood:
                 if (!this._woodManager.tryCollect(additionalRequest))
                 {
-                  console.log("currentPlayer.onGetSick()")
                   currentPlayer.onGetSick()
                 }
                 break;

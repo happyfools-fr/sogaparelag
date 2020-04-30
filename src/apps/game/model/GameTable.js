@@ -15,7 +15,7 @@ export class GameTable
         this.playersCount = players.length
         this.indexOfHeadPlayer = indexOfHeadPlayer
         this._headPlayer = new SittingPlayer(players[indexOfHeadPlayer]);
-        this._initTable(players);
+        this._initTable(players, indexOfHeadPlayer);
 
         this.currentPlayer = currentPlayer ? currentPlayer : this._headPlayer.player;
         this.roundIndex = roundIndex ? roundIndex : 1;
@@ -25,22 +25,6 @@ export class GameTable
     {
         return this._headPlayer.player
     }
-
-    // _initTable(players)
-    // {
-    //     let previousCreatedPlayerOnTable = this._headPlayer;
-    //     //1 .. N-1
-    //     for (let i = 1; i < players.length; i++) {
-    //         let player = new SittingPlayer(players[i]);
-    //         previousCreatedPlayerOnTable.next = player;
-    //         player.previous = previousCreatedPlayerOnTable;
-    //         previousCreatedPlayerOnTable = player;
-    //     }
-    //     //cas N-1
-    //     this._headPlayer.previous = previousCreatedPlayerOnTable;
-    //     previousCreatedPlayerOnTable.next = this._headPlayer;
-    // }
-
 
     _initTable(players, indexOfHeadPlayer = 0)
         {
@@ -91,23 +75,6 @@ export class GameTable
             }
         }
     }
-
-    // _refreshPlayers()
-    // {
-    //     this.players = []
-    //     let playerEnumerator = this.getPlayerEnumerator()
-    //
-    //     while (true)
-    //     {
-    //         let currentPlayer = playerEnumerator.next()
-    //         if (currentPlayer.done)
-    //             break
-    //
-    //         this.players.push(currentPlayer.value.player)
-    //     }
-    //
-    //     this.playersCount = this.players.length
-    // }
 
     _refreshPlayers()
         {
@@ -192,7 +159,7 @@ export class GameTable
     {
         this._headPlayer = this._headPlayer.previous;
         let indexOfHeadPlayer =
-          this.indexOfHeadPlayer == 0
+          this.indexOfHeadPlayer === 0
           ? this.playersCount - 1
           : this.indexOfHeadPlayer - 1
         this.indexOfHeadPlayer = indexOfHeadPlayer;
@@ -249,7 +216,7 @@ export class GameTable
           indexOfHeadPlayer: this.indexOfHeadPlayer,
           //
           currentPlayer: this.currentPlayer.toDoc(),
-          roundIndex: this.roundIndex
+          roundIndex: this.roundIndex,
         }
     }
 

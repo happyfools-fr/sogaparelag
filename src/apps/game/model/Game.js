@@ -155,21 +155,6 @@ export default class Game
         this._foodManager.eat(this._gameTable.playersCount)
     }
 
-    // _onRoundEnded()
-    // {
-    //     this._waterManager.onRoundEnded()
-    //     let playerEnumerator = this._gameTable.getPlayerEnumerator()
-    //     while (true)
-    //     {
-    //         let currentPlayer = playerEnumerator.next()
-    //         if (currentPlayer.done)
-    //             break
-    //
-    //         currentPlayer.value._player.onRoundEnded()
-    //     }
-    //     this._gameTable.assignNextHeadPlayer()
-    // }
-
     _canLeave()
     {
         let canLeaveWithEnoughWater = this._waterManager.authorizeLeaving(this._gameTable.playersCount)
@@ -253,6 +238,10 @@ export default class Game
         this.pullChangesFromRoundManager();
       }
       Array.prototype.push.apply(this.history, this._roundManager.actionsPerformedByPlayer);
+    } else
+    {
+      console.log("last round", this._lastRound)
+      alert("Last round!");
     }
   }
 
