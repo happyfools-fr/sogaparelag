@@ -180,7 +180,9 @@ export default class Game
 
     registerAction(player, selectedAction, additionalRequest)
     {
-      const endOfRound = this._roundManager.playAction(player, selectedAction, additionalRequest);
+      this._roundManager.playAction(player, selectedAction, additionalRequest);
+      let endOfRound = this._roundManager._gameTable.isEndOfRound();
+      console.log("registerAction.endOfRound", endOfRound)
       this.updateAfterRoundAction(endOfRound);
     }
 
@@ -194,7 +196,6 @@ export default class Game
 
       this._gameTable = this._roundManager._gameTable
       this._pollManager = new PollManager(this._gameTable);
-
     }
 
     updateAfterRoundAction(endOfRound)
@@ -226,29 +227,29 @@ export default class Game
               return;
           }
 
-  // UNCOMMENT WHEN KILL THEM ALL ACTIVATED
-  /*
-          //do you want to kill them all to leave?
+          // UNCOMMENT WHEN KILL THEM ALL ACTIVATED
+          /*
+                  //do you want to kill them all to leave?
 
 
-          //CAN LEAVE?
-          if (this._canLeave())
-          {
-              this._win = true
-              break
-          }
-  */
+                  //CAN LEAVE?
+                  if (this._canLeave())
+                  {
+                      this._win = true
+                      break
+                  }
+          */
 
           //ON END OF ROUND
           this._roundManager._onRoundEnded()
-          this.roundIndex = this.roundIndex + 1;
+          this._roundManager._gameTable.roundIndex = this._roundManager._gameTable.roundIndex + 1;
           this.pullChangesFromRoundManager()
+          console.log("this.roundIndex", this.roundIndex)
       } else
       {
-        //Simple End of Action
+        //Simple End of Player Action
         //Update next current player
-        let nextSittingPlayer = this._roundManager._gameTable.getNextSittingPlayer();
-        this._roundManager._gameTable.currentPlayer = nextSittingPlayer.value._player;
+        this._roundManager._gameTable.assignNextCurrentPlayer();
         this.pullChangesFromRoundManager();
       }
       Array.prototype.push.apply(this.history, this._roundManager.actionsPerformedByPlayer);

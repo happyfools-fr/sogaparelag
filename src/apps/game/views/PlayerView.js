@@ -26,8 +26,6 @@ export default function PlayerView(props) {
 
     if (player) {
 
-        console.log("Player ", player)
-
         const currentHand = (player.currentHand) ? player.currentHand : ["Card1", "Card2", "Card3", "Card4"]
 
         return (

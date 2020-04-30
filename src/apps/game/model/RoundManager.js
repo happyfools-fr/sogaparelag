@@ -93,9 +93,9 @@ export class RoundManager
                 break;
 
             case RoundAction.CollectWood:
-                let additionalRequest = currentPlayer.additionalWoodRequest()
                 if (!this._woodManager.tryCollect(additionalRequest))
                 {
+                  console.log("currentPlayer.onGetSick()")
                   currentPlayer.onGetSick()
                 }
                 break;
@@ -107,7 +107,6 @@ export class RoundManager
           // Push action logs
           let actionSummary = this.getActionSummary(player, actionToPerform, additionalRequest);
           this.actionsPerformedByPlayer.push(actionSummary);
-          console.log("after push this.actionsPerformedByPlayer", this.actionsPerformedByPlayer);
         } 
         else 
         {
@@ -128,7 +127,7 @@ export class RoundManager
             currentPlayer.value._player.onRoundEnded()
         }
         this._gameTable.assignNextHeadPlayer()
-        this._gameTable.currentPlayer = this._gameTable._headPlayer.player
+        this._gameTable.assignNextCurrentPlayer()
 
     }
 }

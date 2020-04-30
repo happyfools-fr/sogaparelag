@@ -17,7 +17,6 @@ export class GameTable
         this._headPlayer = new SittingPlayer(players[indexOfHeadPlayer]);
         this._initTable(players);
 
-        //
         this.currentPlayer = currentPlayer ? currentPlayer : this._headPlayer.player;
         this.roundIndex = roundIndex ? roundIndex : 1;
     }
@@ -192,11 +191,18 @@ export class GameTable
     assignNextHeadPlayer()
     {
         this._headPlayer = this._headPlayer.previous;
-        // let indexOfHeadPlayer =
-        //   this.indexOfHeadPlayer == 0
-        //   ? this.playersCount - 1
-        //   : this.indexOfHeadPlayer - 1
-        // this._initTable(this.players, indexOfHeadPlayer)
+        let indexOfHeadPlayer =
+          this.indexOfHeadPlayer == 0
+          ? this.playersCount - 1
+          : this.indexOfHeadPlayer - 1
+        this.indexOfHeadPlayer = indexOfHeadPlayer;
+    }
+
+    assignNextCurrentPlayer()
+    {
+      let iter = this.getInfinitePositionedHealthyPlayerEnumerator();
+      let nextSittingPlayer = iter.next();
+      this.currentPlayer = nextSittingPlayer.value._player;
     }
 
     isEndOfRound()
@@ -214,20 +220,25 @@ export class GameTable
     }
 
 
+    updatePlayer(player)
+    {
+      this.players = this.players.map( p => {
+        if(p.userId === player.userId){
+          return player;
+        } else {
+          return p;
+        }
+      });
+      if(this.currentPlayer.userId === player.userId)
+      {
+        this.currentPlayer = player;
+      }
+    }
 
     updateAfterRoundAction(currentPlayerUpdated)
     {
         // Update current player state
-        // Todo unless current player alter some other player states...
-        this.players = this.players.map( p => {
-          if(p.userId === currentPlayerUpdated.userId){
-            return currentPlayerUpdated;
-          } else {
-            return p;
-          }
-        })
-        //Should not change
-        this.playersCount = this.players.length
+        this.updatePlayer(currentPlayerUpdated)
         return this.isEndOfRound();
     }
 

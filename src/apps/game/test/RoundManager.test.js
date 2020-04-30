@@ -1,5 +1,5 @@
 import {GameTable} from '../model/GameTable'
-import {Player} from '../model/Player'
+import Player from '../model/Player'
 import {WaterManager} from '../model/WaterManager'
 import {WoodManager} from '../model/WoodManager'
 import {FoodManager} from '../model/FoodManager'
@@ -311,9 +311,9 @@ describe('RoundManager', function()
       let id1 = uuidv1();
       let id2 = uuidv1();
       let id3 = uuidv1();
-      let player1 = new MockPlayer(new LoggedInUser(id1, 'toto'))
-      let player2 = new MockPlayer(new LoggedInUser(id2, 'tata'))
-      let player3 = new MockPlayer(new LoggedInUser(id3, 'titi'))
+      let player1 = new Player(new LoggedInUser(id1, 'toto'))
+      let player2 = new Player(new LoggedInUser(id2, 'tata'))
+      let player3 = new Player(new LoggedInUser(id3, 'titi'))
       const gameTable = new GameTable([player1, player2, player3])
 
       let waterManager = new WaterManager()
@@ -353,10 +353,10 @@ describe('RoundManager', function()
       let id2 = uuidv1();
       let id3 = uuidv1();
       let id4 = uuidv1();
-      let player1 = new MockPlayer(new LoggedInUser(id1, 'toto'))
-      let player2 = new MockPlayer(new LoggedInUser(id2, 'tata'))
-      let player3 = new MockPlayer(new LoggedInUser(id3, 'titi'))
-      let player4 = new MockPlayer(new LoggedInUser(id4, 'titi'))
+      let player1 = new Player(new LoggedInUser(id1, 'toto'))
+      let player2 = new Player(new LoggedInUser(id2, 'tata'))
+      let player3 = new Player(new LoggedInUser(id3, 'titi'))
+      let player4 = new Player(new LoggedInUser(id4, 'titicaca'))
 
       const gameTable = new GameTable([player1, player2, player3, player4])
 
@@ -364,7 +364,7 @@ describe('RoundManager', function()
       waterManager._weathers = [1]
 
       let woodManager = new WoodManager()
-      woodManager._woods = [true, true]
+      woodManager._woods = [true, true, true, true, true, true]
 
       let foodManager = new FoodManager()
       foodManager._foods = [3]
@@ -404,10 +404,10 @@ describe('RoundManager', function()
       let id2 = uuidv1();
       let id3 = uuidv1();
       let id4 = uuidv1();
-      let player1 = new MockPlayer(new LoggedInUser(id1, 'toto'))
-      let player2 = new MockPlayer(new LoggedInUser(id2, 'tata'))
-      let player3 = new MockPlayer(new LoggedInUser(id3, 'titi'))
-      let player4 = new MockPlayer(new LoggedInUser(id4, 'titi'))
+      let player1 = new Player(new LoggedInUser(id1, 'toto'))
+      let player2 = new Player(new LoggedInUser(id2, 'tata'))
+      let player3 = new Player(new LoggedInUser(id3, 'titi'))
+      let player4 = new Player(new LoggedInUser(id4, 'titicaca'))
 
       const gameTable = new GameTable([player1, player2, player3, player4])
 
@@ -432,6 +432,43 @@ describe('RoundManager', function()
       //Leave list unchanged
       assert.deepEqual(roundManager.actionsPerformedByPlayer, []);
       
+    });
+    
+    it('playAction with unknown action raises error', () =>
+    {
+      let id1 = uuidv1();
+      let id2 = uuidv1();
+      let id3 = uuidv1();
+      let id4 = uuidv1();
+      let player1 = new Player(new LoggedInUser(id1, 'toto'))
+      let player2 = new Player(new LoggedInUser(id2, 'tata'))
+      let player3 = new Player(new LoggedInUser(id3, 'titi'))
+      let player4 = new Player(new LoggedInUser(id4, 'titicaca'))
+
+      const gameTable = new GameTable([player1, player2, player3, player4])
+
+      let waterManager = new WaterManager()
+      waterManager._weathers = [1]
+
+      let woodManager = new WoodManager()
+      woodManager._woods = [false, false]
+
+      let foodManager = new FoodManager()
+      foodManager._foods = [3]
+
+      let roundManager  = new RoundManager(gameTable, waterManager, foodManager, woodManager)
+
+      assert(roundManager._gameTable.currentPlayer.userId === player1.userId);
+      let actionToPerform = RoundAction.CollectWood;
+      let adds =  1;
+      let summaryCollectWood = roundManager.getActionSummary(player1, actionToPerform, adds)
+      roundManager.playAction(player1, actionToPerform, adds)
+      assert(roundManager.actionsPerformedByPlayer.includes(summaryCollectWood));
+      assert.deepEqual(roundManager.actionsPerformedByPlayer, [summaryCollectWood]);
+      
+      // Player1 is sick
+      assert(roundManager._gameTable.currentPlayer.isSick);
+      assert(player1.isSick);      
     });
     
   });
