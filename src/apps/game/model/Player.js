@@ -83,22 +83,10 @@ export default class Player
 
     performAction(game, selectedAction, additionalRequest=0)
     {
-      console.log("B performAction.game", game)
-      console.log("B performAction.selectedAction", selectedAction)
-      console.log("B performAction.additionalRequest", additionalRequest)
-
-      const [updatedRoundManager, updatedPlayer] = game._roundManager.playAction(this, selectedAction, additionalRequest);
-      // updateGameAfterAction
-      game.updateAfterRoundAction(updatedRoundManager, updatedPlayer);
-
-      console.log("A performAction.roundManager", updatedRoundManager)
-      console.log("A performAction.currentPlayer", updatedPlayer)
-      console.log("A performAction.game", game)
-
+      const [updatedRoundManager, updatedPlayer, endOfRound] = game._roundManager.playAction(this, selectedAction, additionalRequest);
+      game.updateAfterRoundAction(updatedRoundManager, updatedPlayer, endOfRound);
       return game;
-
     }
-
 
     toDoc() {
         return {

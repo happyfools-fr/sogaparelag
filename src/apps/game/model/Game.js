@@ -48,10 +48,6 @@ export default class Game
       return this._gameTable.playersCount
     }
 
-    // get currentPlayerId() {
-    //     return this._gameTable._headPlayer.id;
-    // }
-
     get currentPlayerId() {
         return this._gameTable.currentPlayer.userId;
     }
@@ -169,7 +165,7 @@ export default class Game
             if (currentPlayer.done)
                 break
 
-            currentPlayer.onRoundEnded()
+            currentPlayer.value._player.onRoundEnded()
         }
         this._gameTable.assignNextHeadPlayer()
     }
@@ -182,10 +178,11 @@ export default class Game
         return canLeaveWithEnoughWater && canLeaveWithEnoughFood && canLeaveWithEnoughWood
     }
 
-    updateAfterRoundAction(updatedRoundManager, updatedCurrentPlayer)
+    updateAfterRoundAction(updatedRoundManager, updatedCurrentPlayer, endOfRound)
     {
 
-      if(!this._lastRound)
+      // if(!this._lastRound)
+      if(true)
       {
         this._lastRound = updatedRoundManager._waterManager.mustLeave()
 
@@ -197,10 +194,9 @@ export default class Game
         this._roundManager = updatedRoundManager
         this._pollManager = new PollManager(this._gameTable);
 
-        this.history.push(`Action performed by ${updatedCurrentPlayer.nickname}`);
+        Array.prototype.push.apply(this.history, updatedRoundManager.actionsPerformedByPlayer);
 
         //if end of Round, apply updates
-        let endOfRound;
         if (endOfRound)
         {
           //CAN LEAVE?
@@ -235,7 +231,7 @@ export default class Game
   */
 
           //ON END OF ROUND
-          this._onRoundEnded()
+          // this._onRoundEnded()
       }
     }
   }
@@ -252,8 +248,6 @@ export default class Game
             _woodManager : this._woodManager ? this._woodManager.toDoc() : null,
 
             _gameTable: this._gameTable ? this._gameTable.toDoc() : null,
-            // this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
-            // this._pollManager = new PollManager(this._gameTable);
             history: this.history,
         }
     }

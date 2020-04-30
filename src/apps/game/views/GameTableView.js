@@ -36,6 +36,7 @@ export default function GameTableView(props) {
                     <Table striped bordered hover>
                     <thead>
                         <tr>
+                            <th>Round #</th>
                             <th>Total Moves #</th>
                             <th>Current Player</th>
                             <th>Next Player</th>
@@ -43,6 +44,7 @@ export default function GameTableView(props) {
                     </thead>
                     <tbody>
                         <tr>
+                            <td>{game._gameTable.roundIndex}</td>
                             <td>{game.history.length}</td>
                             <td>{game.currentPlayerId}</td>
                             <th>{game.nextPlayerId}</th>

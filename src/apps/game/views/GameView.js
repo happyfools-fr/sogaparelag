@@ -57,6 +57,7 @@ function GameView(props) {
         // game._waterManager.collect();
 
         let updatedGame = player.performAction(game, action, 0)
+        console.log("handleAction.updatedGame", updatedGame);
         // Post save
         gameController.update(updatedGame);
         // Update all players if needed
