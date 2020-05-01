@@ -101,6 +101,7 @@ class Controller {
             .onSnapshot(
                 (snapshot) => {
                     let object = this._objectFromFirestoreDoc(snapshot.data());
+                    console.log("listen object ", object);
                     observer(object)
                 }
             );

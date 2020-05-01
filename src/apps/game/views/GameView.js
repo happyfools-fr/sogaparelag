@@ -37,6 +37,7 @@ function GameView(props) {
     const playerController = new PlayerController(props.firebaseService.ft)
     
     const clientPlayer = (game && user) ? game._gameTable.players.filter(p => p.userId === user._id)[0] : null;
+    console.log("clientPlayer", clientPlayer)
     const showPollWater = (game) ? (game.pollWater && !clientPlayer.waterVote) : false;
     const showPollFood = (game) ? (game.pollFood && !clientPlayer.foodVote) : false;
     const showPoll = (showPollWater && !showPollFood) || (!showPollWater && showPollFood);

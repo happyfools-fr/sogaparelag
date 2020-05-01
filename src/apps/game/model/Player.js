@@ -21,11 +21,8 @@ export default class Player
         this.isDead = false
         this.currentHand = null
         this.hasPlayedThisRound = false
-
         this.waterVote = null
         this.foodVote = null
-        this.finalWaterVote = null
-        this.finalFoodVote = null
     }
 
     get id()
@@ -188,8 +185,6 @@ export default class Player
             hasPlayedThisRound : this.hasPlayedThisRound,
             waterVote: this.waterVote,
             foodVote: this.foodVote,
-            finalWaterVote: this.finalWaterVote,
-            finalFoodVote: this.finalFoodVote
         }
     }
 
@@ -204,8 +199,6 @@ export default class Player
           player.hasPlayedThisRound = doc['hasPlayedThisRound']
           player.waterVote = doc['waterVote'];
           player.foodVote = doc['foodVote'];
-          player.finalWaterVote = doc['finalWaterVote'];
-          player.finalFoodVote = doc['finalFoodVote'];
       }
       return player;
     }

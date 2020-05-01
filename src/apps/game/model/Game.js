@@ -14,7 +14,7 @@ import { v1 as uuidv1 } from 'uuid';
 export const SERDE_KEYS = [
   '_id', '_lastRound', '_win', '_waterManager',
   '_foodManager', '_woodManager', '_gameTable', 'history',
-  'pollFood', 'pollWood',
+  'pollFood', 'pollWater',
 ];
 
 export default class Game
@@ -180,6 +180,7 @@ export default class Game
         this.pollWater = false
         // initiate food vote if needed
         this._initFoodVote()
+        return;
       } 
       //Otherwise redo vote
       this._initWaterVote()
@@ -226,6 +227,7 @@ export default class Game
         this.pollFood = false
         // following step in sequence
         this.onAllVotesEnded();
+        return;
       }
       //Otherwise redo vote
       this._initFoodVote();
@@ -342,7 +344,7 @@ export default class Game
           game._win = doc['_win'];
           let gameTable = GameTable.fromDoc(doc['_gameTable']);
           game._gameTable = gameTable;
-          game._roundManager = new RoundManager(game._gameTable, waterManager, foodManager, woodManager)
+          // game._roundManager = new RoundManager(game._gameTable, waterManager, foodManager, woodManager)
           game._pollManager = new PollManager(game._gameTable);
           game.history = doc['history'];
           game.pollFood = doc['pollFood'];
