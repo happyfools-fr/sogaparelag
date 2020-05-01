@@ -7,10 +7,10 @@ export const SERDE_KEYS = ['waterSupply', '_weathers'];
 
 export class WaterManager
 {
-    constructor(value)
+    constructor(value, weathers = null)
     {
         this.inventory = value ? value : 0;
-        this._weathers = this._initWeather()
+        this._weathers = weathers =! null ? weathers : this._initWeather()
     }
 
     _initWeather()
@@ -72,8 +72,7 @@ export class WaterManager
         let waterManager;
         if (doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
         {
-            waterManager = new WaterManager(doc['waterSupply']);
-            waterManager._weathers = doc['_weathers'];
+            waterManager = new WaterManager(doc['waterSupply'], doc['_weathers']);
          }
          return waterManager;
     }
