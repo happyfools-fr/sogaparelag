@@ -50,6 +50,7 @@ export default function PlayerView(props) {
                 </Card.Title>
                 <Card.Text>
                     <span> {player.id} </span>
+                    <br />
                     <span>
                         {
                             (player.isDead)
