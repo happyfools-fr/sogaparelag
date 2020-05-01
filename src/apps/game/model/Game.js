@@ -32,6 +32,7 @@ export default class Game
         this._gameTable = new GameTable(players)
         this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
         this._pollManager = new PollManager(this._gameTable);
+        // this.actionsPerformedByPlayer = []
 
         this.history = [];
     }
@@ -131,6 +132,40 @@ export default class Game
         }
     }
 
+    onPlayerActionPerformed(player, selectedAction, additionalRequest)
+    {
+        // Push action logs
+        let actionSummary = this.getActionSummary(player, actionToPerform, additionalRequest);
+        this.actionsPerformedByPlayer.push(actionSummary);
+
+        this._gameTable.onPlayerTurnEnded(player)
+        if (!this._gameTable.endOfRound)
+            return;
+
+        this.onActionRoundEnded()
+    }
+
+    onActionRoundEnded()
+    {
+        if (this._canLeave())
+        {
+            this._win = true
+            return;
+        }
+
+        //SUPPLY MANAGEMENT
+        this._manageWaterEndOfRound()
+        this._manageFoodEndOfRound()
+
+        //CAN LEAVE?
+        if (this._canLeave())
+        {
+            this._win = true
+            return;
+        }
+
+    }
+
     _manageWaterEndOfRound()
     {
         //enough water to play next round?
@@ -163,25 +198,41 @@ export default class Game
         return canLeaveWithEnoughWater && canLeaveWithEnoughFood && canLeaveWithEnoughWood
     }
 
-    registerAction(player, selectedAction, additionalRequest)
+    getActionSummary(player, actionToPerform, additionalRequest=0)
     {
-      this._roundManager.playAction(player, selectedAction, additionalRequest);
-      let endOfRound = this._roundManager._gameTable.isEndOfRound();
-      console.log("registerAction.endOfRound", endOfRound)
-      this.updateAfterRoundAction(endOfRound);
+        let actionSummary;
+        let actionSummaryPrefix = `${player.nickname} chose to `;
+        switch (actionToPerform)
+        {
+            case RoundAction.CollectWater:
+                actionSummary = actionSummaryPrefix + "collect some water.";
+                break;
+
+            case RoundAction.CollectFood:
+                actionSummary = actionSummaryPrefix + "collect some food.";
+                break;
+
+            case RoundAction.CollectWood:
+                actionSummary = actionSummaryPrefix + `collect some wood with additional request of ${additionalRequest} logs.`;
+                break;
+
+            default :
+                throw new Error('Default case in getActionSummary for player and action', player, actionToPerform);
+          }
+          return actionSummary;
     }
 
-    pullChangesFromRoundManager()
-    {
-      this._lastRound = this._roundManager._waterManager.mustLeave()
-
-      this._waterManager = this._roundManager._waterManager
-      this._foodManager = this._roundManager._foodManager
-      this._woodManager = this._roundManager._woodManager
-
-      this._gameTable = this._roundManager._gameTable
-      this._pollManager = new PollManager(this._gameTable);
-    }
+    // pullChangesFromRoundManager()
+    // {
+    //   this._lastRound = this._roundManager._waterManager.mustLeave()
+    //
+    //   this._waterManager = this._roundManager._waterManager
+    //   this._foodManager = this._roundManager._foodManager
+    //   this._woodManager = this._roundManager._woodManager
+    //
+    //   this._gameTable = this._roundManager._gameTable
+    //   this._pollManager = new PollManager(this._gameTable);
+    // }
 
     updateAfterRoundAction(endOfRound)
     {

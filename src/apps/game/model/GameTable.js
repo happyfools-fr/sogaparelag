@@ -4,52 +4,106 @@ import Utils from './Utils'
 
 export const SERDE_KEYS = [
   'players', 'playersCount', 'indexOfHeadPlayer',
-  'currentPlayer', 'roundIndex'
+  'indexOfCurrentPlayer', 'roundIndex'
 ];
 
 export class GameTable
 {
-    constructor(players, indexOfHeadPlayer = 0, currentPlayer=null, roundIndex=0)
-    {
-        this.players = players
-        this.playersCount = players.length
-        this.indexOfHeadPlayer = indexOfHeadPlayer
-        this._headPlayer = new SittingPlayer(players[indexOfHeadPlayer]);
-        this._initTable(players, indexOfHeadPlayer);
-
-        this.currentPlayer = currentPlayer ? currentPlayer : this._headPlayer.player;
-        this.roundIndex = roundIndex ? roundIndex : 1;
-    }
-
     get headPlayer()
     {
         return this._headPlayer.player
     }
 
+    constructor(players, indexOfHeadPlayer = 0, indexOfCurrentPlayer = 0, roundIndex = 0)
+    {
+        this.players = players
+        this.playersCount = players.length
+
+        this.indexOfHeadPlayer = indexOfHeadPlayer
+        this._headPlayer = new SittingPlayer(players[indexOfHeadPlayer]);
+
+        this._initTable(players, indexOfHeadPlayer);
+
+        this.indexOfCurrentPlayer = indexOfCurrentPlayer
+        this._initCurrentPlayer();
+
+        this.roundIndex = roundIndex ? roundIndex : 1;
+    }
+
     _initTable(players, indexOfHeadPlayer = 0)
-        {
-            let previousCreatedPlayerOnTable = this._headPlayer;
+    {
+        let previousCreatedPlayerOnTable = this._headPlayer;
 
-            //indexOfHeadPlayer+1 .. N-1
-            for (let i = indexOfHeadPlayer + 1; i < players.length; i++) {
-                let player = new SittingPlayer(players[i]);
-                previousCreatedPlayerOnTable.next = player;
-                player.previous = previousCreatedPlayerOnTable;
-                previousCreatedPlayerOnTable = player;
-            }
-
-            //0 .. indexOfHeadPlayer-1
-            for (let i = 0; i < indexOfHeadPlayer; i++) {
-                let player = new SittingPlayer(players[i]);
-                previousCreatedPlayerOnTable.next = player;
-                player.previous = previousCreatedPlayerOnTable;
-                previousCreatedPlayerOnTable = player;
-            }
-
-            //cas indexOfHeadPlayer-1
-            this._headPlayer.previous = previousCreatedPlayerOnTable;
-            previousCreatedPlayerOnTable.next = this._headPlayer;
+        //indexOfHeadPlayer+1 .. N-1
+        for (let i = indexOfHeadPlayer + 1; i < players.length; i++) {
+            let player = new SittingPlayer(players[i]);
+            previousCreatedPlayerOnTable.next = player;
+            player.previous = previousCreatedPlayerOnTable;
+            previousCreatedPlayerOnTable = player;
         }
+
+        //0 .. indexOfHeadPlayer-1
+        for (let i = 0; i < indexOfHeadPlayer; i++) {
+            let player = new SittingPlayer(players[i]);
+            previousCreatedPlayerOnTable.next = player;
+            player.previous = previousCreatedPlayerOnTable;
+            previousCreatedPlayerOnTable = player;
+        }
+
+        //cas indexOfHeadPlayer-1
+        this._headPlayer.previous = previousCreatedPlayerOnTable;
+        previousCreatedPlayerOnTable.next = this._headPlayer;
+    }
+
+    _initCurrentPlayer()
+    {
+        let currentPlayerId = this.players[this.indexOfCurrentPlayer]
+        let playerEnumerator = this.getPlayerEnumerator()
+        while (true)
+        {
+            let currentPlayer = playerEnumerator.next()
+            if (currentPlayer.done)
+                throw Error('Current Player Index out of range')
+
+            if (currentPlayer.value.id === currentPlayerId)
+            {
+                this.currentPlayer = currentPlayer.value
+                return
+            }
+        }
+    }
+
+    onRoundStarts()
+    {
+        this.endOfRound = false
+        this.currentPlayer = this._headPlayer
+        this.indexOfCurrentPlayer = this.indexOfHeadPlayer
+
+        let playerEnumerator = this.getPlayerEnumerator()
+        while (true)
+        {
+            let currentPlayer = playerEnumerator.next()
+            if (currentPlayer.done)
+                return
+
+            currentPlayer.value.player.hasPlayedThisRound = false
+        }
+    }
+
+    onPlayerTurnEnded(player)
+    {
+        //ASSERT this.currentPlayer.player === player
+        
+        this.currentPlayer.player.hasPlayedThisRound = true
+
+        if (this.currentPlayer.next === this._headPlayer)
+        {
+            this.endOfRound = true
+            return
+        }
+
+        this.currentPlayer = this.currentPlayer.next
+    }
 
     killPlayer(playerIdToKill)
     {
@@ -77,26 +131,26 @@ export class GameTable
     }
 
     _refreshPlayers()
+    {
+        this.players = []
+        let playerEnumerator = this.getPlayerEnumerator()
+        let it = 0
+
+        while (true)
         {
-            this.players = []
-            let playerEnumerator = this.getPlayerEnumerator()
-            let it = 0
+            let currentPlayer = playerEnumerator.next()
+            if (currentPlayer.done)
+                break
 
-            while (true)
-            {
-                let currentPlayer = playerEnumerator.next()
-                if (currentPlayer.done)
-                    break
+            if (currentPlayer.value.player === this._headPlayer.player)
+              this.indexOfHeadPlayer = it
 
-                if (currentPlayer.value.player === this._headPlayer.player)
-                  this.indexOfHeadPlayer = it
-
-                this.players.push(currentPlayer.value.player)
-                it++
-            }
-
-            this.playersCount = this.players.length
+            this.players.push(currentPlayer.value.player)
+            it++
         }
+
+        this.playersCount = this.players.length
+    }
 
     * getPlayerEnumerator()
     {
@@ -123,99 +177,96 @@ export class GameTable
         }
     }
 
-    /*
-    * Retrieve the HealthyPlayerEnumerator with default position in enum
-    to match the currentPlayer in state
-    */
-    getPositionedHealthyPlayerEnumerator(){
-      let healthyPlayerEnumerator = this.getHealthyPlayerEnumerator()
-      let retrievedPlayer;
-      while(true)
-      {
-        retrievedPlayer = healthyPlayerEnumerator.next()
-        if (retrievedPlayer.done){
-          healthyPlayerEnumerator = this.getHealthyPlayerEnumerator();
-          break
-        }
-        if (retrievedPlayer.value._player.userId === this.currentPlayer.userId)
-        {
-          break
-        }
-      }
-      return healthyPlayerEnumerator;
-    }
-
-    getInfinitePositionedHealthyPlayerEnumerator(){
-      let healthyPlayerEnumerator;
-      if (this.isEndOfRound()){
-        healthyPlayerEnumerator = this.getHealthyPlayerEnumerator();
-      } else {
-        healthyPlayerEnumerator = this.getPositionedHealthyPlayerEnumerator();
-      }
-      return healthyPlayerEnumerator;
-    }
+    // /*
+    // * Retrieve the HealthyPlayerEnumerator with default position in enum
+    // to match the currentPlayer in state
+    // */
+    // getPositionedHealthyPlayerEnumerator(){
+    //   let healthyPlayerEnumerator = this.getHealthyPlayerEnumerator()
+    //   let retrievedPlayer;
+    //   while(true)
+    //   {
+    //     retrievedPlayer = healthyPlayerEnumerator.next()
+    //     if (retrievedPlayer.done){
+    //       healthyPlayerEnumerator = this.getHealthyPlayerEnumerator();
+    //       break
+    //     }
+    //     if (retrievedPlayer.value._player.userId === this.currentPlayer.userId)
+    //     {
+    //       break
+    //     }
+    //   }
+    //   return healthyPlayerEnumerator;
+    // }
+    //
+    // getInfinitePositionedHealthyPlayerEnumerator(){
+    //   let healthyPlayerEnumerator;
+    //   if (this.isEndOfRound()){
+    //     healthyPlayerEnumerator = this.getHealthyPlayerEnumerator();
+    //   } else {
+    //     healthyPlayerEnumerator = this.getPositionedHealthyPlayerEnumerator();
+    //   }
+    //   return healthyPlayerEnumerator;
+    // }
 
     assignNextHeadPlayer()
     {
         this._headPlayer = this._headPlayer.previous;
-        let indexOfHeadPlayer =
-          this.indexOfHeadPlayer === 0
-          ? this.playersCount - 1
-          : this.indexOfHeadPlayer - 1
-        this.indexOfHeadPlayer = indexOfHeadPlayer;
+        this.indexOfHeadPlayer = this.indexOfHeadPlayer === 0 ?
+                                  this.playersCount - 1 :
+                                  this.indexOfHeadPlayer - 1
     }
 
     assignNextCurrentPlayer()
     {
-      let iter = this.getInfinitePositionedHealthyPlayerEnumerator();
-      let nextSittingPlayer = iter.next();
-      this.currentPlayer = nextSittingPlayer.value._player;
+        this.currentPlayer = this.currentPlayer.next;
+        this.indexOfCurrentPlayer = this.indexOfCurrentPlayer === this.playersCount - 1 ?
+                                      0 : this.indexOfCurrentPlayer + 1
     }
 
-    isEndOfRound()
-    {
-      let iter = this.getPositionedHealthyPlayerEnumerator();
-      let nextSittingPlayer = iter.next();
-      return nextSittingPlayer.done;
-    }
+    // isEndOfRound()
+    // {
+    //   let iter = this.getPositionedHealthyPlayerEnumerator();
+    //   let nextSittingPlayer = iter.next();
+    //   return nextSittingPlayer.done;
+    // }
 
-    getNextSittingPlayer()
-    {
-      let healthyPlayerEnumerator = this.getInfinitePositionedHealthyPlayerEnumerator();
-      let nextSittingPlayer = healthyPlayerEnumerator.next();
-      return nextSittingPlayer;
-    }
+    // getNextSittingPlayer()
+    // {
+    //   let healthyPlayerEnumerator = this.getInfinitePositionedHealthyPlayerEnumerator();
+    //   let nextSittingPlayer = healthyPlayerEnumerator.next();
+    //   return nextSittingPlayer;
+    // }
+    //
+    //
+    // updatePlayer(player)
+    // {
+    //   this.players = this.players.map( p => {
+    //     if(p.userId === player.userId){
+    //       return player;
+    //     } else {
+    //       return p;
+    //     }
+    //   });
+    //   if(this.currentPlayer.userId === player.userId)
+    //   {
+    //     this.currentPlayer = player;
+    //   }
+    // }
 
-
-    updatePlayer(player)
-    {
-      this.players = this.players.map( p => {
-        if(p.userId === player.userId){
-          return player;
-        } else {
-          return p;
-        }
-      });
-      if(this.currentPlayer.userId === player.userId)
-      {
-        this.currentPlayer = player;
-      }
-    }
-
-    updateAfterRoundAction(currentPlayerUpdated)
-    {
-        // Update current player state
-        this.updatePlayer(currentPlayerUpdated)
-        return this.isEndOfRound();
-    }
+    // updateAfterRoundAction(currentPlayerUpdated)
+    // {
+    //     // Update current player state
+    //     this.updatePlayer(currentPlayerUpdated)
+    //     return this.isEndOfRound();
+    // }
 
     toDoc() {
         return {
           players: this.players.map((p) => {return p ? p.toDoc() : null;}),
           playersCount: this.playersCount,
           indexOfHeadPlayer: this.indexOfHeadPlayer,
-          //
-          currentPlayer: this.currentPlayer.toDoc(),
+          indexOfCurrentPlayer: this.indexOfCurrentPlayer,
           roundIndex: this.roundIndex,
         }
     }
@@ -227,9 +278,9 @@ export class GameTable
           return Player.fromDoc(pDoc);
         })
         const indexOfHeadPlayer = doc['indexOfHeadPlayer'];
-        const currentPlayer = Player.fromDoc(doc['currentPlayer']);
+        const indexOfCurrentPlayer = doc['indexOfCurrentPlayer']
         gameTable = new GameTable(
-          players, indexOfHeadPlayer, currentPlayer, parseInt(doc['roundIndex'])
+          players, indexOfHeadPlayer, indexOfCurrentPlayer, parseInt(doc['roundIndex'])
         );
       }
       return gameTable;
