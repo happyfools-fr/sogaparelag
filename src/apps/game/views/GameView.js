@@ -17,6 +17,7 @@ import TurnModal from './TurnModal';
 import PollModal from './PollModal';
 import GameTableView from './GameTableView';
 import AllPlayersView from './AllPlayersView';
+import SavedView from './SavedView';
 
 import {RoundAction} from '../model/RoundAction'
 
@@ -36,15 +37,6 @@ function GameView(props) {
 
     const playerController = new PlayerController(props.firebaseService.ft)
     
-    const clientPlayer = (game && user) ? game._gameTable.players.filter(p => p.userId === user._id)[0] : null;
-    console.log("clientPlayer", clientPlayer)
-    const showPollWater = (game) ? (game.pollWater && !clientPlayer.waterVote) : false;
-    const showPollFood = (game) ? (game.pollFood && !clientPlayer.foodVote) : false;
-    const showPoll = (showPollWater && !showPollFood) || (!showPollWater && showPollFood);
-    const pollType = showPollWater ? "drink" : "eat";
-
-    const showAction = (game) ? (game.currentPlayerId === clientPlayer.userId && !showPoll): false;
-    
     useEffect(
         () => {
             const unsubscribe = gameController.listen(gameId, setGame);
@@ -52,71 +44,87 @@ function GameView(props) {
         },
         [gameId, setGame]
     );
+    
+    console.log('After UseEffect');
+    const clientPlayer = (game && user) ? game._gameTable.players.filter(p => p.id === user._id)[0] : null;
+    const showPollWater = (game && clientPlayer) ? (game.pollWater && !clientPlayer.waterVote) : false;
+    const showPollFood = (game && clientPlayer) ? (game.pollFood && !clientPlayer.foodVote) : false;
+    const showPoll = (showPollWater && !showPollFood) || (!showPollWater && showPollFood);
+    const pollType = showPollWater ? "drink" : "eat";
 
-
+    const showAction = (game && clientPlayer) ? (game.currentPlayerId === clientPlayer.id && !showPoll): false;
+    
     const handleAction = (action, show) => {
       
-        const player = game._gameTable.currentPlayer;
+        const player = game.currentPlayer;
         console.log("Selected action = ", action)
         alert("You have chosen to go to "+ action);
         
         player.performAction(game, action, 0);
-        // game.history.push(
-        //     {
-        //         type: action,
-        //         value: props.user.nickname + " went for " + action
-        //     }
-        // );
-        gameController.update(game);
+        console.log("player.performAction(game ", game)
         game._gameTable.players.forEach((p, i) => {
           playerController.update(p)
         });
+        gameController.update(game);
         // Update game in waiting room if needed
     };
     
-    const handleVoteSubmit = (chosenPlayerId) => {
+    const handleVoteSubmit = (chosenPlayer) => {
       
-        const votedPlayer = playerController.get(chosenPlayerId);
+        console.log("chosenPlayer", chosenPlayer);
+        const votedPlayer = game._gameTable.players.filter(p => chosenPlayer.id === p.id)[0];
         console.log(`${clientPlayer.nickname} voted for ${votedPlayer.nickname}`)
         alert(`You have voted for ${votedPlayer.nickname}`);
         
         const actionToPerform = showPollWater ? RoundAction.WaterVote : RoundAction.FoodVote;
-        clientPlayer.performVote(game, actionToPerform, votedPlayer.userId)
-        gameController.update(game);
+        clientPlayer.performVote(game, actionToPerform, votedPlayer.id);
+        console.log("clientPlayer after vote", clientPlayer);
         game._gameTable.players.forEach((p, i) => {
           playerController.update(p)
         });
+        gameController.update(game);
+
         // Update game in waiting room if needed
     };
 
     if (game) {
-        return (
-            <Container fluid>
-                <Row>
-                    <Col>
-                        <GameTableView className='mt-5' slugname={props.slugname} game={game}/>
-                        <AllPlayersView 
-                            players={game._gameTable.players} 
-                            currentPlayerId={game.currentPlayerId}
-                            headPlayer={game._gameTable.headPlayer._id}
-                            firebaseService={props.firebaseService}
-                        />
-                        <TurnModal
-                            show={showAction}
-                            onAction={handleAction}
-                        />
-                        <PollModal
-                            show={showPoll}
-                            pollType={pollType}
-                            handleVoteSubmit={handleVoteSubmit}
-                        />
-                    </Col>
-                    <Col sm={4}>
-                        <GameHistoryView game={game} />
-                    </Col>
-                </Row>
-            </Container>
-        );
+      if(!game._win){
+          return (
+              <Container fluid>
+                  <Row>
+                      <Col>
+                          <GameTableView className='mt-5' slugname={props.slugname} game={game}/>
+                          <AllPlayersView 
+                              players={game._gameTable.players} 
+                              currentPlayerId={game.currentPlayerId}
+                              headPlayerId={game.headPlayerId}
+                              firebaseService={props.firebaseService}
+                          />
+                          <TurnModal
+                              show={showAction}
+                              onAction={handleAction}
+                          />
+                          <PollModal
+                              show={showPoll}
+                              players={game._gameTable.players}
+                              pollType={pollType}
+                              handleVoteSubmit={handleVoteSubmit}
+                          />
+                      </Col>
+                      <Col sm={4}>
+                          <GameHistoryView game={game} />
+                      </Col>
+                  </Row>
+              </Container>
+          );
+        } else {
+            return (
+              <SavedView 
+                players={game._gameTable.players}
+                slugname={props.slugname}
+              />
+            );
+        }
     } else {
         return(<div />)
     }

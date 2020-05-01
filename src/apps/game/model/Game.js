@@ -31,10 +31,8 @@ export default class Game
         this._woodManager = woodManager
 
         let players = Game._createPlayers(loggedInUsers)
-        this._gameTable = new GameTable(players, 0, 0 , 0)
-        // this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
+        this._gameTable = new GameTable(players, 0, 0, 0)
         this._pollManager = new PollManager(this._gameTable);
-        // this.actionsPerformedByPlayer = []
 
         this.history = [];
         
@@ -54,13 +52,29 @@ export default class Game
     {
       return this._gameTable.playersCount
     }
+    
+    get headPlayerId() {
+        return this._gameTable.headPlayer.userId;
+    }
+    
+    get headPlayer() {
+        return this._gameTable.headPlayer;
+    }
 
     get currentPlayerId() {
-        return this._gameTable.currentPlayer._player.userId;
+        return this._gameTable.currentPlayer.userId;
+    }
+    
+    get currentPlayer() {
+        return this._gameTable.currentPlayer;
     }
 
     get nextPlayerId() {
-        return this._gameTable.currentPlayer._next._player.userId;
+        return this._gameTable._currentPlayer.next.player.userId;
+    }
+    
+    get nextPlayer() {
+        return this._gameTable._currentPlayer.next.player;
     }
 
     get waterSupply() {
@@ -142,27 +156,30 @@ export default class Game
         if (this._canLeave())
         {
             this._win = true
+            alert("You are saved!");
             return;
         }
-
         // Init SUPPLY MANAGEMENT sequence
-        this._initWaterVote()
+        return this._initWaterManagement();
     }
     
     onPlayerWaterVote()
     {
-      let waterVoteEnded = this._gameTable.players.every(p => p.waterVote !== null);
+      let waterVoteEnded = this._gameTable.players.every(p => p.waterVote);
       if(!waterVoteEnded)
+        console.log("waterVoteEnded", waterVoteEnded)
         return
-      this.onWaterVoteEnded()
+      alert("onWaterVoteEnded");
+      return this.onWaterVoteEnded();
     }
 
     onPlayerFoodVote()
     {
-      let footVoteEnded = this._gameTable.players.every(p => p.foodVote !== null);
+      let footVoteEnded = this._gameTable.players.every(p => p.foodVote);
       if(!footVoteEnded)
         return
-      this.onFoodVoteEnded()
+      alert("onFoodVoteEnded");
+      return this.onFoodVoteEnded();
     }
     
     onWaterVoteEnded()
@@ -178,38 +195,45 @@ export default class Game
         this._waterManager.drink(this._gameTable.playersCount)
         //end of water vote
         this.pollWater = false
-        // initiate food vote if needed
-        this._initFoodVote()
-        return;
+        return this._initFoodManagement();
       } 
       //Otherwise redo vote
-      this._initWaterVote()
+      return this._initWaterManagement();
     }
     
-    _initWaterVote()
+    _initWaterManagement()
     {
       if (this._gameTable.playersCount - this._waterManager.inventory > 0)
       {
-        this.waterVote = true;
-        this.players.forEach( p => {
+        this.pollWater = true;
+        alert("Water Vote!");
+
+        this._gameTable.players.forEach( p => {
           p.waterVote = null;
         });
-        return
+        return;
       } 
-      this._initFoodVote();
+      // Else drink water and keep on
+      this._waterManager.drink(this._gameTable.playersCount);
+      return this._initFoodManagement();
     }
     
-    _initFoodVote()
+    _initFoodManagement()
     {
       if (this._gameTable.playersCount - this._foodManager.inventory > 0)
       {
-        this.foodVote = true;
-        this.players.forEach( p => {
+        this.pollFood = true;
+        alert("Food Vote!");
+
+        this._gameTable.players.forEach( p => {
           p.foodVote = null;
         });
-        return
+        // Triggers vote
+        return;
       } 
-      this.onAllVotesEnded();
+      // Else eat food and keep on
+      this._foodManager.eat(this._gameTable.playersCount);
+      return this.onAllManagementEnded();
     }
     
     onFoodVoteEnded()
@@ -225,23 +249,22 @@ export default class Game
         this._foodManager.drink(this._gameTable.playersCount)
         //end of water vote
         this.pollFood = false
-        // following step in sequence
-        this.onAllVotesEnded();
-        return;
+        return this.onAllManagementEnded();
       }
       //Otherwise redo vote
-      this._initFoodVote();
+      return this._initFoodManagement();
     }
     
-    onAllVotesEnded()
+    onAllManagementEnded()
     {
       //CAN LEAVE?
       if (this._canLeave())
       {
           this._win = true
+          alert("You are saved!");
           return;
       }
-      this._gameTable.onRoundStarts();
+      return this._gameTable.onRoundStarts();
     }
     
     onPlayerFinalWaterVote()
@@ -253,31 +276,6 @@ export default class Game
     {
       return ;
     }
-
-
-    // _manageWaterEndOfRound()
-    // {
-    //     //enough water to play next round?
-    //     while (this._gameTable.playersCount - this._waterManager.inventory > 0)
-    //     {
-    //         let playerIdToKill = this._pollManager.vote()
-    //         this._gameTable.killPlayer(playerIdToKill)
-    //     }
-    //     //everybody drinks
-    //     this._waterManager.drink(this._gameTable.playersCount)
-    // }
-    // 
-    // _manageFoodEndOfRound()
-    // {
-    //     //enough food to play next round?
-    //     while (this._gameTable.playersCount - this._foodManager.inventory > 0)
-    //     {
-    //         let playerIdToKill = this._pollManager.vote()
-    //         this._gameTable.killPlayer(playerIdToKill)
-    //     }
-    //     //everybody eats
-    //     this._foodManager.eat(this._gameTable.playersCount)
-    // }
 
     _canLeave()
     {
@@ -344,12 +342,10 @@ export default class Game
           game._win = doc['_win'];
           let gameTable = GameTable.fromDoc(doc['_gameTable']);
           game._gameTable = gameTable;
-          // game._roundManager = new RoundManager(game._gameTable, waterManager, foodManager, woodManager)
           game._pollManager = new PollManager(game._gameTable);
           game.history = doc['history'];
           game.pollFood = doc['pollFood'];
           game.pollWater = doc['pollWater'];
-
       }
       return game;
     }

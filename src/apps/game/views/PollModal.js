@@ -12,7 +12,7 @@ import PollComponent from './PollComponent'
 */
 export default function PollModal(props) {
 
-    const show = (props.show) ? props.show : true;
+    const show = (props.show) ? props.show : false;
     const pollType = (props.pollType) ? props.pollType : "eat or drink";
 
     const players = (props.players) ? props.players : [
@@ -32,16 +32,16 @@ export default function PollModal(props) {
     return (
         <Modal show={show} centered>
             <Modal.Header>
-                <Modal.Title>Time to vote !</Modal.Title>
+                <Modal.Title>Time to vote!</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                You must choose which player will not {pollType} today :
-                <Form className="mt-2" onSubmit={() => handleVoteSubmit(vote._id)}>
+                You must choose which player will not {pollType} today:
+                <Form className="mt-2">
                     <Form.Group>
                     <PollComponent players={players} vote={vote} handleSelect={setVote}/>
                     </Form.Group>
                     <Modal.Footer>
-                        <Button variant="primary" type="submit">
+                        <Button variant="primary" type="button" onClick={() => handleVoteSubmit(vote)}>
                             Vote
                         </Button>
                     </Modal.Footer>

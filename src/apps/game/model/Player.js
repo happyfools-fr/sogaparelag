@@ -119,7 +119,6 @@ export default class Player
     {
         this.playAction(game, selectedAction, additionalRequest)
         game.onPlayerActionPerformed(this, selectedAction, additionalRequest)
-        return game;
     }
 
     playAction(game, actionToPerform, additionalRequest=0)
@@ -146,27 +145,27 @@ export default class Player
           }
     }
 
-    performVote(game, actionToPerform, vote)
+    performVote(game, actionToPerform, votedPlayerId)
     {
         switch (actionToPerform)
         {
             case RoundAction.WaterVote:
-                this.waterVote = vote
+                this.waterVote = votedPlayerId
                 game.onPlayerWaterVote()
                 break;
 
             case RoundAction.FoodVote:
-                this.foodVote = vote
+                this.foodVote = votedPlayerId
                 game.onPlayerFoodVote()
                 break;
 
             case RoundAction.FinalWaterVote:
-                this.finalWaterVote = vote
+                this.finalWaterVote = votedPlayerId
                 game.onPlayerFinalWaterVote()
                 break;
 
             case RoundAction.FinalFoodVote:
-                this.finalFoodVote = vote
+                this.finalFoodVote = votedPlayerId
                 game.onPlayerFinalFoodVote()
                 break;
 

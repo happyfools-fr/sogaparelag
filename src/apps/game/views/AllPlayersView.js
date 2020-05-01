@@ -18,7 +18,7 @@ export default function AllPlayersView(props) {
                                     key={i}
                                     playerId={player._id}
                                     currentPlayerId={props.currentPlayerId}
-                                    headPlayer={props.headPlayer}
+                                    headPlayerId={props.headPlayerId}
                                     firebaseService={props.firebaseService}
                                 />
                             )

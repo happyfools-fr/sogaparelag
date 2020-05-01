@@ -24,11 +24,18 @@ export class GameTable
         this._initCurrentPlayer();
         console.log("_initCurrentPlayer over");
         this.roundIndex = roundIndex ? roundIndex : 1;
+        
+        this.endOfRound = false;
     }
 
     get headPlayer()
     {
         return this._headPlayer.player
+    }
+    
+    get currentPlayer()
+    {
+        return this._currentPlayer.player
     }
     
     * getPlayerEnumerator()
@@ -66,7 +73,7 @@ export class GameTable
 
     assignNextCurrentPlayer()
     {
-        this.currentPlayer = this.currentPlayer.next;
+        this._currentPlayer = this._currentPlayer.next;
         this.indexOfCurrentPlayer = this.indexOfCurrentPlayer === this.playersCount - 1 ?
                                       0 : this.indexOfCurrentPlayer + 1
     }
@@ -103,14 +110,12 @@ export class GameTable
         while (true)
         {
             let currentPlayer = playerEnumerator.next()
-            console.log("currentPlayer in _initCurrentPlayer", currentPlayer)
             if (currentPlayer.done)
                 throw Error('Current Player Index out of range')
 
             if (currentPlayer.value._player.userId === currentPlayerId)
             {
-                this.currentPlayer = currentPlayer.value
-                console.log("_initCurrentPlayer in loop over");
+                this._currentPlayer = currentPlayer.value
                 return
             }
         }
@@ -118,10 +123,12 @@ export class GameTable
 
     onRoundStarts()
     {
+        this.assignNextHeadPlayer();
         this.endOfRound = false
-        this.currentPlayer = this._headPlayer
-        this.indexOfCurrentPlayer = this.indexOfHeadPlayer
-        this.roundIndex++;
+        this._currentPlayer = this._headPlayer.next
+        this.indexOfCurrentPlayer = this.indexOfCurrentPlayer === this.playersCount - 1 ?
+                                      0 : this.indexOfCurrentPlayer + 1
+        this.roundIndex = this.roundIndex + 1;
         let playerEnumerator = this.getPlayerEnumerator()
         while (true)
         {
@@ -136,16 +143,15 @@ export class GameTable
     onPlayerTurnEnded(player)
     {
         //ASSERT this.currentPlayer.player === player
-        
-        this.currentPlayer.player.hasPlayedThisRound = true
+        this._currentPlayer.player.hasPlayedThisRound = true
 
-        if (this.currentPlayer.next === this._headPlayer)
+        if (this._currentPlayer.next === this._headPlayer)
         {
             this.endOfRound = true
             return
         }
-
-        this.currentPlayer = this.currentPlayer.next
+        
+        this.assignNextCurrentPlayer();
     }
 
     killPlayer(playerIdToKill)

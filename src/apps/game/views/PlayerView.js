@@ -33,7 +33,7 @@ export default function PlayerView(props) {
             <Card.Body>
                 <Card.Title>
                     {
-                        (props.headPlayer === player.id)
+                        (props.headPlayerId === player.id)
                         ? <i className="fas fa-user-ninja" />
                         : <span />
                     }
