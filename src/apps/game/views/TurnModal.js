@@ -19,7 +19,7 @@ export default function TurnModal(props) {
                     <Button variant="success" margin-right="1em"  onClick={() => props.onAction("wood")}>
                         Get wood
                     </Button>
-                    <Button variant="danger" margin-right="1em" onClick={() => props.onAction("wood")}>
+                    <Button variant="danger" margin-right="1em" onClick={() => props.onAction("food")}>
                         Get food
                     </Button>
                 </ButtonGroup>

@@ -32,24 +32,26 @@ export default function GameTableView(props) {
                     <RaftComponent inventory={0} />
                     </Col>
                 </Row>
-                <Row className='mt-3'>
-                    <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Total Moves #</th>
-                            <th>Current Player</th>
-                            <th>Next Player</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{game.history.length}</td>
-                            <td>{game.currentPlayerId}</td>
-                            <th>{game.nextPlayerId}</th>
-                        </tr>
-                    </tbody>
-                    </Table>
-                </Row>
+                {/*
+                // <Row className='mt-3'>
+                //     <Table striped bordered hover>
+                //     <thead>
+                //         <tr>
+                //             <th>Total Moves #</th>
+                //             <th>Current Player</th>
+                //             <th>Next Player</th>
+                //         </tr>
+                //     </thead>
+                //     <tbody>
+                //         <tr>
+                //             <td>{game.history.length}</td>
+                //             <td>{game.currentPlayerId}</td>
+                //             <th>{game.nextPlayerId}</th>
+                //         </tr>
+                //     </tbody>
+                //     </Table>
+                // </Row>
+                */}
             </Container>
             </Card.Body>
         </Card>

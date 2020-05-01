@@ -44,14 +44,19 @@ function GameView(props) {
 
     const handleAction = (action, show) => {
         alert("You have chosen to go to "+ action);
-        game.history.push(props.user.nickname + " went for " + action);
+        game.history.push(
+            {
+                type: action,
+                value: props.user.nickname + " went for " + action
+            }
+        );
         game._waterManager.collect();
         gameController.update(game);
     };
 
     if (game) {
         return (
-            <Container>
+            <Container fluid>
                 <Row>
                     <Col>
                         <GameTableView className='mt-5' slugname={props.slugname} game={game}/>
@@ -63,7 +68,7 @@ function GameView(props) {
                             onAction={handleAction}
                         />
                     </Col>
-                    <Col sm={3}>
+                    <Col sm={4}>
                         <GameHistoryView game={game} />
                     </Col>
                 </Row>
