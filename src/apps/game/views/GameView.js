@@ -43,7 +43,7 @@ function GameView(props) {
 
 
     const handleAction = (action, show) => {
-        alert("You have chosen to go to "+ action);
+        // alert("You have chosen to go to "+ action);
         game.history.push(
             {
                 type: action,

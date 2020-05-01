@@ -14,12 +14,14 @@ export default function GameHistoryView(props) {
 
     const logsEndRef = useRef(null)
 
+    const logs = (props.game) ? props.game.history : []
 
     const scrollToBottom = () => {
+        console.log("scroll")
         logsEndRef.current.scrollIntoView({ behavior: "smooth" })
     }
 
-    useEffect(scrollToBottom, [props.game.history])
+    useEffect(scrollToBottom, [logs])
 
     return (
         <>
@@ -39,8 +41,13 @@ export default function GameHistoryView(props) {
 
                 props.game.history
                     .map(
-                        state => {return (
-                            <HistoryItemView icon="fa-info-circle" type={state.type} value={state.value} />
+                        (state,i) => {return (
+                            <HistoryItemView
+                                key={i}
+                                icon="fa-info-circle"
+                                type={state.type}
+                                value={state.value}
+                            />
                         )}
                     )
             }
