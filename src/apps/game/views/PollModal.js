@@ -8,7 +8,6 @@ import PollComponent from './PollComponent'
 *
 *   @params players
 *   @params show
-*   @params handleVote
 *
 */
 export default function PollModal(props) {
