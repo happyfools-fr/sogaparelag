@@ -11,6 +11,8 @@ export default function DeadModal(props) {
 
     const show = (props.show) ? props.show : true
 
+    const handleSpectate = (props.handleSpectate) ? props.handleSpectate : () => {show = false}
+
     return (
         <Modal show={show} centered>
             <Modal.Header>
