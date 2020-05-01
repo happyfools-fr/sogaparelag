@@ -25,6 +25,8 @@ jobs:
       run: npm install
     - name: Build
       run: npm run build
+      env:
+        CI: false
     - name: Deploy to firebase
       uses: w9jds/firebase-action@master
       with:
