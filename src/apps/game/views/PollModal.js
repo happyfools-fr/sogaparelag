@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 
-import {Modal, Form, Button, ToggleButton, ToggleButtonGroup} from 'react-bootstrap';
+import {Modal, Form, Button, ButtonGroup, Dropdown, DropdownButton} from 'react-bootstrap';
+
+import PollComponent from './PollComponent'
 
 /**
 *
@@ -14,17 +16,17 @@ export default function PollModal(props) {
     // Set condition
     const show = true
     const players = [
-        {_id: 1}, {_id: 2}, {_id: 3}, {_id: 4},
-        {_id: 5}, {_id: 6}, {_id: 7}, {_id: 8},
-        {_id: 9}, {_id: 10}, {_id: 11}, {_id: 12}
+        {_id: 1, nickname: "Toto"}, {_id: 2, nickname: "Tata"},
+        {_id: 3, nickname: "Tutu"}, {_id: 4, nickname: "Tata"},
+        {_id: 5, nickname: "Titi"}, {_id: 6, nickname: "Tutu"},
+        {_id: 7, nickname: "Tutu"}, {_id: 8, nickname: "Toto"},
     ];
     const handleVote = (submit) => {
         // To-Do
-        console.log(vote)
+        console.log(vote._id)
     };
 
     const [vote, setVote] = useState()
-
 
 
     return (
@@ -36,24 +38,7 @@ export default function PollModal(props) {
                 You must choose which player will not drink today :
                 <Form className="mt-2" onSubmit={handleVote}>
                     <Form.Group>
-                    {/* How to scale the visual ?? */}
-                    <ToggleButtonGroup type="radio" name="players" size="lg" onChange={setVote} toggle>
-                        {
-                            players.map(
-                                (player, i) => {
-                                    return(
-                                        <ToggleButton
-                                            variant="outline-dark"
-                                            key={i}
-                                            value={player._id}
-                                        >
-                                            Player {player._id}
-                                        </ToggleButton>
-                                    )
-                                }
-                            )
-                        }
-                    </ToggleButtonGroup>
+                    <PollComponent players={players} vote={vote} handleSelect={setVote}/>
                     </Form.Group>
                     <Modal.Footer>
                         <Button variant="primary" type="submit">
