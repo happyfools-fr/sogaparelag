@@ -1,6 +1,7 @@
 import {GameTable} from '../model/GameTable'
 import Player from '../model/Player'
 import {WaterManager} from '../model/WaterManager'
+import {Weather} from '../model/Weather'
 import {WoodManager} from '../model/WoodManager'
 import {FoodManager} from '../model/FoodManager'
 import {RoundManager} from '../model/RoundManager'
@@ -43,7 +44,7 @@ describe('RoundManager', function()
 
 
       let waterManager = new WaterManager()
-      waterManager._weathers = [1]
+      waterManager._weathers = [Weather.Drizzle]
 
       let woodManager = new WoodManager()
       woodManager._woods = [true, true]
@@ -91,7 +92,7 @@ describe('RoundManager', function()
       const gameTable = new GameTable([player1, player2, player3])
 
       let waterManager = new WaterManager()
-      waterManager._weathers = [1]
+      waterManager._weathers = [Weather.Drizzle]
 
       let woodManager = new WoodManager()
       woodManager._woods = [true, true]
@@ -140,7 +141,7 @@ describe('RoundManager', function()
 
 
       let waterManager = new WaterManager()
-      waterManager._weathers = [1]
+      waterManager._weathers = [Weather.Drizzle]
 
       let woodManager = new WoodManager()
       woodManager._woods = [true, true]
@@ -188,7 +189,7 @@ describe('RoundManager', function()
       const gameTable = new GameTable([player1, player2, player3])
 
       let waterManager = new WaterManager()
-      waterManager._weathers = [1]
+      waterManager._weathers = [Weather.Drizzle]
 
       let woodManager = new WoodManager()
       woodManager._woods = [false]
@@ -223,7 +224,7 @@ describe('RoundManager', function()
       const gameTable = new GameTable([player1, player2, player3])
 
       let waterManager = new WaterManager()
-      waterManager._weathers = [1]
+      waterManager._weathers = [Weather.Drizzle]
 
       let woodManager = new WoodManager()
       woodManager._woods = [true, true]
@@ -258,7 +259,7 @@ describe('RoundManager', function()
 
       assert(!(id3 in roundManager.actionsPerformedByPlayer))
     });
-    
+
     it('only iterate over healthy players', () =>
     {
       let id1 = uuidv1();
@@ -270,7 +271,7 @@ describe('RoundManager', function()
       const gameTable = new GameTable([player1, player2, player3])
 
       let waterManager = new WaterManager()
-      waterManager._weathers = [1]
+      waterManager._weathers = [Weather.Drizzle]
 
       let woodManager = new WoodManager()
       woodManager._woods = [true, true]
@@ -305,7 +306,7 @@ describe('RoundManager', function()
 
       assert(!(id3 in roundManager.actionsPerformedByPlayer))
     });
-    
+
     it('properly formats player action summaries', () =>
     {
       let id1 = uuidv1();
@@ -317,7 +318,7 @@ describe('RoundManager', function()
       const gameTable = new GameTable([player1, player2, player3])
 
       let waterManager = new WaterManager()
-      waterManager._weathers = [1]
+      waterManager._weathers = [Weather.Drizzle]
 
       let woodManager = new WoodManager()
       woodManager._woods = [true, true]
@@ -326,27 +327,27 @@ describe('RoundManager', function()
       foodManager._foods = [3]
 
       let roundManager  = new RoundManager(gameTable, waterManager, foodManager, woodManager)
-      
+
       let summaryCollectWater = roundManager.getActionSummary(player1, RoundAction.CollectWater)
       assert.equal(
         `${player1.nickname} chose to collect some water.`,
         summaryCollectWater
       )
-      
+
       let summaryCollectFood = roundManager.getActionSummary(player1, RoundAction.CollectFood)
       assert.equal(
         `${player1.nickname} chose to collect some food.`,
         summaryCollectFood
       )
-      
+
       let summaryCollectWood = roundManager.getActionSummary(player1, RoundAction.CollectWood, 2)
       assert.equal(
         `${player1.nickname} chose to collect some wood with additional request of 2 logs.`,
         summaryCollectWood
       )
-      
+
     });
-    
+
     it('playAction only runs if currentPlayer matches player parameter', () =>
     {
       let id1 = uuidv1();
@@ -361,7 +362,7 @@ describe('RoundManager', function()
       const gameTable = new GameTable([player1, player2, player3, player4])
 
       let waterManager = new WaterManager()
-      waterManager._weathers = [1]
+      waterManager._weathers = [Weather.Drizzle]
 
       let woodManager = new WoodManager()
       woodManager._woods = [true, true, true, true, true, true]
@@ -382,22 +383,22 @@ describe('RoundManager', function()
 
       //Player cannot perform action
       assert.throws(
-        () => {roundManager.playAction(player4, actionToPerform);}, 
+        () => {roundManager.playAction(player4, actionToPerform);},
         Error
       );
       //Leave list unchanged
       assert.deepEqual(roundManager.actionsPerformedByPlayer, [summaryCollectWater]);
-      
-      // Player1 can perform another action... 
+
+      // Player1 can perform another action...
       actionToPerform = RoundAction.CollectWood;
       let adds =  5;
       let summaryCollectWood = roundManager.getActionSummary(player1, actionToPerform, adds)
       roundManager.playAction(player1, actionToPerform, adds)
       assert(roundManager.actionsPerformedByPlayer.includes(summaryCollectWood));
       assert.deepEqual(roundManager.actionsPerformedByPlayer, [summaryCollectWater, summaryCollectWood]);
-      
+
     });
-    
+
     it('playAction with unknown action raises error', () =>
     {
       let id1 = uuidv1();
@@ -412,7 +413,7 @@ describe('RoundManager', function()
       const gameTable = new GameTable([player1, player2, player3, player4])
 
       let waterManager = new WaterManager()
-      waterManager._weathers = [1]
+      waterManager._weathers = [Weather.Drizzle]
 
       let woodManager = new WoodManager()
       woodManager._woods = [true, true]
@@ -426,14 +427,14 @@ describe('RoundManager', function()
       assert(roundManager._gameTable.currentPlayer.userId === player1.userId);
       // Player1 cannot perform unknown action
       assert.throws(
-        () => {roundManager.playAction(player1, "unknown action dude");}, 
+        () => {roundManager.playAction(player1, "unknown action dude");},
         Error
       );
       //Leave list unchanged
       assert.deepEqual(roundManager.actionsPerformedByPlayer, []);
-      
+
     });
-    
+
     it('playAction with unknown action raises error', () =>
     {
       let id1 = uuidv1();
@@ -448,7 +449,7 @@ describe('RoundManager', function()
       const gameTable = new GameTable([player1, player2, player3, player4])
 
       let waterManager = new WaterManager()
-      waterManager._weathers = [1]
+      waterManager._weathers = [Weather.Drizzle]
 
       let woodManager = new WoodManager()
       woodManager._woods = [false, false]
@@ -465,10 +466,10 @@ describe('RoundManager', function()
       roundManager.playAction(player1, actionToPerform, adds)
       assert(roundManager.actionsPerformedByPlayer.includes(summaryCollectWood));
       assert.deepEqual(roundManager.actionsPerformedByPlayer, [summaryCollectWood]);
-      
+
       // Player1 is sick
       assert(roundManager._gameTable.currentPlayer.isSick);
-      assert(player1.isSick);      
+      assert(player1.isSick);
     });
-    
+
   });

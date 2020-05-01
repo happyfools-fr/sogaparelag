@@ -11,17 +11,17 @@ export class Weather
     {
         switch (weather)
         {
-            case Drought:
+            case this.Drought:
                 return 0;
-            case Drizzle:
+            case this.Drizzle:
                 return 1;
-            case Rain:
+            case this.Rain:
                 return 2;
-            case Thunderstorm:
+            case this.Thunderstorm:
                 return 3;
-            case Flood:
+            case this.Flood:
                 return 2;
-            case None:
+            case this.None:
                 return 0;
             default:
                 return 0;

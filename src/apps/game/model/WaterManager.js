@@ -1,6 +1,6 @@
 // import { isTSExpressionWithTypeArguments } from "@babel/types";
 import Utils from "./Utils";
-import Weather from './Weather'
+import {Weather} from './Weather'
 import shuffle from 'shuffle-array'
 
 export const SERDE_KEYS = ['waterSupply', '_weathers'];
@@ -10,7 +10,7 @@ export class WaterManager
     constructor(value, weathers = null)
     {
         this.inventory = value ? value : 0;
-        this._weathers = (weathers =! null) ? weathers : this._initWeather()
+        this._weathers = (weathers != null) ? weathers : this._initWeather()
     }
 
     _initWeather()

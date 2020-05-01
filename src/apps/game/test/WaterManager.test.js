@@ -1,38 +1,39 @@
 import {WaterManager, SERDE_KEYS} from '../model/WaterManager'
+import {Weather} from '../model/Weather'
 
 const assert = require('assert');
-    
 
-describe('WaterManager', function() 
+
+describe('WaterManager', function()
 {
-  
-    it('default value for inventory is 0', () => 
+
+    it('default value for inventory is 0', () =>
     {
         const _waterManager = new WaterManager();
         assert.equal(_waterManager.inventory, 0);
     });
-  
-    it('collect 1st weather in list with single item', () => 
+
+    it('collect 1st weather in list with single item', () =>
     {
         const _waterManager = new WaterManager()
 
-        _waterManager._weathers = [1]
+        _waterManager._weathers = [Weather.Drizzle]
         assert.equal(_waterManager.inventory, 0)
         _waterManager.collect()
         assert.equal(_waterManager.inventory, 1)
     });
 
-    it('collect 1st weather in list with multiple items', () => 
+    it('collect 1st weather in list with multiple items', () =>
     {
         const _waterManager = new WaterManager()
 
-        _waterManager._weathers = [2, 3, 5]
+        _waterManager._weathers = [Weather.Rain, Weather.Drizzle, Weather.Drizzle]
         assert.equal(_waterManager.inventory, 0)
         _waterManager.collect()
         assert.equal(_waterManager.inventory, 2)
     });
 
-    it('drink should decrease inventory', () => 
+    it('drink should decrease inventory', () =>
     {
          const _waterManager = new WaterManager()
 
@@ -41,7 +42,7 @@ describe('WaterManager', function()
         assert.equal(_waterManager.inventory, 2)
     });
 
-    it('should not leave if not enough water', () => 
+    it('should not leave if not enough water', () =>
     {
         const _waterManager = new WaterManager()
 
@@ -49,7 +50,7 @@ describe('WaterManager', function()
         assert.equal(_waterManager.authorizeLeaving(3), false)
     });
 
-    it('should leave if just enough water', () => 
+    it('should leave if just enough water', () =>
     {
         const _waterManager = new WaterManager()
 
@@ -57,41 +58,48 @@ describe('WaterManager', function()
         assert.equal(_waterManager.authorizeLeaving(3), true)
     });
 
-    it('should leave if more than enough water', () => 
+    it('should leave if more than enough water', () =>
     {
         const _waterManager = new WaterManager()
         _waterManager.inventory = 10
         assert.equal(_waterManager.authorizeLeaving(3), true)
     });
 
-    it('should leave if weather is 3', () => 
+    it('should leave if weather is 3', () =>
     {
         const _waterManager = new WaterManager()
-        _waterManager._weathers = [3, 1, 0]
+        _waterManager._weathers = [Weather.Flood , Weather.Drizzle, Weather.Rain]
         assert.equal(_waterManager.mustLeave(), true)
     });
 
-    it('should not leave if weather is not 3 #0', () => 
+    it('should not leave if weather is not 3 #0', () =>
     {
         const _waterManager = new WaterManager()
-        _waterManager._weathers = [0, 3, 0]
+        _waterManager._weathers = [Weather.Drought , Weather.Flood]
         assert.equal(_waterManager.mustLeave(), false)
     });
 
-    it('should not leave if weather is not 3 #1', () => 
+    it('should not leave if weather is not 3 #1', () =>
     {
         const _waterManager = new WaterManager()
-        _waterManager._weathers = [1, 3, 0]
+        _waterManager._weathers = [Weather.Drizzle , Weather.Flood]
         assert.equal(_waterManager.mustLeave(), false)
     });
 
-    it('should not leave if weather is not 3 #2', () => 
+    it('should not leave if weather is not 3 #2', () =>
     {
         const _waterManager = new WaterManager()
-        _waterManager._weathers = [2, 3, 0]
+        _waterManager._weathers = [Weather.Rain , Weather.Flood]
         assert.equal(_waterManager.mustLeave(), false)
     });
-    
+
+    it('should not leave if weather is not 3 #3', () =>
+    {
+        const _waterManager = new WaterManager()
+        _waterManager._weathers = [Weather.Thunderstorm , Weather.Flood]
+        assert.equal(_waterManager.mustLeave(), false)
+    });
+
     it('should convert to doc object', () =>
     {
         const _waterManager = new WaterManager();
@@ -101,12 +109,12 @@ describe('WaterManager', function()
         assert.equal(doc['waterSupply'], _waterManager.inventory);
         assert.deepEqual(doc['_weathers'], _waterManager._weathers);
     });
-    
+
     it('should instantiate correctly from doc object', () =>
     {
         const doc = {
           waterSupply: 10,
-          _weathers: [0, 4, 2],
+          _weathers: [Weather.Thunderstorm , Weather.Flood]
         };
         const _waterManager = WaterManager.fromDoc(doc);
         assert.equal(doc['waterSupply'], _waterManager.inventory);
