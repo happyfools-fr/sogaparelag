@@ -59,7 +59,7 @@ function GameView(props) {
         console.log("Selected action = ", action)
         alert("You have chosen to go to "+ action);
         
-        player.performAction(game, action, 0)
+        player.performAction(game, action, 0);
         // game.history.push(
         //     {
         //         type: action,
@@ -94,9 +94,12 @@ function GameView(props) {
                 <Row>
                     <Col>
                         <GameTableView className='mt-5' slugname={props.slugname} game={game}/>
-                        <AllPlayersView players={game._gameTable.players} currentPlayerId={game.currentPlayerId}
-                                    headPlayer={game._gameTable.headPlayer._id}
-                                    firebaseService={props.firebaseService}/>
+                        <AllPlayersView 
+                            players={game._gameTable.players} 
+                            currentPlayerId={game.currentPlayerId}
+                            headPlayer={game._gameTable.headPlayer._id}
+                            firebaseService={props.firebaseService}
+                        />
                         <TurnModal
                             show={showAction}
                             onAction={handleAction}

@@ -42,19 +42,34 @@ export default function WaitingRoomApp(props) {
 
 
     const handleStartGame = (click) => {
-        const newGame = waitingRoom.startGame();
-        gameController.push(newGame);
-        newGame._gameTable.players.map(
+        waitingRoom.startGame();
+        gameController.push(waitingRoom._currentGame);
+        waitingRoom._currentGame._gameTable.players.map(
             (player) => playerController.push(player)
         );
         waitingRoomController.update(waitingRoom);
-        setWaitingRoom(waitingRoom)
+        setWaitingRoom(waitingRoom);
         alert(`Game started for room: ${waitingRoom.slugname}`);
+        // waitingRoom.startGame();
+        // gameController.push(waitingRoom._currentGame);
+        // waitingRoom._currentGame._gameTable.players.forEach(
+        //     (player) => playerController.push(player)
+        // );
+        // waitingRoomController.update(waitingRoom)
+        // .then(() => {
+        //   setWaitingRoom(waitingRoom);
+        //   alert(`Game started for room: ${waitingRoom.slugname}`);
+        // })
+        // .then( () => {
+        //   console.log("waitingRoom._currentGame", JSON.stringify(waitingRoom._currentGame));
+        //   alert(`Game started for room: ${JSON.stringify(waitingRoom._currentGame)}`);
+        // });
     }
 
 
     if(waitingRoom) {
         if (waitingRoom._currentGame) {
+          alert("waitingRoom._currentGame");
             return (
                 <GameView
                 slugname={waitingRoom.slugname}
@@ -64,8 +79,12 @@ export default function WaitingRoomApp(props) {
                 />
             );
         } else {
+          alert("!waitingRoom._currentGame");
             if (!waitingRoom.hasJoined(props.user)){
+              alert("!waitingRoom.hasJoined(props.user)");
+
                 onJoinWaitingRoom();
+                
             }
             return (
                 <WaitingRoomView

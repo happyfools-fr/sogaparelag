@@ -9,12 +9,8 @@ export const SERDE_KEYS = [
 
 export class GameTable
 {
-    get headPlayer()
-    {
-        return this._headPlayer.player
-    }
-
-    constructor(players, indexOfHeadPlayer = 0, indexOfCurrentPlayer = 0, roundIndex = 0)
+    
+    constructor(players, indexOfHeadPlayer = 0, indexOfCurrentPlayer = 0, roundIndex = 1)
     {
         this.players = players
         this.playersCount = players.length
@@ -26,10 +22,55 @@ export class GameTable
 
         this.indexOfCurrentPlayer = indexOfCurrentPlayer
         this._initCurrentPlayer();
-
+        console.log("_initCurrentPlayer over");
         this.roundIndex = roundIndex ? roundIndex : 1;
     }
 
+    get headPlayer()
+    {
+        return this._headPlayer.player
+    }
+    
+    * getPlayerEnumerator()
+    {
+        yield this._headPlayer;
+        let currentPlayer = this._headPlayer.next;
+        while (currentPlayer.player !== this._headPlayer.player)
+        {
+            yield currentPlayer;
+            currentPlayer = currentPlayer.next
+        }
+    }
+
+    * getHealthyPlayerEnumerator()
+    {
+        if (!this._headPlayer.player.isSick)
+            yield this._headPlayer;
+
+        let currentPlayer = this._headPlayer.next;
+        while (currentPlayer.player !== this._headPlayer.player)
+        {
+            if (!currentPlayer.player.isSick)
+                yield currentPlayer;
+            currentPlayer = currentPlayer.next
+        }
+    }
+
+    assignNextHeadPlayer()
+    {
+        this._headPlayer = this._headPlayer.previous;
+        this.indexOfHeadPlayer = this.indexOfHeadPlayer === 0 ?
+                                  this.playersCount - 1 :
+                                  this.indexOfHeadPlayer - 1
+    }
+
+    assignNextCurrentPlayer()
+    {
+        this.currentPlayer = this.currentPlayer.next;
+        this.indexOfCurrentPlayer = this.indexOfCurrentPlayer === this.playersCount - 1 ?
+                                      0 : this.indexOfCurrentPlayer + 1
+    }
+    
     _initTable(players, indexOfHeadPlayer = 0)
     {
         let previousCreatedPlayerOnTable = this._headPlayer;
@@ -62,12 +103,14 @@ export class GameTable
         while (true)
         {
             let currentPlayer = playerEnumerator.next()
+            console.log("currentPlayer in _initCurrentPlayer", currentPlayer)
             if (currentPlayer.done)
                 throw Error('Current Player Index out of range')
 
-            if (currentPlayer.value.userId === currentPlayerId)
+            if (currentPlayer.value._player.userId === currentPlayerId)
             {
                 this.currentPlayer = currentPlayer.value
+                console.log("_initCurrentPlayer in loop over");
                 return
             }
         }
@@ -151,115 +194,6 @@ export class GameTable
 
         this.playersCount = this.players.length
     }
-
-    * getPlayerEnumerator()
-    {
-        yield this._headPlayer;
-        let currentPlayer = this._headPlayer.next;
-        while (currentPlayer.player !== this._headPlayer.player)
-        {
-            yield currentPlayer;
-            currentPlayer = currentPlayer.next
-        }
-    }
-
-    * getHealthyPlayerEnumerator()
-    {
-        if (!this._headPlayer.player.isSick)
-            yield this._headPlayer;
-
-        let currentPlayer = this._headPlayer.next;
-        while (currentPlayer.player !== this._headPlayer.player)
-        {
-            if (!currentPlayer.player.isSick)
-                yield currentPlayer;
-            currentPlayer = currentPlayer.next
-        }
-    }
-
-    // /*
-    // * Retrieve the HealthyPlayerEnumerator with default position in enum
-    // to match the currentPlayer in state
-    // */
-    // getPositionedHealthyPlayerEnumerator(){
-    //   let healthyPlayerEnumerator = this.getHealthyPlayerEnumerator()
-    //   let retrievedPlayer;
-    //   while(true)
-    //   {
-    //     retrievedPlayer = healthyPlayerEnumerator.next()
-    //     if (retrievedPlayer.done){
-    //       healthyPlayerEnumerator = this.getHealthyPlayerEnumerator();
-    //       break
-    //     }
-    //     if (retrievedPlayer.value._player.userId === this.currentPlayer.userId)
-    //     {
-    //       break
-    //     }
-    //   }
-    //   return healthyPlayerEnumerator;
-    // }
-    //
-    // getInfinitePositionedHealthyPlayerEnumerator(){
-    //   let healthyPlayerEnumerator;
-    //   if (this.isEndOfRound()){
-    //     healthyPlayerEnumerator = this.getHealthyPlayerEnumerator();
-    //   } else {
-    //     healthyPlayerEnumerator = this.getPositionedHealthyPlayerEnumerator();
-    //   }
-    //   return healthyPlayerEnumerator;
-    // }
-
-    assignNextHeadPlayer()
-    {
-        this._headPlayer = this._headPlayer.previous;
-        this.indexOfHeadPlayer = this.indexOfHeadPlayer === 0 ?
-                                  this.playersCount - 1 :
-                                  this.indexOfHeadPlayer - 1
-    }
-
-    assignNextCurrentPlayer()
-    {
-        this.currentPlayer = this.currentPlayer.next;
-        this.indexOfCurrentPlayer = this.indexOfCurrentPlayer === this.playersCount - 1 ?
-                                      0 : this.indexOfCurrentPlayer + 1
-    }
-
-    // isEndOfRound()
-    // {
-    //   let iter = this.getPositionedHealthyPlayerEnumerator();
-    //   let nextSittingPlayer = iter.next();
-    //   return nextSittingPlayer.done;
-    // }
-
-    // getNextSittingPlayer()
-    // {
-    //   let healthyPlayerEnumerator = this.getInfinitePositionedHealthyPlayerEnumerator();
-    //   let nextSittingPlayer = healthyPlayerEnumerator.next();
-    //   return nextSittingPlayer;
-    // }
-    //
-    //
-    // updatePlayer(player)
-    // {
-    //   this.players = this.players.map( p => {
-    //     if(p.userId === player.userId){
-    //       return player;
-    //     } else {
-    //       return p;
-    //     }
-    //   });
-    //   if(this.currentPlayer.userId === player.userId)
-    //   {
-    //     this.currentPlayer = player;
-    //   }
-    // }
-
-    // updateAfterRoundAction(currentPlayerUpdated)
-    // {
-    //     // Update current player state
-    //     this.updatePlayer(currentPlayerUpdated)
-    //     return this.isEndOfRound();
-    // }
 
     toDoc() {
         return {

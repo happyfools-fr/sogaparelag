@@ -31,7 +31,7 @@ export default class Game
         this._woodManager = woodManager
 
         let players = Game._createPlayers(loggedInUsers)
-        this._gameTable = new GameTable(players)
+        this._gameTable = new GameTable(players, 0, 0 , 0)
         // this._roundManager = new RoundManager(this._gameTable, this._waterManager, this._foodManager, this._woodManager)
         this._pollManager = new PollManager(this._gameTable);
         // this.actionsPerformedByPlayer = []
@@ -56,34 +56,12 @@ export default class Game
     }
 
     get currentPlayerId() {
-        return this._gameTable.currentPlayer.userId;
+        return this._gameTable.currentPlayer._player.userId;
     }
 
     get nextPlayerId() {
         return this._gameTable.currentPlayer._next._player.userId;
     }
-    // get nextPlayerId() {
-    //     // return this._gameTable.players[0].id;
-    //     let iter = this._gameTable.getPositionedHealthyPlayerEnumerator();
-    //     let nextSittingPlayer = iter.next();
-    //     console.log("A nextPlayerId.nextSittingPlayer", nextSittingPlayer)
-    //     if (nextSittingPlayer.done){
-    //       iter = this._gameTable.getHealthyPlayerEnumerator();
-    //       nextSittingPlayer = iter.next();
-    //       console.log("B in if nextPlayerId.nextSittingPlayer", nextSittingPlayer)
-    //     }
-    //     return nextSittingPlayer.value._player.userId;
-    // }
-    // get nextPlayer() {
-    //     // return this._gameTable.players[0].id;
-    //     let iter = this._gameTable.getPositionedHealthyPlayerEnumerator();
-    //     let nextSittingPlayer = iter.next();
-    //     if (nextSittingPlayer.done){
-    //       iter = this._gameTable.getHealthyPlayerEnumerator();
-    //       nextSittingPlayer = iter.next();
-    //     }
-    //     return nextSittingPlayer.value._player;
-    // }
 
     get waterSupply() {
         return this._waterManager.inventory;
@@ -331,80 +309,6 @@ export default class Game
           return actionSummary;
     }
 
-    // pullChangesFromRoundManager()
-    // {
-    //   this._lastRound = this._roundManager._waterManager.mustLeave()
-    //
-    //   this._waterManager = this._roundManager._waterManager
-    //   this._foodManager = this._roundManager._foodManager
-    //   this._woodManager = this._roundManager._woodManager
-    //
-    //   this._gameTable = this._roundManager._gameTable
-    //   this._pollManager = new PollManager(this._gameTable);
-    // }
-
-  //   updateAfterRoundAction(endOfRound)
-  //   {
-  //     // if(!this._lastRound)
-  //     if(true)
-  //     {
-  //       // Propagate changes in RoundManager to upper level: game
-  //       this.pullChangesFromRoundManager()
-  // 
-  //       //if end of Round, apply updates
-  //       if (endOfRound)
-  //       {
-  //         //CAN LEAVE?
-  //         if (this._canLeave())
-  //         {
-  //             this._win = true
-  //             return;
-  //         }
-  // 
-  //         //SUPPLY MANAGEMENT
-  //         this._manageWaterEndOfRound()
-  //         this._manageFoodEndOfRound()
-  // 
-  //         //CAN LEAVE?
-  //         if (this._canLeave())
-  //         {
-  //             this._win = true
-  //             return;
-  //         }
-  // 
-  //         // UNCOMMENT WHEN KILL THEM ALL ACTIVATED
-  //         /*
-  //                 //do you want to kill them all to leave?
-  // 
-  // 
-  //                 //CAN LEAVE?
-  //                 if (this._canLeave())
-  //                 {
-  //                     this._win = true
-  //                     break
-  //                 }
-  //         */
-  // 
-  //         //ON END OF ROUND
-  //         this._roundManager._onRoundEnded()
-  //         this._roundManager._gameTable.roundIndex = this._roundManager._gameTable.roundIndex + 1;
-  //         this.pullChangesFromRoundManager()
-  //         console.log("this.roundIndex", this.roundIndex)
-  //     } else
-  //     {
-  //       //Simple End of Player Action
-  //       //Update next current player
-  //       this._roundManager._gameTable.assignNextCurrentPlayer();
-  //       this.pullChangesFromRoundManager();
-  //     }
-  //     Array.prototype.push.apply(this.history, this._roundManager.actionsPerformedByPlayer);
-  //   } else
-  //   {
-  //     console.log("last round", this._lastRound)
-  //     alert("Last round!");
-  //   }
-  // }
-
     toDoc() {
         return {
             _id : this._id,
@@ -421,7 +325,6 @@ export default class Game
             
             pollFood:  this.pollFood,
             pollWater: this.pollWater,
-
         };
     }
 
