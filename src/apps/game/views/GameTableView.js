@@ -26,30 +26,32 @@ export default function GameTableView(props) {
                     <FoodSupplyComponent inventory={game.foodSupply} />
                     </Col>
                     <Col sm={3}>
-                    <WoodSupplyComponent inventory={game.woodSupply} />
+                    <WoodSupplyComponent inventory={game.woodSupply%6} />
                     </Col>
                     <Col sm={3}>
-                    <RaftComponent inventory={0} />
+                    <RaftComponent inventory={~~(game.woodSupply/6)} />
                     </Col>
                 </Row>
-                <Row className='mt-3'>
-                    <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Total Moves #</th>
-                            <th>Current Player</th>
-                            <th>Next Player</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{game.history.length}</td>
-                            <td>{game.currentPlayerId}</td>
-                            <th>{game.nextPlayerId}</th>
-                        </tr>
-                    </tbody>
-                    </Table>
-                </Row>
+                {/*
+                // <Row className='mt-3'>
+                //     <Table striped bordered hover>
+                //     <thead>
+                //         <tr>
+                //             <th>Total Moves #</th>
+                //             <th>Current Player</th>
+                //             <th>Next Player</th>
+                //         </tr>
+                //     </thead>
+                //     <tbody>
+                //         <tr>
+                //             <td>{game.history.length}</td>
+                //             <td>{game.currentPlayerId}</td>
+                //             <th>{game.nextPlayerId}</th>
+                //         </tr>
+                //     </tbody>
+                //     </Table>
+                // </Row>
+                */}
             </Container>
             </Card.Body>
         </Card>
