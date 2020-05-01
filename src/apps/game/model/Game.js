@@ -145,7 +145,12 @@ export default class Game
     {
         // Push action logs
         let actionSummary = this.getActionSummary(player, selectedAction, additionalRequest);
-        this.actionsPerformedByPlayer.push(actionSummary);
+        this.history.push(
+          {
+              type: selectedAction,
+              value: actionSummary
+          }
+        );
 
         this._gameTable.onPlayerTurnEnded(player)
         if (!this._gameTable.endOfRound)

@@ -60,8 +60,12 @@ function GameView(props) {
         alert("You have chosen to go to "+ action);
         
         player.performAction(game, action, 0)
-        console.log("handleAction after player.performAction", game);
-        // Post save
+        // game.history.push(
+        //     {
+        //         type: action,
+        //         value: props.user.nickname + " went for " + action
+        //     }
+        // );
         gameController.update(game);
         game._gameTable.players.forEach((p, i) => {
           playerController.update(p)
@@ -86,7 +90,7 @@ function GameView(props) {
 
     if (game) {
         return (
-            <Container>
+            <Container fluid>
                 <Row>
                     <Col>
                         <GameTableView className='mt-5' slugname={props.slugname} game={game}/>
@@ -103,7 +107,7 @@ function GameView(props) {
                             handleVoteSubmit={handleVoteSubmit}
                         />
                     </Col>
-                    <Col sm={3}>
+                    <Col sm={4}>
                         <GameHistoryView game={game} />
                     </Col>
                 </Row>
