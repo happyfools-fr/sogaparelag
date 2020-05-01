@@ -8,8 +8,8 @@ import {RoundAction} from '../model/RoundAction'
 export default function TurnModal(props) {
 
     return (
-        <Modal show={props.show} onHide={() => props.onAction("pass")}>
-            <Modal.Header closeButton>
+        <Modal show={props.show} centered>
+            <Modal.Header>
                 <Modal.Title>It's your turn</Modal.Title>
             </Modal.Header>
             <Modal.Body>Choose your action, and choose wisely ...</Modal.Body>
