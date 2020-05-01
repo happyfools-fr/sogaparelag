@@ -18,8 +18,11 @@ import LandingPage from './apps/home/LandingPage'
 import About from './apps/about/About'
 import GameApp from './apps/game/GameApp'
 import LoggedInUser from './apps/game/model/LoggedInUser'
-// import PollModal from './apps/game/views/PollModal'
-// import DeadModal from './apps/game/views/DeadModal'
+
+// Imports for test
+import PollModal from './apps/game/views/PollModal'
+import DeadModal from './apps/game/views/DeadModal'
+import SavedView from './apps/game/views/SavedView'
 
 //Firebase
 import FirebaseService from './components/firebase/index';
@@ -108,8 +111,12 @@ export default function App() {
           <Route path='/game'>
             <ProtectedGameAppWithSlugname user={user} firebaseService={firebaseService} />
           </Route>
-          {/*<Route path='/dead'><DeadModal /></Route>*/}
-          {/* <Route path='/poll'><PollModal /></Route>*/}
+
+          {/* For testing only*/}
+          <Route path='/dead'><DeadModal /></Route>
+          <Route path='/poll'><PollModal /></Route>
+          <Route path='/saved'><SavedView /></Route>
+
           <Route exact path='/'><LandingPage /></Route>
           <Route><LandingPage /></Route>
       </Switch>
