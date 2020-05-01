@@ -1,25 +1,41 @@
 // import { isTSExpressionWithTypeArguments } from "@babel/types";
 import Utils from "./Utils";
+import {Weather} from './Weather'
+import shuffle from 'shuffle-array'
 
 export const SERDE_KEYS = ['waterSupply', '_weathers'];
 
 export class WaterManager
 {
-    constructor(value)
+    constructor(value, weathers = null)
     {
         this.inventory = value ? value : 0;
-        this._weathers = [3]
+        this._weathers = (weathers != null) ? weathers : this._initWeather()
+    }
+
+    _initWeather()
+    {
+        let weathers =
+        [
+            Weather.Drought, Weather.Drought, Weather.Drought,
+            Weather.Drizzle, Weather.Drizzle, Weather.Drizzle,
+            Weather.Rain, Weather.Rain, Weather.Rain,
+            Weather.Thunderstorm, Weather.Thunderstorm
+        ]
+        shuffle(weathers)
+        let indexOfFlood = Math.floor(Math.random() * 6);
+        weathers.splice(6 + indexOfFlood, 0, Weather.Flood);
+        return weathers;
     }
 
     get currentWeather()
     {
-        //todo init WaterManager._weathers ??
-        return this._weathers.length > 0 ? this._weathers[0] : 0;
+        return this._weathers.length > 0 ? this._weathers[0] : Weather.None;
     }
 
     collect()
     {
-        this.inventory += this.currentWeather
+        this.inventory += Weather.getWaterFromWeather(this.currentWeather);
     }
 
     drink(playersCount)
@@ -29,15 +45,12 @@ export class WaterManager
 
     onRoundEnded()
     {
-        //TODO
-        //pop at element 0
+        this._weathers.splice(0, 1)
     }
 
     mustLeave()
     {
-        //TODO
-        //this.currentWeather === Weather.Deluge
-        return this.currentWeather === 3
+        return this.currentWeather === Weather.Flood
     }
 
     authorizeLeaving(playersCount)
@@ -45,19 +58,21 @@ export class WaterManager
         return this.inventory >= 2 * playersCount;
     }
 
-    toDoc() {
+    toDoc()
+    {
         return {
-          waterSupply: this.inventory,
-          _weathers: this._weathers,
-        };
+            waterSupply: this.inventory,
+            _weathers: this._weathers
+        }
     }
 
-    static fromDoc(doc) {
-      let waterManager;
-      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
-        waterManager = new WaterManager(doc['waterSupply']);
-        waterManager._weathers = doc['_weathers'];
-       }
-       return waterManager;
+    static fromDoc(doc)
+    {
+        let waterManager;
+        if (doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
+        {
+            waterManager = new WaterManager(doc['waterSupply'], doc['_weathers'])
+        }
+        return waterManager;
     }
 }
