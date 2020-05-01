@@ -14,10 +14,11 @@ import PlayerController from '../controller/PlayerController';
 
 // View imports
 import TurnModal from './TurnModal';
+import PollModal from './PollModal';
 import GameTableView from './GameTableView';
 import AllPlayersView from './AllPlayersView';
 
-import {RoundAction} from '../model/RoundManager'
+import {RoundAction} from '../model/RoundAction'
 
 
 /**
@@ -28,15 +29,21 @@ import {RoundAction} from '../model/RoundManager'
 function GameView(props) {
 
     const gameId = props.gameId;
-
+    const user = props.user;
+    
     const gameController = new GameController(props.firebaseService.ft)
     const [game, setGame] = useState();
 
     const playerController = new PlayerController(props.firebaseService.ft)
+    
+    const clientPlayer = (game && user) ? game._gameTable.players.filter(p => p.userId === user._id)[0] : null;
+    const showPollWater = (game) ? (game.pollWater && !clientPlayer.waterVote) : false;
+    const showPollFood = (game) ? (game.pollFood && !clientPlayer.foodVote) : false;
+    const showPoll = (showPollWater && !showPollFood) || (!showPollWater && showPollFood);
+    const pollType = showPollWater ? "drink" : "eat";
 
-    const show = (game) ? game.currentPlayerId === props.user.id : false;
-
-
+    const showAction = (game) ? (game.currentPlayerId === clientPlayer.userId && !showPoll): false;
+    
     useEffect(
         () => {
             const unsubscribe = gameController.listen(gameId, setGame);
@@ -46,27 +53,35 @@ function GameView(props) {
     );
 
 
-
     const handleAction = (action, show) => {
       
         const player = game._gameTable.currentPlayer;
-        /**
-        * Model should be function of getListPotentialActionsToPerform
-        */
-        // const listPotentialActionsToPerform = player.getListPotentialActionsToPerform(game)
         console.log("Selected action = ", action)
         alert("You have chosen to go to "+ action);
         
-        let updatedGame = player.performAction(game, action, 0)
-        console.log("handleAction.updatedGame", updatedGame);
+        player.performAction(game, action, 0)
+        console.log("handleAction after player.performAction", game);
         // Post save
-        gameController.update(updatedGame);
-        // Update all players if needed
-        updatedGame._gameTable.players.forEach((p, i) => {
+        gameController.update(game);
+        game._gameTable.players.forEach((p, i) => {
           playerController.update(p)
         });
         // Update game in waiting room if needed
-        //???
+    };
+    
+    const handleVoteSubmit = (chosenPlayerId) => {
+      
+        const votedPlayer = playerController.get(chosenPlayerId);
+        console.log(`${clientPlayer.nickname} voted for ${votedPlayer.nickname}`)
+        alert(`You have voted for ${votedPlayer.nickname}`);
+        
+        const actionToPerform = showPollWater ? RoundAction.WaterVote : RoundAction.FoodVote;
+        clientPlayer.performVote(game, actionToPerform, votedPlayer.userId)
+        gameController.update(game);
+        game._gameTable.players.forEach((p, i) => {
+          playerController.update(p)
+        });
+        // Update game in waiting room if needed
     };
 
     if (game) {
@@ -79,8 +94,13 @@ function GameView(props) {
                                     headPlayer={game._gameTable.headPlayer._id}
                                     firebaseService={props.firebaseService}/>
                         <TurnModal
-                            show={show}
+                            show={showAction}
                             onAction={handleAction}
+                        />
+                        <PollModal
+                            show={showPoll}
+                            pollType={pollType}
+                            handleVoteSubmit={handleVoteSubmit}
                         />
                     </Col>
                     <Col sm={3}>

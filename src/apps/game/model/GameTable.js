@@ -57,15 +57,15 @@ export class GameTable
 
     _initCurrentPlayer()
     {
-        let currentPlayerId = this.players[this.indexOfCurrentPlayer]
-        let playerEnumerator = this.getPlayerEnumerator()
+        let currentPlayerId = this.players[this.indexOfCurrentPlayer].userId
+        let playerEnumerator = this.getHealthyPlayerEnumerator()
         while (true)
         {
             let currentPlayer = playerEnumerator.next()
             if (currentPlayer.done)
                 throw Error('Current Player Index out of range')
 
-            if (currentPlayer.value.id === currentPlayerId)
+            if (currentPlayer.value.userId === currentPlayerId)
             {
                 this.currentPlayer = currentPlayer.value
                 return
@@ -78,7 +78,7 @@ export class GameTable
         this.endOfRound = false
         this.currentPlayer = this._headPlayer
         this.indexOfCurrentPlayer = this.indexOfHeadPlayer
-
+        this.roundIndex++;
         let playerEnumerator = this.getPlayerEnumerator()
         while (true)
         {

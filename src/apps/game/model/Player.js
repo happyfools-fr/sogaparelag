@@ -2,7 +2,11 @@ import {RoundAction} from './RoundAction'
 import LoggedInUser from  './LoggedInUser'
 import Utils from './Utils'
 
-const SERDE_KEYS = ['userId', 'nickname', '_sickenessLevel', 'isDead', 'currentHand', 'hasPlayedThisRound'];
+const SERDE_KEYS = [
+  'userId', 'nickname', '_sickenessLevel', 
+'isDead', 'currentHand', 'hasPlayedThisRound',
+'waterVote', 'foodVote', 'finalWaterVote', 'finalFoodVote'
+];
 /**
  * Player holds player state in game
  *
@@ -50,10 +54,37 @@ export default class Player
         this._sickenessLevel = (this._sickenessLevel < 0) ? 0 : this._sickenessLevel;
     }
 
-    choosePlayerIdToVoteAgainst(players)
+    // choosePlayerIdToVoteAgainst(players)
+    // {
+    //     //TODO
+    //     return players[0];
+    // }
+    
+    choosePlayerIdToVoteAgainst(players, context)
     {
-        //TODO
-        return players[0];
+      let chosenPlayerId; 
+      switch (context)
+      {
+        case RoundAction.WaterVote:
+            chosenPlayerId = this.waterVote
+            break;
+
+        case RoundAction.FoodVote:
+            chosenPlayerId = this.foodVote
+            break;
+
+        case RoundAction.FinalWaterVote:
+            chosenPlayerId = this.finalWaterVote
+            break;
+
+        case RoundAction.FinalFoodVote:
+            chosenPlayerId = this.finalFoodVote
+            break;
+
+        default :
+              throw new Error('Context error in choosePlayerIdToVoteAgainst with player', this);
+      }
+      return players.filter(p => p.userId === chosenPlayerId)[0]; 
     }
 
     chooseFinalPlayerIdToVoteAgainst(players)
@@ -109,12 +140,12 @@ export default class Player
             case RoundAction.CollectWood:
                 if (!game._woodManager.tryCollect(additionalRequest))
                 {
-                  currentPlayer.onGetSick()
+                  this.onGetSick()
                 }
                 break;
 
             default :
-                throw new Error('Default case in RoundManager for player', player);
+                throw new Error('Default case in RoundManager for player', this);
           }
     }
 
@@ -143,7 +174,7 @@ export default class Player
                 break;
 
             default :
-                throw new Error('Default case in RoundManager for player', player);
+                throw new Error('Default case in RoundManager for player', this);
           }
     }
 
@@ -154,7 +185,11 @@ export default class Player
             _sickenessLevel : this._sickenessLevel,
             isDead : this.isDead,
             currentHand : this.currentHand,
-            hasPlayedThisRound : this.hasPlayedThisRound
+            hasPlayedThisRound : this.hasPlayedThisRound,
+            waterVote: this.waterVote,
+            foodVote: this.foodVote,
+            finalWaterVote: this.finalWaterVote,
+            finalFoodVote: this.finalFoodVote
         }
     }
 
@@ -167,6 +202,10 @@ export default class Player
           player.isDead = doc['isDead'];
           player.currentHand = doc['currentHand'];
           player.hasPlayedThisRound = doc['hasPlayedThisRound']
+          player.waterVote = doc['waterVote'];
+          player.foodVote = doc['foodVote'];
+          player.finalWaterVote = doc['finalWaterVote'];
+          player.finalFoodVote = doc['finalFoodVote'];
       }
       return player;
     }
