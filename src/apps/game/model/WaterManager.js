@@ -10,7 +10,7 @@ export class WaterManager
     constructor(value, weathers = null)
     {
         this.inventory = value ? value : 0;
-        this._weathers = weathers =! null ? weathers : this._initWeather()
+        this._weathers = (weathers =! null) ? weathers : this._initWeather()
     }
 
     _initWeather()
@@ -35,7 +35,7 @@ export class WaterManager
 
     collect()
     {
-        this.inventory += Weather.getWaterFromWeather(this.currentWeather)
+        this.inventory += Weather.getWaterFromWeather(this.currentWeather);
     }
 
     drink(playersCount)
@@ -60,11 +60,10 @@ export class WaterManager
 
     toDoc()
     {
-        return
-        {
+        return {
             waterSupply: this.inventory,
-            _weathers: this._weathers,
-        };
+            _weathers: this._weathers
+        }
     }
 
     static fromDoc(doc)
@@ -72,8 +71,8 @@ export class WaterManager
         let waterManager;
         if (doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
         {
-            waterManager = new WaterManager(doc['waterSupply'], doc['_weathers']);
-         }
-         return waterManager;
+            waterManager = new WaterManager(doc['waterSupply'], doc['_weathers'])
+        }
+        return waterManager;
     }
 }
