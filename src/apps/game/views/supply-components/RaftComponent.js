@@ -4,10 +4,10 @@ import {Card} from 'react-bootstrap';
 
 export default function RaftComponent(props) {
     return (
-        <Card bg="success" text="white">
-            <Card.Header>Rafts</Card.Header>
+        <Card bg="success" text="white" className="mr-1">
             <Card.Body>
-                <Card.Title><i className="fas fa-sign-out-alt" />&nbsp;&nbsp;{props.inventory}</Card.Title>
+                <h2><i className="fas fa-sign-out-alt" />&nbsp;&nbsp;{props.inventory}</h2>
+                <span style={{fontSize: 10}}>Rafts</span>
             </Card.Body>
         </Card>
     );
