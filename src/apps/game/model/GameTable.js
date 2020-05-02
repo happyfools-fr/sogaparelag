@@ -221,11 +221,18 @@ export class GameTable
                 currentPlayer.value.player.isDead = true;
                 let previousPlayer = currentPlayer.value.previous
                 let nextPlayer = currentPlayer.value.next
-                previousPlayer.next = nextPlayer
-                nextPlayer.previous = previousPlayer
+                if (currentPlayer.value.player === nextPlayer.player)
+                {
+                  this._headPlayer = null
+                }
+                else
+                {
+                  previousPlayer.next = nextPlayer
+                  nextPlayer.previous = previousPlayer
 
-                if (this._headPlayer.player === currentPlayer.value.player)
-                    this._headPlayer = this._headPlayer.next
+                  if (this._headPlayer.player === currentPlayer.value.player)
+                      this._headPlayer = this._headPlayer.next
+                }
 
                 this._refreshPlayers()
                 return true;
