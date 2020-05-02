@@ -344,6 +344,7 @@ describe('Game', function()
         _lastRound : false,
         _win : false,
         _mustLeave: false,
+        _endOfGame: false,
 
         _waterManager : waterManager.toDoc(),
         _foodManager : foodManager.toDoc(),

@@ -89,12 +89,14 @@ export default class Game
 
     onActionRoundEnded()
     {
-        if (this._canLeave())
-        {
-          alert("You are saved!");
-          this._win = true
-          return;
-        }
+        // CanLeave should only be tested after all management
+
+        // if (this._canLeave())
+        // {
+        //   alert("You are saved!");
+        //   this._win = true
+        //   return;
+        // }
 
         // Init SUPPLY MANAGEMENT sequence
         this._initWaterManagement();
