@@ -129,6 +129,14 @@ export default class Game
       alert('onWaterVoteEnded killing player playerIdToKill = ' + playerIdToKill)
       this._gameTable.killPlayer(playerIdToKill)
 
+      if (this._gameTable.playersCount === 0)
+      {
+        this._endOfGame = true
+        this._win = false
+        alert("GAME OVER");
+        return
+      }
+
       //enough water to play next round?
       if (this._gameTable.playersCount - this._waterManager.inventory <= 0)
       {
@@ -198,6 +206,14 @@ export default class Game
       let playerIdToKill = this._pollManager.voteWithContext(RoundAction.FoodVote)
       alert('onFoodVoteEnded killing player playerIdToKill = ' + playerIdToKill)
       this._gameTable.killPlayer(playerIdToKill)
+
+      if (this._gameTable.playersCount === 0)
+      {
+        this._endOfGame = true
+        this._win = false
+        alert("GAME OVER");
+        return
+      }
 
       //enough water to play next round?
       if (this._gameTable.playersCount - this._foodManager.inventory <= 0)
