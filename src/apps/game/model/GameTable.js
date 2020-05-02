@@ -22,10 +22,12 @@ export class GameTable
 
         this.indexOfCurrentPlayer = indexOfCurrentPlayer
         this._initCurrentPlayer();
-        console.log("_initCurrentPlayer over");
         this.roundIndex = roundIndex ? roundIndex : 1;
 
         this.endOfRound = false;
+
+        console.log("GameTable.constructor")
+        console.log(this.toDoc())
     }
 
     get headPlayer() { return this._headPlayer.player }
@@ -59,6 +61,9 @@ export class GameTable
 
     assignNextHeadPlayer()
     {
+        console.log("GameTable.assignNextHeadPlayer ...")
+        console.log(this.toDoc())
+
         this._headPlayer = this._headPlayer.previous;
         this.indexOfHeadPlayer = this.indexOfHeadPlayer === 0 ? this.playersCount - 1 : this.indexOfHeadPlayer - 1
 
@@ -66,23 +71,21 @@ export class GameTable
         {
             this._currentPlayer = this._headPlayer;
             this.assignNextCurrentPlayer();
-
         }
         else
         {
-            console.log("this.indexOfCurrentPlayer A", this.indexOfCurrentPlayer)
-
             this._currentPlayer = this._headPlayer
             this.indexOfCurrentPlayer = this.indexOfHeadPlayer
-
-            console.log("this.indexOfCurrentPlayer B", this.indexOfCurrentPlayer)
-
         }
 
+        console.log("GameTable.assignNextHeadPlayer !")
+        console.log(this.toDoc())
     }
 
     assignNextCurrentPlayer()
     {
+        console.log("GameTable.assignNextCurrentPlayer ...")
+        console.log(this.toDoc())
         while (true)
         {
             // console.log("assignNextCurrentPlayer A this._currentPlayer.player ", this._currentPlayer.player)
@@ -90,7 +93,7 @@ export class GameTable
             if (this._currentPlayer === this._headPlayer)
             {
                 this.endOfRound = true
-                return
+                break
             }
 
             if (this._currentPlayer.player.isSick)
@@ -102,10 +105,11 @@ export class GameTable
               break;
             }
         }
-        this.indexOfCurrentPlayer = this.getIndexFromPlayer(this._currentPlayer.player);
-        // console.log("assignNextCurrentPlayer indexOfCurrentPlayer B", this.indexOfCurrentPlayer)
-        // console.log("assignNextCurrentPlayer B this._currentPlayer.player ", this._currentPlayer.player)
 
+        this.indexOfCurrentPlayer = this.getIndexFromPlayer(this._currentPlayer.player);
+
+        console.log("GameTable.assignNextCurrentPlayer !")
+        console.log(this.toDoc())
     }
 
     getIndexFromPlayer(player)
@@ -165,6 +169,9 @@ export class GameTable
 
     onRoundStarts()
     {
+        console.log("GameTable.onRoundStarts ...")
+        console.log(this.toDoc())
+
         this.assignNextHeadPlayer();
         this.endOfRound = false
         this.roundIndex = this.roundIndex + 1;
@@ -173,27 +180,30 @@ export class GameTable
         {
             let currentPlayer = playerEnumerator.next()
             if (currentPlayer.done)
-                return
+                break
 
             currentPlayer.value.player.hasPlayedThisRound = false
         }
+
+        console.log("GameTable.onRoundStarts !")
+        console.log(this.toDoc())
     }
 
     onPlayerTurnEnded(player)
     {
-        //ASSERT this.currentPlayer.player === player
-        console.log("A this._currentPlayer.player ", this._currentPlayer.player)
+        console.log("GameTable.onPlayerTurnEnded ...")
+        console.log(this.toDoc())
+
         this._currentPlayer.player.hasPlayedThisRound = true
 
         this.assignNextCurrentPlayer();
-
-        console.log("B this._currentPlayer.player ", this._currentPlayer.player)
-
         if (this._currentPlayer === this._headPlayer)
         {
             this.endOfRound = true
-            return
         }
+
+        console.log("GameTable.onPlayerTurnEnded !")
+        console.log(this.toDoc())
     }
 
     killPlayer(playerIdToKill)
