@@ -4,10 +4,10 @@ import {Card} from 'react-bootstrap';
 
 export default function WaterSupplyComponent(props) {
     return (
-        <Card bg="info" text="white" className="mr-1">
+        <Card bg="info" text="white" className="text-center m-1">
             <Card.Body>
                 <h2><i className="fas fa-tint" />&nbsp;&nbsp;{props.inventory}</h2>
-                <span style={{fontSize: 10}}>Water supplies</span>
+                <small>Water supplies</small>
             </Card.Body>
         </Card>
     );

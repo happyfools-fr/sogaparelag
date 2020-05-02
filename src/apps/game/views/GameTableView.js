@@ -15,9 +15,8 @@ export default function GameTableView(props) {
     const game = props.game
 
     return (
-        <Card border="light">
-            <Card.Body>
-            <Card.Title>Welcome to Island of {props.slugname} </Card.Title>
+        <div className='mt-2'>
+            <h5>Welcome to Island of {props.slugname} </h5>
             <Container>
                 <Row>
                     <DayComponent day={game._gameTable.roundIndex} />
@@ -33,31 +32,7 @@ export default function GameTableView(props) {
                     <RaftComponent inventory={~~(game.woodSupply/6)} />
 
                 </Row>
-                {/*
-                <Row className='mt-3'>
-                    <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Day #</th>
-                            <th>Total Moves #</th>
-                            <th>Current Player</th>
-                            <th>Next Player</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{game._gameTable.roundIndex}</td>
-                            <td>{game.history.length}</td>
-                            <td>{game.currentPlayer.nickname}</td>
-                            <th>{game.nextPlayer.nickname}</th>
-                        </tr>
-                    </tbody>
-                    </Table>
-                </Row>
-                <h6>{game.playersCount}&nbsp;survivors on the island</h6>
-                */}
             </Container>
-            </Card.Body>
-        </Card>
+        </div>
     );
 };

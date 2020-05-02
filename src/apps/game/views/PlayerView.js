@@ -29,9 +29,26 @@ export default function PlayerView(props) {
         const currentHand = (player.currentHand) ? player.currentHand : ["Card1", "Card2", "Card3", "Card4"]
 
         return (
-            <Card style={{ width: '18rem' }}>
+            <Card
+                className="text-center m-1"
+                style={{"width": "18vh"}}
+                bg={
+                    (props.headPlayerId === player.id)
+                    ? "dark"
+                    : (props.currentPlayerId === player.id)
+                        ? "secondary"
+                        : "light"
+                }
+                text={
+                    (props.headPlayerId === player.id)
+                    ? "white"
+                    : (props.currentPlayerId === player.id)
+                        ? "white"
+                        : "dark"
+                }
+            >
             <Card.Body>
-                <Card.Title>
+                {/*<Card.Title>
                     {
                         (props.headPlayerId === player.id)
                         ? <i className="fas fa-user-ninja" />
@@ -43,21 +60,17 @@ export default function PlayerView(props) {
                         ? <i className="fas fa-hand-paper" />
                         : <span />
                     }
-                    &nbsp;&nbsp;&nbsp;
-                    {player.nickname}
-                </Card.Title>
+                </Card.Title>*/}
                 <Card.Text>
-                    {/*<span> {player.id} </span>
-                    <br />*/}
-                    <span>
-                        {
-                            (player.isDead)
-                            ? <i className="fas fa-skull-crossbones fa-5x" />
-                            : (player.isSick)
-                                ? <i className="fas fa-dizzy fa-5x" />
-                                : <i className="fas fa-smile fa-5x" />
-                        }
-                    </span>
+                    {
+                        (player.isDead)
+                        ? <i className="fas fa-skull-crossbones fa-5x" />
+                        : (player.isSick)
+                            ? <i className="fas fa-dizzy fa-5x" />
+                            : <i className="fas fa-smile fa-5x" />
+                    }
+                    <br />
+                    <small>{player.nickname}</small>
                 </Card.Text>
             </Card.Body>
             {/* <Card.Body>
