@@ -59,36 +59,6 @@ describe('Game', function()
         assert.equal(game.playersCount, 3)
     });
 
-    it('win <-> >=2xFoods + >=2xWaters + >=6xWoods', () =>
-    {
-        let id1 = uuidv1();
-        let id2 = uuidv1();
-        let id3 = uuidv1();
-        let user1 = new LoggedInUser(id1, 'toto')
-        let user2 = new LoggedInUser(id2, 'tata')
-        let user3 = new LoggedInUser(id3, 'titi')
-
-        let waterManager = new WaterManager()
-        let woodManager = new WoodManager()
-        let foodManager = new FoodManager()
-
-        let game = new Game([user1, user2, user3], waterManager, foodManager, woodManager)
-
-        let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
-        let pollManager = new MockPollManager(game._gameTable)
-
-        roundManager._waterInventory = 3*2
-        roundManager._foodInventory = 3*2
-        roundManager._woodInventory = 3*6
-
-        game._roundManager = roundManager
-        game._pollManager = pollManager
-
-        assert(!game._win)
-        game.play()
-        assert(game._win)
-    });
-
     it('can leave <-> >=2xFoods + >=2xWaters + >=6xWoods', () =>
     {
         let id1 = uuidv1();
@@ -201,37 +171,7 @@ describe('Game', function()
         assert(!game._canLeave())
     });
 
-    it('lastRound <-> weather == 3', () =>
-    {
-        let id1 = uuidv1();
-        let id2 = uuidv1();
-        let id3 = uuidv1();
-        let user1 = new LoggedInUser(id1, 'toto')
-        let user2 = new LoggedInUser(id2, 'tata')
-        let user3 = new LoggedInUser(id3, 'titi')
-
-        let waterManager = new WaterManager()
-        waterManager._weathers = [Weather.Flood, Weather.Thunderstorm]
-        let woodManager = new WoodManager()
-        let foodManager = new FoodManager()
-
-        let game = new Game([user1, user2, user3], waterManager, foodManager, woodManager)
-
-        let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
-        let pollManager = new MockPollManager(game._gameTable)
-
-        roundManager._waterInventory = 3*2
-        roundManager._foodInventory = 3*2
-        roundManager._woodInventory = 3*6
-
-        game._roundManager = roundManager
-        game._pollManager = pollManager
-
-        assert(!game._lastRound)
-        game.play()
-        assert(game._lastRound)
-    });
-
+/*
     it('water management with 0 kill', () =>
     {
         let id1 = uuidv1();
@@ -351,6 +291,7 @@ describe('Game', function()
         assert.equal(game._gameTable.playersCount, 2)
         assert.equal(game._foodManager.inventory, 0)
     });
+*/
 
     it('convertion to doc is valid', () =>
     {
@@ -435,11 +376,5 @@ describe('Game', function()
       * assert.deepEqual(doc['_pollManager'], game._pollManager.toDoc());
       */
     });
-
-
-
-
-
-
 
 });
