@@ -283,7 +283,7 @@ export default class Game
 
         this.history.push(
           {
-              type: 'new-day',
+              type: 'newday',
               value: "Well done, you have lived to see another day on the island !"
           }
         );
