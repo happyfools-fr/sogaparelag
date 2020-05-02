@@ -172,7 +172,6 @@ export class GameTable
         console.log("GameTable.onRoundStarts ...")
         console.log(this.toDoc())
 
-        this.assignNextHeadPlayer();
         this.endOfRound = false
         this.roundIndex = this.roundIndex + 1;
         let playerEnumerator = this.getPlayerEnumerator()
@@ -185,6 +184,7 @@ export class GameTable
             currentPlayer.value.player.onRoundEnded()
             currentPlayer.value.player.hasPlayedThisRound = false
         }
+        this.assignNextHeadPlayer();
 
         console.log("GameTable.onRoundStarts !")
         console.log(this.toDoc())
