@@ -102,7 +102,7 @@ export default class Game
     {
        return this._gameTable.players.filter(p => !p.isSick && !p.isDead).every(p => p.waterVote !== null);
     }
-    
+
     onPlayerWaterVote()
     {
       if(!this.waterVoteEnded){
@@ -117,7 +117,7 @@ export default class Game
     {
        return this._gameTable.players.filter(p => !p.isSick && !p.isDead).every(p => p.foodVote !== null);
     }
-         
+
     onWaterVoteEnded()
     {
       //Kill the voted Player
@@ -143,7 +143,7 @@ export default class Game
       //Otherwise redo vote
       this._initWaterManagement();
     }
-    
+
     _initWaterManagement()
     {
       if (this._gameTable.playersCount - this._waterManager.inventory > 0)
@@ -154,12 +154,12 @@ export default class Game
           p.waterVote = null;
         });
         return;
-      } 
+      }
       // Else drink water and keep on
       this._waterManager.drink(this._gameTable.playersCount);
       return this._initFoodManagement();
     }
-    
+
     _initFoodManagement()
     {
       if (this._gameTable.playersCount - this._foodManager.inventory > 0)
@@ -224,6 +224,7 @@ export default class Game
       }
 
       this._gameTable.onRoundStarts();
+      this._waterManager.onRoundEnded();
     }
 
     onPlayerFinalWaterVote()
