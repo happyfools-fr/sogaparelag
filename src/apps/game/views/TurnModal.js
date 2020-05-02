@@ -1,31 +1,90 @@
 // React imports
-import React from 'react';
+import React, {useState} from 'react';
 
-import {Modal, ButtonGroup, Button} from 'react-bootstrap';
+import {Form, Modal, ToggleButton, ButtonGroup, Button} from 'react-bootstrap';
 
 import {RoundAction} from '../model/RoundAction'
 
+const ROUND_ACTION_TYPES_MAPPING = new Map()
+ROUND_ACTION_TYPES_MAPPING.set(RoundAction.CollectWater, "water")
+ROUND_ACTION_TYPES_MAPPING.set(RoundAction.CollectFood, "food")
+ROUND_ACTION_TYPES_MAPPING.set(RoundAction.CollectWood, "wood")
+
 export default function TurnModal(props) {
 
+    const [show, setShow] = useState((props.show) ? props.show : true)
+
+    const onAction = (props.onAction) ? props.onAction : (a ,b) => {console.log(a, b)}
+
+    const [choice, setChoice] = useState()
+
+    const [extras, setExtras] = useState(1)
+
+    const renderChoice = (choice) => {
+        switch(choice) {
+            case 'water':
+                return (
+                    <div className="mt-3 mb-3">
+                        According to the weather, you will get ...!
+                    </div>
+                );
+            case 'wood':
+                return(
+                    <div className="mt-3 mb-3">
+                        <div>
+                            You will get 1 free wood from the forest border, if you want to go further into the forest, specify how much you want to collect
+                        </div>
+                        <ButtonGroup className="mt-2" toggle type="radio" onChange={(change) => setExtras(change.target.value)}>
+                        {
+                            [1,2,3,4,5,6].map((i) => {
+                                return(<ToggleButton checked={extras==i} type="radio" variant="dark" key={i} value={i}> {i} </ToggleButton>)
+                            })
+                        }
+                        </ButtonGroup>
+                    </div>
+                );
+            case 'food':
+                return (
+                    <div className="mt-3 mb-3">
+                        You've chosen to go fishing. Once you confirm, you'll have to wait for a fish to bite...
+                    </div>
+                );
+            default:
+                return null;
+        }
+    }
+
+
     return (
-        <Modal show={props.show} centered>
+        <Modal show={show} centered>
             <Modal.Header>
                 <Modal.Title>It's your turn</Modal.Title>
             </Modal.Header>
-            <Modal.Body>Choose your action, and choose wisely ...</Modal.Body>
-            <Modal.Footer>
-                <ButtonGroup>
-                    <Button variant="primary" margin-right="1em" onClick={() => props.onAction(RoundAction.CollectWater)}>
-                        Get water
-                    </Button>
-                    <Button variant="success" margin-right="1em"  onClick={() => props.onAction(RoundAction.CollectWood)}>
-                        Get wood
-                    </Button>
-                    <Button variant="danger" margin-right="1em" onClick={() => props.onAction(RoundAction.CollectFood)}>
-                        Get food
-                    </Button>
-                </ButtonGroup>
-            </Modal.Footer>
-        </Modal>
+
+            <Form>
+                <Modal.Body>
+                    Choose your action, and choose wisely ...
+                    <ButtonGroup className="mt-2" toggle onChange={(change) => setChoice(change.target.value)}>
+                        <ToggleButton checked={choice=="water"} disabled={choice && choice!="water"} type="radio" variant="info" value="water">
+                            <i className="fas fa-tint" />&nbsp;&nbsp;Get water
+                        </ToggleButton>
+                        <ToggleButton checked={choice=="wood"} disabled={choice && choice!="wood"} type="radio" variant="warning" value="wood">
+                            <i className="fas fa-shapes" />&nbsp;&nbsp;Get wood
+                        </ToggleButton>
+                        <ToggleButton checked={choice=="food"} disabled={choice && choice!="food"} type="radio" variant="secondary" value="food">
+                            <i className="fas fa-fish" />&nbsp;&nbsp;Get food
+                        </ToggleButton>
+                    </ButtonGroup>
+                    {renderChoice(choice)}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        variant="primary"
+                        disabled={!choice}
+                        type="button"
+                        onClick={() => {onAction(ROUND_ACTION_TYPES_MAPPING.get(choice), extras);setShow(false)}}
+                    > Confirm </Button>
+                </Modal.Footer>
+            </Form>        </Modal>
     );
 }
