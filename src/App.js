@@ -24,6 +24,7 @@ import PollModal from './apps/game/views/PollModal'
 import DeadModal from './apps/game/views/DeadModal'
 import SavedView from './apps/game/views/SavedView'
 import TurnModal from './apps/game/views/TurnModal'
+import AllPlayersView from './apps/game/views/AllPlayersView'
 
 //Firebase
 import FirebaseService from './components/firebase/index';
@@ -122,7 +123,7 @@ export default function App() {
           <Route exact path='/'><LandingPage /></Route>
           <Route><LandingPage /></Route>
       </Switch>
-      <Navbar className='mt-3' sticky="bottom">
+      <Navbar sticky="bottom">
           <b>Sogaparelag</b>&nbsp;project, a HappyFools.fr initiative in 2020.
       </Navbar>
   </Router>

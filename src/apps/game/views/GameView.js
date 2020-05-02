@@ -120,7 +120,7 @@ function GameView(props) {
           return (
               <Container fluid>
                   <Row>
-                      <Col>
+                      <Col className="p-2">
                           <GameTableView className='mt-5' slugname={props.slugname} game={game}/>
                           <AllPlayersView
                               players={game._gameTable.players}
@@ -144,7 +144,7 @@ function GameView(props) {
                               handlePollEndValidation={handlePollEndValidation}
                           />
                       </Col>
-                      <Col sm={4}>
+                      <Col sm={4} className="p-2">
                           <GameHistoryView game={game} />
                       </Col>
                   </Row>
