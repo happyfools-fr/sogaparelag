@@ -295,7 +295,6 @@ describe('Game', function()
 
     it('convertion to doc is valid', () =>
     {
-
       let id1 = uuidv1();
       let id2 = uuidv1();
       let id3 = uuidv1();
@@ -314,6 +313,7 @@ describe('Game', function()
       assert.equal(doc['_id'], game._id);
       assert.equal(doc['_lastRound'], game._lastRound);
       assert.equal(doc['_win'], game._win);
+      assert.equal(doc['_mustLeave'], game._mustLeave);
       assert.deepEqual(doc['history'], game.history);
       assert.deepEqual(doc['_gameTable'], game._gameTable.toDoc());
       assert.deepEqual(doc['_waterManager'], game._waterManager.toDoc());
@@ -343,6 +343,7 @@ describe('Game', function()
 
         _lastRound : false,
         _win : false,
+        _mustLeave: false,
 
         _waterManager : waterManager.toDoc(),
         _foodManager : foodManager.toDoc(),
@@ -361,6 +362,7 @@ describe('Game', function()
       assert.equal(doc['_id'], game._id);
       assert.equal(doc['_lastRound'], game._lastRound);
       assert.equal(doc['_win'], game._win);
+      assert.equal(doc['_mustLeave'], game._mustLeave);
       assert.deepEqual(doc['_gameTable'], game._gameTable.toDoc());
       assert.deepEqual(doc['_waterManager'], game._waterManager.toDoc());
       assert.deepEqual(doc['_foodManager'], game._foodManager.toDoc());

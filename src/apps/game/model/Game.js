@@ -11,7 +11,7 @@ import Utils from './Utils'
 import { v1 as uuidv1 } from 'uuid';
 
 export const SERDE_KEYS = [
-  '_id', '_lastRound', '_win', '_waterManager',
+  '_id', '_lastRound', '_win', '_mustLeave', '_waterManager',
   '_foodManager', '_woodManager', '_gameTable', 'history',
   'pollFood', 'pollWater',
 ];
@@ -222,9 +222,22 @@ export default class Game
           alert("You are saved!");
           return;
       }
-
-      this._gameTable.onRoundStarts();
-      this._waterManager.onRoundEnded();
+      if (this._mustLeave)
+      {
+          this._win = false
+          alert("GAME OVER");
+      }
+      else if (this._waterManager.mustLeave())
+      {
+          this._mustLeave = true
+          // Init SUPPLY MANAGEMENT sequence
+          this._initWaterManagement();
+      }
+      else
+      {
+        this._gameTable.onRoundStarts();
+        this._waterManager.onRoundEnded();
+      }
     }
 
     onPlayerFinalWaterVote()
@@ -275,6 +288,7 @@ export default class Game
 
             _lastRound : this._lastRound,
             _win : this._win,
+            _mustLeave: this._mustLeave,
 
             _waterManager : this._waterManager ? this._waterManager.toDoc() : null,
             _foodManager : this._foodManager ? this._foodManager.toDoc() : null,
@@ -300,6 +314,7 @@ export default class Game
           game._id = doc['_id'];
           game._lastRound = doc['_lastRound'];
           game._win = doc['_win'];
+          game._mustLeave = doc['_mustLeave'];
           let gameTable = GameTable.fromDoc(doc['_gameTable']);
           game._gameTable = gameTable;
           game._pollManager = new PollManager(game._gameTable);
