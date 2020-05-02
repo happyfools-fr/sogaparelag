@@ -70,6 +70,7 @@ export default class Game
 
     play()
     {
+<<<<<<< Updated upstream
         while (!this._lastRound)
         {
             this._lastRound = this._waterManager.mustLeave()
@@ -110,6 +111,17 @@ export default class Game
             //ON END OF ROUND
             this._onRoundEnded()
         }
+=======
+      let foodVoteEnded = this._gameTable.players.every(p => p.foodVote);
+      if(!foodVoteEnded)
+      {
+          console.log("foodVoteNotEnded", foodVoteEnded)
+          return
+      }
+
+      alert("onFoodVoteEnded");
+      this.onFoodVoteEnded();
+>>>>>>> Stashed changes
     }
 
     _manageWaterEndOfRound()
