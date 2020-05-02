@@ -165,6 +165,7 @@ export class GameTable
 
             if (currentPlayer.value.id === playerIdToKill)
             {
+                currentPlayer.value.player.isDead = true;
                 let previousPlayer = currentPlayer.value.previous
                 let nextPlayer = currentPlayer.value.next
                 previousPlayer.next = nextPlayer
@@ -193,6 +194,8 @@ export class GameTable
 
             if (currentPlayer.value.player === this._headPlayer.player)
               this.indexOfHeadPlayer = it
+            if (currentPlayer.value.player === this._currentPlayer.player)
+              this.indexOfCurrentPlayer = it
 
             this.players.push(currentPlayer.value.player)
             it++

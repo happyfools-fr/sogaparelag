@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {Modal, Form, Button, ButtonGroup, Dropdown, DropdownButton} from 'react-bootstrap';
+import {Modal, Form, Button} from 'react-bootstrap';
 
 import PollComponent from './PollComponent'
 

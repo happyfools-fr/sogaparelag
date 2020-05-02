@@ -15,6 +15,7 @@ import PlayerController from '../controller/PlayerController';
 // View imports
 import TurnModal from './TurnModal';
 import PollModal from './PollModal';
+import PollEndValidationModal from './PollEndValidationModal';
 import GameTableView from './GameTableView';
 import AllPlayersView from './AllPlayersView';
 import SavedView from './SavedView';
@@ -47,12 +48,17 @@ function GameView(props) {
     
     console.log('After UseEffect');
     const clientPlayer = (game && user) ? game._gameTable.players.filter(p => p.id === user._id)[0] : null;
-    const showPollWater = (game && clientPlayer) ? (game.pollWater && !clientPlayer.waterVote) : false;
-    const showPollFood = (game && clientPlayer) ? (game.pollFood && !clientPlayer.foodVote) : false;
-    const showPoll = (showPollWater && !showPollFood) || (!showPollWater && showPollFood);
-    const pollType = showPollWater ? "drink" : "eat";
+    
+    const showPollEndValidation = (game && clientPlayer) 
+      ? (game.headPlayerId === clientPlayer.id && (game.waterVoteEnded || game.footVoteEnded )) : false;
 
-    const showAction = (game && clientPlayer) ? (game.currentPlayerId === clientPlayer.id && !showPoll): false;
+    const canPlay = (clientPlayer) ? !clientPlayer.isSick && !clientPlayer.isDead : false;
+    const showPollWater = (game && clientPlayer) ? (game.pollWater && !clientPlayer.waterVote && canPlay) : false;
+    const showPollFood = (game && clientPlayer) ? (game.pollFood && !clientPlayer.foodVote && canPlay) : false;
+    const showPoll = !showPollEndValidation && ((showPollWater && !showPollFood) || (!showPollWater && showPollFood));
+    const pollType = showPollWater ? "drink" : "eat";
+    
+    const showAction = (game && clientPlayer) ? (game.currentPlayerId === clientPlayer.id && !showPoll  && canPlay && !showPollEndValidation): false;
     
     const handleAction = (action, show) => {
       
@@ -83,7 +89,22 @@ function GameView(props) {
           playerController.update(p)
         });
         gameController.update(game);
-
+        // Update game in waiting room if needed
+    };
+    
+    
+    const handlePollEndValidation = () => {
+        console.log(`You have validated the end of the vote`);
+        alert(`You have validated the end of the vote`);
+        if (showPollWater){
+          game.onWaterVoteEnded()
+        } else {
+          game.onFoodVoteEnded()
+        }
+        game._gameTable.players.forEach((p, i) => {
+          playerController.update(p)
+        });
+        gameController.update(game);
         // Update game in waiting room if needed
     };
 
@@ -106,9 +127,14 @@ function GameView(props) {
                           />
                           <PollModal
                               show={showPoll}
-                              players={game._gameTable.players}
+                              players={game._gameTable.players.filter(p => !p.isDead)}
                               pollType={pollType}
                               handleVoteSubmit={handleVoteSubmit}
+                          />
+                          <PollEndValidationModal
+                              show={showPollEndValidation}
+                              pollType={pollType}
+                              handlePollEndValidation={handlePollEndValidation}
                           />
                       </Col>
                       <Col sm={4}>

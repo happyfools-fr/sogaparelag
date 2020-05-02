@@ -1,6 +1,5 @@
 import Player from "./Player";
 import LoggedInUser from "./LoggedInUser";
-import {RoundManager} from "./RoundManager";
 import {RoundAction} from './RoundAction'
 import {WaterManager} from "./WaterManager";
 import {FoodManager} from "./FoodManager";
@@ -155,29 +154,40 @@ export default class Game
     {
         if (this._canLeave())
         {
-            this._win = true
-            alert("You are saved!");
-            return;
+          alert("You are saved!");
+          this._win = true
+          return;
         }
         // Init SUPPLY MANAGEMENT sequence
         return this._initWaterManagement();
     }
     
+    get waterVoteEnded()
+    {
+       return this._gameTable.players.filter(p => !p.isSick && !p.isDead).every(p => p.waterVote !== null);
+    }
+    
     onPlayerWaterVote()
     {
-      let waterVoteEnded = this._gameTable.players.every(p => p.waterVote);
-      if(!waterVoteEnded)
-        console.log("waterVoteEnded", waterVoteEnded)
-        return
+      if(!this.waterVoteEnded){
+        console.log("!waterVoteEnded", this.waterVoteEnded)
+        return;
+      }
       alert("onWaterVoteEnded");
       return this.onWaterVoteEnded();
     }
 
+    get footVoteEnded()
+    {
+       return this._gameTable.players.filter(p => !p.isSick && !p.isDead).every(p => p.foodVote !== null);
+    }
+     
     onPlayerFoodVote()
     {
-      let footVoteEnded = this._gameTable.players.every(p => p.foodVote);
-      if(!footVoteEnded)
-        return
+      if(!this.footVoteEnded){
+        console.log("!footVoteEnded", this.footVoteEnded)
+        return;
+      }
       alert("onFoodVoteEnded");
       return this.onFoodVoteEnded();
     }
@@ -186,6 +196,7 @@ export default class Game
     {
       //Kill the voted Player
       let playerIdToKill = this._pollManager.voteWithContext(RoundAction.WaterVote)
+      alert('onWaterVoteEnded killing player playerIdToKill = ' + playerIdToKill)
       this._gameTable.killPlayer(playerIdToKill)
       
       //enough water to play next round?
@@ -194,6 +205,9 @@ export default class Game
         //everybody drinks
         this._waterManager.drink(this._gameTable.playersCount)
         //end of water vote
+        this._gameTable.players.forEach( p => {
+          p.waterVote = null;
+        });
         this.pollWater = false
         return this._initFoodManagement();
       } 
@@ -205,9 +219,8 @@ export default class Game
     {
       if (this._gameTable.playersCount - this._waterManager.inventory > 0)
       {
+        alert("Time for Water Vote!");
         this.pollWater = true;
-        alert("Water Vote!");
-
         this._gameTable.players.forEach( p => {
           p.waterVote = null;
         });
@@ -222,13 +235,11 @@ export default class Game
     {
       if (this._gameTable.playersCount - this._foodManager.inventory > 0)
       {
+        alert("Time for Food Vote!");
         this.pollFood = true;
-        alert("Food Vote!");
-
         this._gameTable.players.forEach( p => {
           p.foodVote = null;
         });
-        // Triggers vote
         return;
       } 
       // Else eat food and keep on
@@ -240,14 +251,18 @@ export default class Game
     {
       //Kill the voted Player
       let playerIdToKill = this._pollManager.voteWithContext(RoundAction.FoodVote)
+      alert('onFoodVoteEnded killing player playerIdToKill = ' + playerIdToKill)
       this._gameTable.killPlayer(playerIdToKill)
       
       //enough water to play next round?
       if (this._gameTable.playersCount - this._foodManager.inventory <= 0)
       {
-        //everybody drinks
-        this._foodManager.drink(this._gameTable.playersCount)
+        //everybody eats
+        this._foodManager.eat(this._gameTable.playersCount)
         //end of water vote
+        this._gameTable.players.forEach( p => {
+          p.foodVote = null;
+        });
         this.pollFood = false
         return this.onAllManagementEnded();
       }

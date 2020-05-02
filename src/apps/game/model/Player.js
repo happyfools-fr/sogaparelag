@@ -81,7 +81,7 @@ export default class Player
         default :
               throw new Error('Context error in choosePlayerIdToVoteAgainst with player', this);
       }
-      return players.filter(p => p.userId === chosenPlayerId)[0]; 
+      return players.filter(p => p.id === chosenPlayerId)[0]; 
     }
 
     chooseFinalPlayerIdToVoteAgainst(players)
