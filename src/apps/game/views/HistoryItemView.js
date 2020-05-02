@@ -13,6 +13,7 @@ const LOG_TYPES = {
     wood : {icon: 'shapes', variant: 'warning'},
     food : {icon: 'fish', variant: 'secondary'},
     info : {icon: 'info', variant: 'light'},
+    new-day : {icon: 'umbrella-beach', variant: 'success'},
     raft : {icon: 'sign-out-alt', variant: 'success'},
     dead : {icon: 'skull-crossbones', variant: 'danger'},
     sick : {icon: 'dizzy', variant: 'dark'},

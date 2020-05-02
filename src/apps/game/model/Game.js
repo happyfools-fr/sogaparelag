@@ -98,6 +98,13 @@ export default class Game
         //   return;
         // }
 
+        this.history.push(
+          {
+              type: 'info',
+              value: "Day " + this._gameTable.roundIndex + " has ended, all survivors will have to drink and eat."
+          }
+        );
+
         // Init SUPPLY MANAGEMENT sequence
         this._initWaterManagement();
     }
@@ -169,6 +176,14 @@ export default class Game
       }
       // Else drink water and keep on
       this._waterManager.drink(this._gameTable.playersCount);
+
+      this.history.push(
+        {
+            type: 'info',
+            value: "There is enough water for all survivors to drink today ..."
+        }
+      );
+
       return this._initFoodManagement();
     }
 
@@ -185,6 +200,13 @@ export default class Game
       }
       // Else eat food and keep on
       this._foodManager.eat(this._gameTable.playersCount);
+
+      this.history.push(
+        {
+            type: 'info',
+            value: "There is enough fish for all survivors to eat today ..."
+        }
+      );
 
       this.onAllManagementEnded();
     }
@@ -257,8 +279,24 @@ export default class Game
       }
       else
       {
-        this._gameTable.onRoundStarts();
         this._waterManager.onRoundEnded();
+
+        this.history.push(
+          {
+              type: 'new-day',
+              value: "Well done, you have lived to see another day on the island !"
+          }
+        );
+
+        this.history.push(
+          {
+              type: 'info',
+              value: "The weather today is" + this._waterManager.currentWeather
+          }
+        );
+
+        this._gameTable.onRoundStarts();
+
       }
     }
 
