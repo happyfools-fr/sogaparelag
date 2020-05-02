@@ -8,21 +8,7 @@ import LoggedInUser from '../model/LoggedInUser';
 
 export default function AllPlayersView(props) {
 
-    const players = (props.players.length>1) ? props.players
-        : [
-            props.players[0],
-            props.players[0],
-            props.players[0],
-            // props.players[0],
-            // props.players[0],
-            // props.players[0],
-            // props.players[0],
-            // props.players[0],
-            // props.players[0],
-            // props.players[0],
-            // props.players[0],
-            // props.players[0]
-        ]
+    const players = props.players
 
     return (
         <div className="m-2">
