@@ -59,7 +59,7 @@ describe('Game', function()
         assert.equal(game.playersCount, 3)
     });
 
-    it('can leave <-> >=2xFoods + >=2xWaters + >=6xWoods', () =>
+    it('can leave <-> >=Foods + >=Waters + >=6xWoods', () =>
     {
         let id1 = uuidv1();
         let id2 = uuidv1();
@@ -77,8 +77,8 @@ describe('Game', function()
         let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
         let pollManager = new MockPollManager(game._gameTable)
 
-        waterManager.inventory = 3*2
-        foodManager.inventory = 3*2
+        waterManager.inventory = 3
+        foodManager.inventory = 3
         woodManager.inventory = 3*6
 
         game._roundManager = roundManager
@@ -87,7 +87,7 @@ describe('Game', function()
         assert(game._canLeave())
     });
 
-    it('cant leave <-> <2xFoods + >=2xWaters + >=6xWoods', () =>
+    it('cant leave <-> <Foods + >=Waters + >=6xWoods', () =>
     {
         let id1 = uuidv1();
         let id2 = uuidv1();
@@ -105,8 +105,8 @@ describe('Game', function()
         let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
         let pollManager = new MockPollManager(game._gameTable)
 
-        waterManager.inventory = 3*2
-        foodManager.inventory = 3*2-1
+        waterManager.inventory = 3
+        foodManager.inventory = 3-1
         woodManager.inventory = 3*6
 
         game._roundManager = roundManager
@@ -115,7 +115,7 @@ describe('Game', function()
         assert(!game._canLeave())
     });
 
-    it('cant leave <-> >=2xFoods + <2xWaters + >=6xWoods', () =>
+    it('cant leave <-> >=Foods + <Waters + >=6xWoods', () =>
     {
         let id1 = uuidv1();
         let id2 = uuidv1();
@@ -133,8 +133,8 @@ describe('Game', function()
         let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
         let pollManager = new MockPollManager(game._gameTable)
 
-        waterManager.inventory = 3*2-1
-        foodManager.inventory = 3*2
+        waterManager.inventory = 3-1
+        foodManager.inventory = 3
         woodManager.inventory = 3*6
 
         game._roundManager = roundManager
@@ -143,7 +143,7 @@ describe('Game', function()
         assert(!game._canLeave())
     });
 
-    it('cant leave <-> >=2xFoods + >=2xWaters + <6xWoods', () =>
+    it('cant leave <-> >= Foods + >=Waters + <6xWoods', () =>
     {
         let id1 = uuidv1();
         let id2 = uuidv1();
@@ -161,8 +161,8 @@ describe('Game', function()
         let roundManager = new MockRoundManager(game._gameTable, waterManager, foodManager, woodManager)
         let pollManager = new MockPollManager(game._gameTable)
 
-        waterManager.inventory = 3*2
-        foodManager.inventory = 3*2
+        waterManager.inventory = 3
+        foodManager.inventory = 3
         woodManager.inventory = 3*6-1
 
         game._roundManager = roundManager

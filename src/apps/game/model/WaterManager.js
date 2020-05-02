@@ -55,7 +55,7 @@ export class WaterManager
 
     authorizeLeaving(playersCount)
     {
-        return this.inventory >= 2 * playersCount;
+        return this.inventory >=  playersCount;
     }
 
     toDoc()
