@@ -1,57 +1,81 @@
 // React imports
 import React, {useState} from 'react';
 
-import {Form, Modal, ButtonGroup, Button} from 'react-bootstrap';
+import {Form, Modal, ToggleButton, ButtonGroup, Button} from 'react-bootstrap';
 
 export default function TurnModal(props) {
 
+    const [show, setShow] = useState((props.show) ? props.show : true)
+
+    const onAction = (props.onAction) ? props.onAction : (a ,b) => {console.log(a, b)}
+
     const [choice, setChoice] = useState()
 
-    const renderSwitch = (choice) => {
+    const [extras, setExtras] = useState(1)
+
+    const renderChoice = (choice) => {
         switch(choice) {
             case 'water':
-                return(<span> According to the weather, you will get ...! </span>);
+                return (
+                    <div className="mt-3 mb-3">
+                        According to the weather, you will get ...!
+                    </div>
+                );
             case 'wood':
                 return(
-                    <div>
-                        <span> You will get 1 free wood from the forest border, if you want to go further into the forest, specify how much you want to collect</span>
-                        <ButtonGroup toggle defaultValue={1}>
+                    <div className="mt-3 mb-3">
+                        <div>
+                            You will get 1 free wood from the forest border, if you want to go further into the forest, specify how much you want to collect
+                        </div>
+                        <ButtonGroup className="mt-2" toggle type="radio" onChange={(change) => setExtras(change.target.value)}>
                         {
-                            [1,2,3,4,5,6,7].map((i) => {
-                                return(<Button value={i}>{i}</Button>)
+                            [1,2,3,4,5,6].map((i) => {
+                                return(<ToggleButton checked={extras==i} type="radio" variant="dark" key={i} value={i}> {i} </ToggleButton>)
                             })
                         }
                         </ButtonGroup>
                     </div>
                 );
             case 'food':
-                return 'bar';
+                return (
+                    <div className="mt-3 mb-3">
+                        You've chosen to go fishing. Once you confirm, you'll have to wait for a fish to bite...
+                    </div>
+                );
             default:
                 return null;
         }
     }
 
+
     return (
-        <Modal show={props.show} centered>
+        <Modal show={show} centered>
             <Modal.Header>
                 <Modal.Title>It's your turn</Modal.Title>
             </Modal.Header>
             <Form>
-                <Modal.Body>Choose your action, and choose wisely ...</Modal.Body>
-                    <ButtonGroup toggle onChange={setChoice}>
-                        <Button variant="info" margin-right="1em" value="water">
-                            Get water
-                        </Button>
-                        <Button variant="warning" margin-right="1em" value="wood">
-                            Get wood
-                        </Button>
-                        <Button variant="secondary" margin-right="1em" value="food">
-                            Get food
-                        </Button>
+                <Modal.Body>
+                    Choose your action, and choose wisely ...
+                    <ButtonGroup className="mt-2" toggle onChange={(change) => setChoice(change.target.value)}>
+                        <ToggleButton checked={choice=="water"} disabled={choice && choice!="water"} type="radio" variant="info" value="water">
+                            <i className="fas fa-tint" />&nbsp;&nbsp;Get water
+                        </ToggleButton>
+                        <ToggleButton checked={choice=="wood"} disabled={choice && choice!="wood"} type="radio" variant="warning" value="wood">
+                            <i className="fas fa-shapes" />&nbsp;&nbsp;Get wood
+                        </ToggleButton>
+                        <ToggleButton checked={choice=="food"} disabled={choice && choice!="food"} type="radio" variant="secondary" value="food">
+                            <i className="fas fa-fish" />&nbsp;&nbsp;Get food
+                        </ToggleButton>
                     </ButtonGroup>
-                    {renderSwitch(choice)}
+                    {renderChoice(choice)}
+                </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" type="submit"> Confirm choice </Button>
+                    <Button
+                        variant="primary"
+                        disabled={!choice}
+                        type="button"
+                        onClick={() => {onAction(choice, extras);setShow(false)}}
+                    > Confirm </Button>
                 </Modal.Footer>
             </Form>
         </Modal>
