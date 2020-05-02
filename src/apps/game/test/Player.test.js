@@ -1,4 +1,4 @@
-import Player from '../model/Player'
+import Player, {SERDE_KEYS} from '../model/Player'
 import LoggedInUser from '../model/LoggedInUser'
 import {RoundAction} from '../model/RoundAction'
 
@@ -72,11 +72,8 @@ describe('Player', function()
         this._sickenessLevel = doc['_sickenessLevel'];
         this.isDead = doc['isDead'];
         this.currentHand = doc['currentHand'];
-        assert.deepEqual(Object.keys(doc),
-        [
-          'userId', 'nickname', '_sickenessLevel', 'isDead', 'currentHand',
-          'hasPlayedThisRound', 'waterVote', 'foodVote'
-        ]);
+        this.spectateGame = doc['spectateGame'];
+        assert.deepEqual(Object.keys(doc), SERDE_KEYS);
         assert.equal(doc['userId'], _player.userId);
         assert.equal(doc['nickname'], _player.nickname);
         assert.equal(doc['_sickenessLevel'], _player._sickenessLevel);
@@ -85,6 +82,8 @@ describe('Player', function()
         assert.deepEqual(doc['hasPlayedThisRound'], _player.hasPlayedThisRound);
         assert.deepEqual(doc['waterVote'], _player.waterVote);
         assert.deepEqual(doc['foodVote'], _player.foodVote);
+        assert.deepEqual(doc['spectateGame'], _player.spectateGame);
+
     });
 
     it('should instantiate correctly from doc object', () =>
@@ -97,7 +96,8 @@ describe('Player', function()
             currentHand: [2, 4],
             hasPlayedThisRound: false,
             waterVote: 'toto1',
-            foodVote: 'toto1'
+            foodVote: 'toto1',
+            spectateGame: true,
         };
         const _player = Player.fromDoc(doc);
         assert.equal(doc['userId'], _player.userId);
@@ -108,5 +108,7 @@ describe('Player', function()
         assert.deepEqual(doc['hasPlayedThisRound'], _player.hasPlayedThisRound);
         assert.deepEqual(doc['waterVote'], _player.waterVote);
         assert.deepEqual(doc['foodVote'], _player.foodVote);
+        assert.deepEqual(doc['spectateGame'], _player.spectateGame);
+
     });
 });

@@ -2,10 +2,10 @@ import {RoundAction} from './RoundAction'
 import LoggedInUser from  './LoggedInUser'
 import Utils from './Utils'
 
-const SERDE_KEYS = [
+export const SERDE_KEYS = [
   'userId', 'nickname', '_sickenessLevel',
 'isDead', 'currentHand', 'hasPlayedThisRound',
-'waterVote', 'foodVote'
+'waterVote', 'foodVote', 'spectateGame',
 ];
 /**
  * Player holds player state in game
@@ -23,6 +23,7 @@ export default class Player
         this.hasPlayedThisRound = false
         this.waterVote = null
         this.foodVote = null
+        this.spectateGame = null
     }
 
     get id() { return this.userId; }
@@ -169,7 +170,9 @@ export default class Player
             currentHand : this.currentHand,
             hasPlayedThisRound : this.hasPlayedThisRound,
             waterVote: this.waterVote,
-            foodVote: this.foodVote
+            foodVote: this.foodVote,
+            spectateGame: this.spectateGame,
+            
         }
     }
 
@@ -185,6 +188,8 @@ export default class Player
           player.hasPlayedThisRound = doc['hasPlayedThisRound']
           player.waterVote = doc['waterVote'];
           player.foodVote = doc['foodVote'];
+          player.spectateGame = doc['spectateGame'];
+
       }
       return player;
     }

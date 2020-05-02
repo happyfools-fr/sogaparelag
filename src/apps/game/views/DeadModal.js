@@ -9,7 +9,7 @@ import {Modal, Button} from 'react-bootstrap';
 */
 export default function DeadModal(props) {
 
-    const show = props.show
+    let show = props.show
 
     const handleSpectate = (props.handleSpectate) ? props.handleSpectate : () => {show = false}
 
@@ -31,7 +31,7 @@ export default function DeadModal(props) {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="light" href="/">Leave</Button>
-                <Button variant="primary" onClick={props.handleSpectate}>Spectate</Button>
+                <Button variant="primary" onClick={handleSpectate}>Spectate</Button>
             </Modal.Footer>
         </Modal>
     )

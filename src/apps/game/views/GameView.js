@@ -15,6 +15,7 @@ import PlayerController from '../controller/PlayerController';
 // View imports
 import TurnModal from './TurnModal';
 import PollModal from './PollModal';
+import DeadModal from './DeadModal';
 import PollEndValidationModal from './PollEndValidationModal';
 import GameTableView from './GameTableView';
 import AllPlayersView from './AllPlayersView';
@@ -48,21 +49,40 @@ function GameView(props) {
     );
 
     console.log('After UseEffect');
-    const clientPlayer = (game && user) ? game._gameTable.players.filter(p => p.id === user._id)[0] : null;
-
-    const showPollEndValidation = (game && clientPlayer)
-      ? (game.headPlayerId === clientPlayer.id && (game.waterVoteEnded || game.footVoteEnded )) : false;
-
-    const canPlay = (clientPlayer) ?  !clientPlayer.isDead : false;
-    const showPollWater = (game && clientPlayer) ? (game.pollWater && !clientPlayer.waterVote && canPlay) : false;
-    const showPollFood = (game && clientPlayer) ? (game.pollFood && !clientPlayer.foodVote && canPlay) : false;
-    const showPoll = !showPollEndValidation && ((showPollWater && !showPollFood) || (!showPollWater && showPollFood));
-    const pollType = showPollWater ? "drink" : "eat";
-
-    const showAction = (game && clientPlayer) ? (game.currentPlayerId === clientPlayer.id && !showPoll  && canPlay && !showPollEndValidation): false;
-    console.log("showAction ", showAction)
-    console.log("showPollEndValidation ", showPollEndValidation)
-    game &&  clientPlayer && console.log("game.currentPlayerId, clientPlayer.id", game.currentPlayerId, clientPlayer.id)
+    let clientPlayerFromPlayerDb = null;
+    let showDeadModal = false;
+    let clientPlayer = null;
+    let showPollEndValidation = false;
+    let canPlay = false;
+    let showPollWater = false;
+    let showPollFood = false;
+    let showPoll = false;
+    let pollType = "unknown";
+    let showAction = false;
+    
+    function setShowBoolean(game, user)
+    {
+      if (game && user)
+      {
+        clientPlayerFromPlayerDb = playerController.get(user.id);
+        showDeadModal = clientPlayerFromPlayerDb.isDead && !clientPlayerFromPlayerDb.spectateGame;
+        if(!showDeadModal)
+        {
+          clientPlayer = game._gameTable.players.filter(p => p.id === user.id)[0];
+          showPollEndValidation = (game.headPlayerId === clientPlayer.id) && (game.waterVoteEnded || game.footVoteEnded );
+          showPollWater = !showPollEndValidation && game.pollWater && !clientPlayer.waterVote;
+          showPollFood = !showPollEndValidation && game.pollFood && !clientPlayer.foodVote;
+          showPoll = !showPollEndValidation && ((showPollWater && !showPollFood) || (!showPollWater && showPollFood));
+          pollType = showPollWater ? "drink" : "eat";
+          showAction = !showPollEndValidation && !showPoll && !clientPlayer.isSick && (game.currentPlayerId === clientPlayer.id);
+        }
+      }
+    }
+    
+    setShowBoolean(game, user);
+    console.log("clientPlayerFromPlayerDb, showDeadModal, clientPlayer, showPollEndValidation, canPlay, showPollWater, showPollFood, showPoll, pollType, showAction", 
+      clientPlayerFromPlayerDb, showDeadModal, clientPlayer, showPollEndValidation, canPlay, showPollWater, showPollFood, showPoll, pollType, showAction);
+    
 
     const handleAction = (action, extras) => {
 
@@ -114,6 +134,12 @@ function GameView(props) {
         gameController.update(game);
         // Update game in waiting room if needed
     };
+    
+    const handleSpectate = () => {
+      alert(`You are dead man!`);
+      clientPlayerFromPlayerDb.spectateGame = true;
+      playerController.update(clientPlayerFromPlayerDb)
+    }
 
     if (game) {
       if(!game._endOfGame){
@@ -142,6 +168,10 @@ function GameView(props) {
                               show={showPollEndValidation}
                               pollType={pollType}
                               handlePollEndValidation={handlePollEndValidation}
+                          />
+                          <DeadModal
+                              show={showDeadModal}
+                              handleSpectate={handleSpectate}
                           />
                       </Col>
                       <Col sm={4} className="p-2">
