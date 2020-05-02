@@ -9,7 +9,7 @@ import {Modal, Button} from 'react-bootstrap';
 */
 export default function DeadModal(props) {
 
-    const show = (props.show) ? props.show : true
+    const show = props.show
 
     const handleSpectate = (props.handleSpectate) ? props.handleSpectate : () => {show = false}
 

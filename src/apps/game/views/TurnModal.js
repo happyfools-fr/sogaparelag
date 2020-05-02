@@ -12,7 +12,7 @@ ROUND_ACTION_TYPES_MAPPING.set(RoundAction.CollectWood, "wood")
 
 export default function TurnModal(props) {
 
-    const [show, setShow] = useState((props.show) ? props.show : true)
+    const [show, setShow] = useState(props.show)
 
     const onAction = (props.onAction) ? props.onAction : (a ,b) => {console.log(a, b)}
 

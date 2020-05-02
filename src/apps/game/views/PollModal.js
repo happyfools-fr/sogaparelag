@@ -12,7 +12,7 @@ import PollComponent from './PollComponent'
 */
 export default function PollModal(props) {
 
-    const show = (props.show) ? props.show : false;
+    const show = props.show;
     const pollType = (props.pollType) ? props.pollType : "eat or drink";
 
     const players = (props.players) ? props.players : [

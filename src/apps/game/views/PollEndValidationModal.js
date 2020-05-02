@@ -9,7 +9,7 @@ import {Modal, Button} from 'react-bootstrap';
 */
 export default function PollEndValidationModal(props) {
 
-    const show = (props.show) ? props.show : false;
+    const show = props.show;
     const pollType = (props.pollType) ? props.pollType : "eat or drink";
 
     const handlePollEndValidation = (props.handlePollEndValidation) ? props.handlePollEndValidation : (submit) => {
