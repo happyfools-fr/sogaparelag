@@ -48,8 +48,7 @@ export class WoodManager {
 
     toDoc()
     {
-        return
-        {
+        return {
           woodSupply: this.inventory
         }
     }

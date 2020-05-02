@@ -100,7 +100,8 @@ export class GameTable
     _initCurrentPlayer()
     {
         let currentPlayerId = this.players[this.indexOfCurrentPlayer].userId
-        let playerEnumerator = this.getHealthyPlayerEnumerator()
+
+        let playerEnumerator = this.getPlayerEnumerator()
         while (true)
         {
             let currentPlayer = playerEnumerator.next()
@@ -197,9 +198,8 @@ export class GameTable
 
     toDoc()
     {
-        return
-        {
-          players: this.players.map((p) => {return p ? p.toDoc() : null;}),
+        return {
+          players: this.players.map((p) => { return p ? p.toDoc() : null; } ),
           playersCount: this.playersCount,
           indexOfHeadPlayer: this.indexOfHeadPlayer,
           indexOfCurrentPlayer: this.indexOfCurrentPlayer,
@@ -212,7 +212,7 @@ export class GameTable
       let gameTable;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
       {
-        const players = doc['players'].map((pDoc) => { return Player.fromDoc(pDoc); })
+        const players = doc['players'].map((pDoc) => { return Player.fromDoc(pDoc) })
         const indexOfHeadPlayer = doc['indexOfHeadPlayer'];
         const indexOfCurrentPlayer = doc['indexOfCurrentPlayer']
         gameTable = new GameTable(players, indexOfHeadPlayer, indexOfCurrentPlayer, parseInt(doc['roundIndex']) );

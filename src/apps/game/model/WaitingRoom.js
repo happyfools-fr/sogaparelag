@@ -90,8 +90,7 @@ export default class WaitingRoom
 
     toDoc()
     {
-        return
-        {
+        return {
             _id: this._id,
             slugname: this.slugname,
             _loggedInUsers: this._loggedInUsers.map((u) => {return u ? u.toDoc() : null}),
@@ -113,7 +112,7 @@ export default class WaitingRoom
         console.log("fromDoc game", game)
         waitingRoom._currentGame = game;
       }
-      
+
       return waitingRoom;
     }
 }

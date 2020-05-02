@@ -25,8 +25,7 @@ export default class LoggedInUser
 
   toDoc()
   {
-      return
-      {
+      return {
         _id: this._id,
         nickname: this.nickname,
       };

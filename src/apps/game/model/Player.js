@@ -5,7 +5,7 @@ import Utils from './Utils'
 const SERDE_KEYS = [
   'userId', 'nickname', '_sickenessLevel',
 'isDead', 'currentHand', 'hasPlayedThisRound',
-'waterVote', 'foodVote', 'finalWaterVote', 'finalFoodVote'
+'waterVote', 'foodVote'
 ];
 /**
  * Player holds player state in game
@@ -163,8 +163,7 @@ export default class Player
 
     toDoc()
     {
-        return
-        {
+        return {
             userId : this.userId,
             nickname : this.nickname,
             _sickenessLevel : this._sickenessLevel,
@@ -172,7 +171,7 @@ export default class Player
             currentHand : this.currentHand,
             hasPlayedThisRound : this.hasPlayedThisRound,
             waterVote: this.waterVote,
-            foodVote: this.foodVote,
+            foodVote: this.foodVote
         }
     }
 

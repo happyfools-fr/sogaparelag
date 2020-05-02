@@ -29,8 +29,7 @@ export class FoodManager
 
     toDoc()
     {
-        return
-        {
+        return {
           foodSupply: this.inventory
         };
     }
