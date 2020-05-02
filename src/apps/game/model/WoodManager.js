@@ -46,13 +46,18 @@ export class WoodManager {
         return this.inventory >= 6 * playersCount;
     }
 
-    toDoc() {
-        return {woodSupply: this.inventory}
+    toDoc()
+    {
+        return {
+          woodSupply: this.inventory
+        }
     }
 
-    static fromDoc(doc) {
+    static fromDoc(doc)
+    {
       let woodManager;
-      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
+      {
         woodManager = new WoodManager();
         woodManager.inventory = doc['woodSupply'];
       }

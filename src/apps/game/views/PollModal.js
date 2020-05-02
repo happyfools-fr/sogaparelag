@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {Modal, Form, Button, ButtonGroup, Dropdown, DropdownButton} from 'react-bootstrap';
+import {Modal, Form, Button} from 'react-bootstrap';
 
 import PollComponent from './PollComponent'
 
@@ -12,7 +12,8 @@ import PollComponent from './PollComponent'
 */
 export default function PollModal(props) {
 
-    const show = (props.show) ? props.show : true
+    const show = (props.show) ? props.show : false;
+    const pollType = (props.pollType) ? props.pollType : "eat or drink";
 
     const players = (props.players) ? props.players : [
         {_id: 1, nickname: "Toto"}, {_id: 2, nickname: "Tata"},
@@ -22,7 +23,7 @@ export default function PollModal(props) {
     ];
 
     const handleVoteSubmit = (props.handleVoteSubmit) ? props.handleVoteSubmit : (submit) => {
-        console.log(vote._id)
+        console.log(vote._id);
     };
 
     const [vote, setVote] = useState()
@@ -31,16 +32,16 @@ export default function PollModal(props) {
     return (
         <Modal show={show} centered>
             <Modal.Header>
-                <Modal.Title>Time to vote !</Modal.Title>
+                <Modal.Title>Time to vote!</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                You must choose which player will not drink today :
-                <Form className="mt-2" onSubmit={handleVoteSubmit}>
+                You must choose which player will not {pollType} today:
+                <Form className="mt-2">
                     <Form.Group>
                     <PollComponent players={players} vote={vote} handleSelect={setVote}/>
                     </Form.Group>
                     <Modal.Footer>
-                        <Button variant="primary" type="submit">
+                        <Button variant="primary" type="button" onClick={() => handleVoteSubmit(vote)}>
                             Vote
                         </Button>
                     </Modal.Footer>

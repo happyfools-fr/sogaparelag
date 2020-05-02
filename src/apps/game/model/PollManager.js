@@ -5,7 +5,34 @@ export class PollManager
         this._gameTable = gameTable;
     }
 
-    vote()
+    // vote()
+    // {
+    //     let votesByPlayerId = this._initVotingPolls()
+    //     let healthyPlayerEnumerator = this._gameTable.getHealthyPlayerEnumerator()
+    //     while (true)
+    //     {
+    //         let currentPlayer = healthyPlayerEnumerator.next()
+    //         if (currentPlayer.done)
+    //             break
+    // 
+    //         let chosenPlayerId = currentPlayer.value.player.choosePlayerIdToVoteAgainst(this._gameTable.players)
+    //         votesByPlayerId[chosenPlayerId] ++
+    //     }
+    //     let playersWithMaxVote = this._getPlayerIdsWithMaxVote(votesByPlayerId)
+    //     if (playersWithMaxVote.length > 1)
+    //     {
+    //         let finalVoteByHeadPlayer = this._gameTable.headPlayer.chooseFinalPlayerIdToVoteAgainst(playersWithMaxVote)
+    // 
+    //         if (playersWithMaxVote.includes(finalVoteByHeadPlayer))
+    //             return finalVoteByHeadPlayer
+    // 
+    //         throw Error()
+    //     }
+    // 
+    //     return playersWithMaxVote[0]
+    // }
+
+    voteWithContext(context)
     {
         let votesByPlayerId = this._initVotingPolls()
         let healthyPlayerEnumerator = this._gameTable.getHealthyPlayerEnumerator()
@@ -15,7 +42,7 @@ export class PollManager
             if (currentPlayer.done)
                 break
 
-            let chosenPlayerId = currentPlayer.value.player.choosePlayerIdToVoteAgainst(this._gameTable.players)
+            let chosenPlayerId = currentPlayer.value.player.choosePlayerIdToVoteAgainst(this._gameTable.players, context)
             votesByPlayerId[chosenPlayerId] ++
         }
         let playersWithMaxVote = this._getPlayerIdsWithMaxVote(votesByPlayerId)

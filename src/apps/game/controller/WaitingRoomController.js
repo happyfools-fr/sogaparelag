@@ -33,22 +33,4 @@ export default class WaitingRoomController extends Controller {
             );
     };
 
-
-    // async getBySlugname(slugname) {
-    //     let object;
-    //     await this._database.collection(this._objectType)
-    //         .where("slugname", "==", slugname)
-    //         .get()
-    //         .then(
-    //             (snapshot) => {(snapshot.docs.length > 0) ?
-    //                 object = this._objectFromFirestoreDoc(snapshot.docs[0].data())
-    //                 : console.log("No " + this._objectType + " with ID: ", slugname)
-    //             }
-    //         )
-    //         .catch(
-    //             (e) => { console.log("Error getting " + this._objectType + ":", e) }
-    //         );
-    //     return object;
-    // }
-
 }

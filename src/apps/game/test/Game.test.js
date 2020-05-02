@@ -3,6 +3,7 @@ import Player from '../model/Player'
 import Game, {SERDE_KEYS} from '../model/Game'
 import LoggedInUser from '../model/LoggedInUser'
 import {WaterManager} from '../model/WaterManager'
+import {Weather} from '../model/Weather'
 import {WoodManager} from '../model/WoodManager'
 import {FoodManager} from '../model/FoodManager'
 import {RoundAction} from '../model/RoundAction'
@@ -210,7 +211,7 @@ describe('Game', function()
         let user3 = new LoggedInUser(id3, 'titi')
 
         let waterManager = new WaterManager()
-        waterManager._weathers = [3]
+        waterManager._weathers = [Weather.Flood, Weather.Thunderstorm]
         let woodManager = new WoodManager()
         let foodManager = new FoodManager()
 
@@ -350,10 +351,10 @@ describe('Game', function()
         assert.equal(game._gameTable.playersCount, 2)
         assert.equal(game._foodManager.inventory, 0)
     });
-    
+
     it('convertion to doc is valid', () =>
     {
-      
+
       let id1 = uuidv1();
       let id2 = uuidv1();
       let id3 = uuidv1();
@@ -367,7 +368,7 @@ describe('Game', function()
 
       let game = new Game([user1, user2, user3], waterManager, foodManager, woodManager)
       const doc = game.toDoc();
-      
+
       assert.deepEqual(Object.keys(doc), SERDE_KEYS);
       assert.equal(doc['_id'], game._id);
       assert.equal(doc['_lastRound'], game._lastRound);
@@ -383,7 +384,7 @@ describe('Game', function()
       * assert.deepEqual(doc['_pollManager'], game._pollManager.toDoc());
       */
     });
-    
+
     it('instantiate from doc object', () =>
     {
       let players = [];
@@ -391,27 +392,29 @@ describe('Game', function()
         let player = new Player(new LoggedInUser(`toto${i}`, "ToTO"));
         players.push(player);
       }
-      
+
       let waterManager = new WaterManager(3);
       let woodManager = new WoodManager();
       let foodManager = new FoodManager(3);
-      let _gameTable = new GameTable(players);  
+      let _gameTable = new GameTable(players);
       const doc = {
         _id : 'dfgh',
 
         _lastRound : false,
         _win : false,
-        
+
         _waterManager : waterManager.toDoc(),
         _foodManager : foodManager.toDoc(),
         _woodManager : woodManager.toDoc(),
-        
+
         _gameTable: _gameTable.toDoc(),
 
         history: [],
+        pollFood: false,
+        pollWater: false
       }
-      
-      let game = Game.fromDoc(doc);      
+
+      let game = Game.fromDoc(doc);
       assert.deepEqual(Object.keys(doc), SERDE_KEYS);
       //TODO '_roundManager','_pollManager',
       assert.equal(doc['_id'], game._id);

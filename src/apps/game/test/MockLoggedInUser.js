@@ -1,4 +1,4 @@
-export class MockLoggedInUser 
+export class MockLoggedInUser
 {
     constructor(uid, displayName)
     {
@@ -7,7 +7,12 @@ export class MockLoggedInUser
     }
 
     get id()
-    { 
+    {
+        return this._id
+    }
+
+    get userId()
+    {
         return this._id
     }
 }

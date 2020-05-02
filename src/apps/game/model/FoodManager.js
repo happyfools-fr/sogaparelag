@@ -1,7 +1,7 @@
 import shuffle from 'shuffle-array'
 import Utils from './Utils'
 
-export const SERDE_KEYS = ['foodSupply']; 
+export const SERDE_KEYS = ['foodSupply'];
 
 export class FoodManager
 {
@@ -27,15 +27,18 @@ export class FoodManager
         return this.inventory >= 2 * playersCount;
     }
 
-    toDoc() {
+    toDoc()
+    {
         return {
           foodSupply: this.inventory
         };
     }
-    
-    static fromDoc(doc) {
+
+    static fromDoc(doc)
+    {
       let foodManager;
-      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){  
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
+      {
         foodManager = new FoodManager(doc['foodSupply']);
       }
       return foodManager;

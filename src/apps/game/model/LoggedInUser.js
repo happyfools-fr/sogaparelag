@@ -15,30 +15,29 @@ export default class LoggedInUser
   }
 
 
-  get id()
+  get id() { return this._id }
+
+  connectToGameWaitingRoom(slugname)
   {
-      return this._id
-  }
-
-  connectToGameWaitingRoom(slugname){
-
-
       //todo
       return true;
   }
 
-  toDoc() {
+  toDoc()
+  {
       return {
         _id: this._id,
         nickname: this.nickname,
       };
   }
 
-  static fromDoc(doc) {
+  static fromDoc(doc)
+  {
     let loggedInUser;
-    if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){      
+    if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
+    {
         loggedInUser = new LoggedInUser(doc['_id'], doc['nickname']);
-      }
+    }
     return loggedInUser;
   }
 
