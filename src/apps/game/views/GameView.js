@@ -68,8 +68,11 @@ function GameView(props) {
         const player = game.currentPlayer;
         console.log("Selected action = ", action)
         alert("You have chosen to go to "+ action);
-        
-        player.performAction(game, action, extras);
+        console.log("extras", extras);
+
+        let intExtras = parseInt(extras);
+        console.log("intExtras", intExtras);
+        player.performAction(game, action, parseInt(extras));
         console.log("player.performAction(game ", game)
         game._gameTable.players.forEach((p, i) => {
           playerController.update(p)

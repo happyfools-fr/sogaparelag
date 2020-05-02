@@ -50,7 +50,7 @@ describe('WoodManager', function()
         for (let additionalRequest = 0; additionalRequest <= 6 ; additionalRequest++)
         {
             if (additionalRequest > 3)
-                assert.equal(WoodManager._collectSumary(woods, additionalRequest), null)
+                assert.equal(WoodManager._collectSumary(woods, additionalRequest), 0)
         }
 
     });
