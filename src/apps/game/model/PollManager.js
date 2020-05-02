@@ -18,6 +18,9 @@ export class PollManager
             let chosenPlayerId = currentPlayer.value.player.choosePlayerIdToVoteAgainst(this._gameTable.players, context)
             votesByPlayerId[chosenPlayerId] ++
         }
+
+        console.log(votesByPlayerId)
+        
         let playersWithMaxVote = this._getPlayerIdsWithMaxVote(votesByPlayerId)
         if (playersWithMaxVote.length > 1)
         {
