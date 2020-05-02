@@ -100,6 +100,32 @@ describe('WaterManager', function()
         assert.equal(_waterManager.mustLeave(), false)
     });
 
+    it('should not leave if weather is not 3 #3', () =>
+    {
+        const _waterManager = new WaterManager()
+        _waterManager._weathers = [Weather.Thunderstorm , Weather.Flood]
+        assert.equal(_waterManager.mustLeave(), false)
+    });
+
+    it('weathers should be 12 long', () =>
+    {
+        const _waterManager = new WaterManager();
+        assert.equal(_waterManager._weathers.length, 12);
+    });
+
+    it('flood should be in bottom half of weather deck', () =>
+    {
+        const _waterManager = new WaterManager();
+        let indexOfFlood;
+        for (let i = 0; i < _waterManager._weathers.length; i++) {
+            if (_waterManager._weathers[i] == Weather.Flood) {
+                indexOfFlood = i;
+                break;
+            };
+        };
+        assert.equal(indexOfFlood > 6, true);
+    });
+
     it('should convert to doc object', () =>
     {
         const _waterManager = new WaterManager();

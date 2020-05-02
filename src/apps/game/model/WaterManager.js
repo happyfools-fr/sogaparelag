@@ -23,7 +23,7 @@ export class WaterManager
             Weather.Thunderstorm, Weather.Thunderstorm
         ]
         shuffle(weathers)
-        let indexOfFlood = Math.floor(Math.random() * 6);
+        let indexOfFlood = Math.floor(Math.random() * 5);
         weathers.splice(6 + indexOfFlood, 0, Weather.Flood);
         return weathers;
     }

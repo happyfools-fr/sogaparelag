@@ -34,7 +34,7 @@ export default class Game
         this._pollManager = new PollManager(this._gameTable);
 
         this.history = [];
-        
+
         this.pollFood = false;
         this.pollWater = false;
 
@@ -47,90 +47,25 @@ export default class Game
         return players
     }
 
-    get playersCount()
-    {
-      return this._gameTable.playersCount
-    }
-    
-    get headPlayerId() {
-        return this._gameTable.headPlayer.userId;
-    }
-    
-    get headPlayer() {
-        return this._gameTable.headPlayer;
-    }
+    get playersCount() { return this._gameTable.playersCount }
 
-    get currentPlayerId() {
-        return this._gameTable.currentPlayer.userId;
-    }
-    
-    get currentPlayer() {
-        return this._gameTable.currentPlayer;
-    }
+    get headPlayerId() { return this._gameTable.headPlayer.userId; }
 
-    get nextPlayerId() {
-        return this._gameTable._currentPlayer.next.player.userId;
-    }
-    
-    get nextPlayer() {
-        return this._gameTable._currentPlayer.next.player;
-    }
+    get headPlayer() { return this._gameTable.headPlayer; }
 
-    get waterSupply() {
-        return this._waterManager.inventory;
-    }
+    get currentPlayerId() { return this._gameTable.currentPlayer.userId; }
 
-    get foodSupply() {
-        return this._foodManager.inventory;
-    }
+    get currentPlayer() { return this._gameTable.currentPlayer; }
 
-    get woodSupply() {
-        return this._woodManager.inventory;
-    }
+    get nextPlayerId() { return this._gameTable._currentPlayer.next.player.userId; }
 
-//     play()
-//     {
-//         while (!this._lastRound)
-//         {
-//             this._lastRound = this._waterManager.mustLeave()
-// 
-//             this._roundManager.play()
-// 
-//             //CAN LEAVE?
-//             if (this._canLeave())
-//             {
-//                 this._win = true
-//                 break
-//             }
-// 
-//             //SUPPLY MANAGEMENT
-//             this._manageWaterEndOfRound()
-//             this._manageFoodEndOfRound()
-// 
-//             //CAN LEAVE?
-//             if (this._canLeave())
-//             {
-//                 this._win = true
-//                 break
-//             }
-// 
-// // UNCOMMENT WHEN KILL THEM ALL ACTIVATED
-// /*
-//             //do you want to kill them all to leave?
-// 
-// 
-//             //CAN LEAVE?
-//             if (this._canLeave())
-//             {
-//                 this._win = true
-//                 break
-//             }
-// */
-// 
-//             //ON END OF ROUND
-//             this._onRoundEnded()
-//         }
-//     }
+    get nextPlayer() { return this._gameTable._currentPlayer.next.player; }
+
+    get waterSupply() { return this._waterManager.inventory; }
+
+    get foodSupply() { return this._foodManager.inventory; }
+
+    get woodSupply() { return this._woodManager.inventory; }
 
     onPlayerActionPerformed(player, selectedAction, additionalRequest)
     {
@@ -149,7 +84,7 @@ export default class Game
 
         this.onActionRoundEnded()
     }
-    
+
     onActionRoundEnded()
     {
         if (this._canLeave())
@@ -158,10 +93,11 @@ export default class Game
           this._win = true
           return;
         }
+
         // Init SUPPLY MANAGEMENT sequence
-        return this._initWaterManagement();
+        this._initWaterManagement();
     }
-    
+
     get waterVoteEnded()
     {
        return this._gameTable.players.filter(p => !p.isSick && !p.isDead).every(p => p.waterVote !== null);
@@ -174,31 +110,21 @@ export default class Game
         return;
       }
       alert("onWaterVoteEnded");
-      return this.onWaterVoteEnded();
+      this.onWaterVoteEnded();
     }
 
     get footVoteEnded()
     {
        return this._gameTable.players.filter(p => !p.isSick && !p.isDead).every(p => p.foodVote !== null);
     }
-     
-    onPlayerFoodVote()
-    {
-      if(!this.footVoteEnded){
-        console.log("!footVoteEnded", this.footVoteEnded)
-        return;
-      }
-      alert("onFoodVoteEnded");
-      return this.onFoodVoteEnded();
-    }
-    
+         
     onWaterVoteEnded()
     {
       //Kill the voted Player
       let playerIdToKill = this._pollManager.voteWithContext(RoundAction.WaterVote)
       alert('onWaterVoteEnded killing player playerIdToKill = ' + playerIdToKill)
       this._gameTable.killPlayer(playerIdToKill)
-      
+
       //enough water to play next round?
       if (this._gameTable.playersCount - this._waterManager.inventory <= 0)
       {
@@ -209,10 +135,13 @@ export default class Game
           p.waterVote = null;
         });
         this.pollWater = false
-        return this._initFoodManagement();
-      } 
+
+         this._initFoodManagement();
+         return
+      }
+
       //Otherwise redo vote
-      return this._initWaterManagement();
+      this._initWaterManagement();
     }
     
     _initWaterManagement()
@@ -241,19 +170,31 @@ export default class Game
           p.foodVote = null;
         });
         return;
-      } 
+      }
       // Else eat food and keep on
       this._foodManager.eat(this._gameTable.playersCount);
-      return this.onAllManagementEnded();
+
+      this.onAllManagementEnded();
     }
-    
+
+    onPlayerFoodVote()
+    {
+      if(!this.footVoteEnded)
+      {
+          console.log("!this.footVoteEnded", !this.footVoteEnded)
+          return
+      }
+      alert("onFoodVoteEnded");
+      this.onFoodVoteEnded();
+    }
+
     onFoodVoteEnded()
     {
       //Kill the voted Player
       let playerIdToKill = this._pollManager.voteWithContext(RoundAction.FoodVote)
       alert('onFoodVoteEnded killing player playerIdToKill = ' + playerIdToKill)
       this._gameTable.killPlayer(playerIdToKill)
-      
+
       //enough water to play next round?
       if (this._gameTable.playersCount - this._foodManager.inventory <= 0)
       {
@@ -264,12 +205,14 @@ export default class Game
           p.foodVote = null;
         });
         this.pollFood = false
-        return this.onAllManagementEnded();
+        this.onAllManagementEnded();
+        return
       }
+
       //Otherwise redo vote
-      return this._initFoodManagement();
+      this._initFoodManagement();
     }
-    
+
     onAllManagementEnded()
     {
       //CAN LEAVE?
@@ -279,14 +222,15 @@ export default class Game
           alert("You are saved!");
           return;
       }
-      return this._gameTable.onRoundStarts();
+
+      this._gameTable.onRoundStarts();
     }
-    
+
     onPlayerFinalWaterVote()
     {
       return ;
     }
-    
+
     onPlayerFinalFoodVote()
     {
       return ;
@@ -337,7 +281,7 @@ export default class Game
 
             _gameTable: this._gameTable ? this._gameTable.toDoc() : null,
             history: this.history,
-            
+
             pollFood:  this.pollFood,
             pollWater: this.pollWater,
         };

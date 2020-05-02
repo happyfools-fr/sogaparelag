@@ -191,6 +191,7 @@ describe('PollManager', function()
         player42._choosePlayerIdToVoteAgainst = 1
 
         const gameTable = new GameTable([player1, player2, player3, player42])
+
         const _poll = new PollManager(gameTable)
 
         assert.equal(_poll.vote(), 1)

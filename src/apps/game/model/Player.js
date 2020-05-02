@@ -3,9 +3,9 @@ import LoggedInUser from  './LoggedInUser'
 import Utils from './Utils'
 
 const SERDE_KEYS = [
-  'userId', 'nickname', '_sickenessLevel', 
+  'userId', 'nickname', '_sickenessLevel',
 'isDead', 'currentHand', 'hasPlayedThisRound',
-'waterVote', 'foodVote', 'finalWaterVote', 'finalFoodVote'
+'waterVote', 'foodVote'
 ];
 /**
  * Player holds player state in game
@@ -25,20 +25,11 @@ export default class Player
         this.foodVote = null
     }
 
-    get id()
-    {
-        return this.userId;
-    }
+    get id() { return this.userId; }
 
-    get _id()
-    {
-        return this.userId;
-    }
+    get _id() { return this.userId; }
 
-    get isSick()
-    {
-        return this._sickenessLevel !== 0;
-    }
+    get isSick() { return this._sickenessLevel !== 0; }
 
     onGetSick()
     {
@@ -51,15 +42,9 @@ export default class Player
         this._sickenessLevel = (this._sickenessLevel < 0) ? 0 : this._sickenessLevel;
     }
 
-    // choosePlayerIdToVoteAgainst(players)
-    // {
-    //     //TODO
-    //     return players[0];
-    // }
-    
     choosePlayerIdToVoteAgainst(players, context)
     {
-      let chosenPlayerId; 
+      let chosenPlayerId;
       switch (context)
       {
         case RoundAction.WaterVote:
@@ -117,8 +102,8 @@ export default class Player
 
     performAction(game, selectedAction, additionalRequest=0)
     {
-        this.playAction(game, selectedAction, additionalRequest)
-        game.onPlayerActionPerformed(this, selectedAction, additionalRequest)
+        this.playAction(game, selectedAction, additionalRequest);
+        game.onPlayerActionPerformed(this, selectedAction, additionalRequest);
     }
 
     playAction(game, actionToPerform, additionalRequest=0)
@@ -174,7 +159,8 @@ export default class Player
           }
     }
 
-    toDoc() {
+    toDoc()
+    {
         return {
             userId : this.userId,
             nickname : this.nickname,
@@ -183,13 +169,14 @@ export default class Player
             currentHand : this.currentHand,
             hasPlayedThisRound : this.hasPlayedThisRound,
             waterVote: this.waterVote,
-            foodVote: this.foodVote,
+            foodVote: this.foodVote
         }
     }
 
     static fromDoc(doc) {
       let player = null;
-      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
+      {
           const loggedInUser = new LoggedInUser(doc['userId'], doc['nickname']);
           player = new Player(loggedInUser);
           player._sickenessLevel = doc['_sickenessLevel'];

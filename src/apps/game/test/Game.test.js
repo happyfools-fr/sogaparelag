@@ -410,6 +410,8 @@ describe('Game', function()
         _gameTable: _gameTable.toDoc(),
 
         history: [],
+        pollFood: false,
+        pollWater: false
       }
 
       let game = Game.fromDoc(doc);

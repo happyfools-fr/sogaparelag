@@ -9,7 +9,7 @@ export const SERDE_KEYS = [
 
 export class GameTable
 {
-    
+
     constructor(players, indexOfHeadPlayer = 0, indexOfCurrentPlayer = 0, roundIndex = 1)
     {
         this.players = players
@@ -24,20 +24,14 @@ export class GameTable
         this._initCurrentPlayer();
         console.log("_initCurrentPlayer over");
         this.roundIndex = roundIndex ? roundIndex : 1;
-        
+
         this.endOfRound = false;
     }
 
-    get headPlayer()
-    {
-        return this._headPlayer.player
-    }
-    
-    get currentPlayer()
-    {
-        return this._currentPlayer.player
-    }
-    
+    get headPlayer() { return this._headPlayer.player }
+
+    get currentPlayer() { return this._currentPlayer.player }
+
     * getPlayerEnumerator()
     {
         yield this._headPlayer;
@@ -66,18 +60,62 @@ export class GameTable
     assignNextHeadPlayer()
     {
         this._headPlayer = this._headPlayer.previous;
-        this.indexOfHeadPlayer = this.indexOfHeadPlayer === 0 ?
-                                  this.playersCount - 1 :
-                                  this.indexOfHeadPlayer - 1
+        this.indexOfHeadPlayer = this.indexOfHeadPlayer === 0 ? this.playersCount - 1 : this.indexOfHeadPlayer - 1
+        if (this._headPlayer.player.isSick)
+        {
+            this._currentPlayer = this._headPlayer;
+            this.assignNextCurrentPlayer();
+
+        }
+        else
+        {
+            console.log("this.indexOfCurrentPlayer A", this.indexOfCurrentPlayer)
+
+            this._currentPlayer = this._headPlayer
+            this.indexOfCurrentPlayer = this.indexOfHeadPlayer
+            
+            console.log("this.indexOfCurrentPlayer B", this.indexOfCurrentPlayer)
+
+        }
+        
     }
 
     assignNextCurrentPlayer()
     {
-        this._currentPlayer = this._currentPlayer.next;
-        this.indexOfCurrentPlayer = this.indexOfCurrentPlayer === this.playersCount - 1 ?
-                                      0 : this.indexOfCurrentPlayer + 1
+        while (true)
+        {
+            console.log("assignNextCurrentPlayer A this._currentPlayer.player ", this._currentPlayer.player)
+            this._currentPlayer = this._currentPlayer.next
+            
+
+            if (this._currentPlayer.player.isSick)
+            {
+                this.onPlayerTurnEnded()
+                if (this.endOfRound)
+                {
+                    break;
+                }
+            } else {
+              break;
+            }
+        }
+        this.indexOfCurrentPlayer = this.getIndexFromPlayer(this._currentPlayer.player);
+        console.log("assignNextCurrentPlayer indexOfCurrentPlayer B", this.indexOfCurrentPlayer)
+        console.log("assignNextCurrentPlayer B this._currentPlayer.player ", this._currentPlayer.player)
+
     }
-    
+
+    getIndexFromPlayer(player)
+    {
+        for (let it = 0; it < this.players.length; it++)
+        {
+          if (this.players[it] === player){
+              return it;
+          }
+        }
+        throw Error('Cannot find player ' + player)
+    }
+
     _initTable(players, indexOfHeadPlayer = 0)
     {
         let previousCreatedPlayerOnTable = this._headPlayer;
@@ -106,7 +144,8 @@ export class GameTable
     _initCurrentPlayer()
     {
         let currentPlayerId = this.players[this.indexOfCurrentPlayer].userId
-        let playerEnumerator = this.getHealthyPlayerEnumerator()
+
+        let playerEnumerator = this.getPlayerEnumerator()
         while (true)
         {
             let currentPlayer = playerEnumerator.next()
@@ -125,9 +164,6 @@ export class GameTable
     {
         this.assignNextHeadPlayer();
         this.endOfRound = false
-        this._currentPlayer = this._headPlayer.next
-        this.indexOfCurrentPlayer = this.indexOfCurrentPlayer === this.playersCount - 1 ?
-                                      0 : this.indexOfCurrentPlayer + 1
         this.roundIndex = this.roundIndex + 1;
         let playerEnumerator = this.getPlayerEnumerator()
         while (true)
@@ -143,15 +179,18 @@ export class GameTable
     onPlayerTurnEnded(player)
     {
         //ASSERT this.currentPlayer.player === player
+        console.log("A this._currentPlayer.player ", this._currentPlayer.player)
         this._currentPlayer.player.hasPlayedThisRound = true
 
-        if (this._currentPlayer.next === this._headPlayer)
+        this.assignNextCurrentPlayer();
+        
+        console.log("B this._currentPlayer.player ", this._currentPlayer.player)
+
+        if (this._currentPlayer === this._headPlayer)
         {
             this.endOfRound = true
             return
         }
-        
-        this.assignNextCurrentPlayer();
     }
 
     killPlayer(playerIdToKill)
@@ -204,9 +243,10 @@ export class GameTable
         this.playersCount = this.players.length
     }
 
-    toDoc() {
+    toDoc()
+    {
         return {
-          players: this.players.map((p) => {return p ? p.toDoc() : null;}),
+          players: this.players.map((p) => { return p ? p.toDoc() : null; } ),
           playersCount: this.playersCount,
           indexOfHeadPlayer: this.indexOfHeadPlayer,
           indexOfCurrentPlayer: this.indexOfCurrentPlayer,
@@ -214,17 +254,15 @@ export class GameTable
         }
     }
 
-    static fromDoc(doc) {
+    static fromDoc(doc)
+    {
       let gameTable;
-      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
-        const players = doc['players'].map((pDoc) => {
-          return Player.fromDoc(pDoc);
-        })
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
+      {
+        const players = doc['players'].map((pDoc) => { return Player.fromDoc(pDoc) })
         const indexOfHeadPlayer = doc['indexOfHeadPlayer'];
         const indexOfCurrentPlayer = doc['indexOfCurrentPlayer']
-        gameTable = new GameTable(
-          players, indexOfHeadPlayer, indexOfCurrentPlayer, parseInt(doc['roundIndex'])
-        );
+        gameTable = new GameTable(players, indexOfHeadPlayer, indexOfCurrentPlayer, parseInt(doc['roundIndex']) );
       }
       return gameTable;
     }
