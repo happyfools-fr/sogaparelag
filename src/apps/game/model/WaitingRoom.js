@@ -46,25 +46,28 @@ export default class WaitingRoom
         this._currentGame = null;
     }
 
-    hasJoined(user) {
+    hasJoined(user)
+    {
         return this._loggedInUsers.map( x => {return x._id}).includes(user._id)
     }
 
     addLoggedInUser(loggedInUserToAdd)
     {
         let numberOfPlayers = this._loggedInUsers.length;
-        if (!this.hasJoined(loggedInUserToAdd) && numberOfPlayers < MAX_NUMBER_PLAYERS) {
+        if (!this.hasJoined(loggedInUserToAdd) && numberOfPlayers < MAX_NUMBER_PLAYERS)
+        {
             this._loggedInUsers.push(loggedInUserToAdd);
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     startGame()
     {
         let numberOfPlayers = this._loggedInUsers.length;
-        if (numberOfPlayers >= MIN_NUMBER_PLAYERS && numberOfPlayers <= MAX_NUMBER_PLAYERS) {
+        if (numberOfPlayers >= MIN_NUMBER_PLAYERS && numberOfPlayers <= MAX_NUMBER_PLAYERS)
+        {
             let [initialWater, initialFood] = INITIAL_VALUES[numberOfPlayers-MIN_NUMBER_PLAYERS]
             let waterManager = new WaterManager(initialWater);
             let foodManager = new FoodManager(initialFood);
@@ -72,9 +75,9 @@ export default class WaitingRoom
             let game = new Game(this._loggedInUsers, waterManager, foodManager, woodManager);
             this._currentGame = game;
             return game;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     _createSlugname()
@@ -85,8 +88,10 @@ export default class WaitingRoom
         return words[random] + "-" + words[random * 2]
     }
 
-    toDoc() {
-        return {
+    toDoc()
+    {
+        return
+        {
             _id: this._id,
             slugname: this.slugname,
             _loggedInUsers: this._loggedInUsers.map((u) => {return u ? u.toDoc() : null}),
@@ -94,20 +99,21 @@ export default class WaitingRoom
         }
     }
 
-    static fromDoc(doc) {
+    static fromDoc(doc)
+    {
       let waitingRoom;
-      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
+      {
         waitingRoom = new WaitingRoom();
         waitingRoom._id = doc['_id'];
         waitingRoom.slugname = doc['slugname'];
-        waitingRoom._loggedInUsers = doc['_loggedInUsers'].map((uDoc) => {
-          return LoggedInUser.fromDoc(uDoc);
-        });
+        waitingRoom._loggedInUsers = doc['_loggedInUsers'].map((uDoc) => { return LoggedInUser.fromDoc(uDoc); });
         console.log("doc['_currentGame']", doc['_currentGame'])
         const game = Game.fromDoc(doc['_currentGame']);
         console.log("fromDoc game", game)
         waitingRoom._currentGame = game;
       }
+      
       return waitingRoom;
     }
 }

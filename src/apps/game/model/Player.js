@@ -3,7 +3,7 @@ import LoggedInUser from  './LoggedInUser'
 import Utils from './Utils'
 
 const SERDE_KEYS = [
-  'userId', 'nickname', '_sickenessLevel', 
+  'userId', 'nickname', '_sickenessLevel',
 'isDead', 'currentHand', 'hasPlayedThisRound',
 'waterVote', 'foodVote', 'finalWaterVote', 'finalFoodVote'
 ];
@@ -25,20 +25,11 @@ export default class Player
         this.foodVote = null
     }
 
-    get id()
-    {
-        return this.userId;
-    }
+    get id() { return this.userId; }
 
-    get _id()
-    {
-        return this.userId;
-    }
+    get _id() { return this.userId; }
 
-    get isSick()
-    {
-        return this._sickenessLevel !== 0;
-    }
+    get isSick() { return this._sickenessLevel !== 0; }
 
     onGetSick()
     {
@@ -51,15 +42,9 @@ export default class Player
         this._sickenessLevel = (this._sickenessLevel < 0) ? 0 : this._sickenessLevel;
     }
 
-    // choosePlayerIdToVoteAgainst(players)
-    // {
-    //     //TODO
-    //     return players[0];
-    // }
-    
     choosePlayerIdToVoteAgainst(players, context)
     {
-      let chosenPlayerId; 
+      let chosenPlayerId;
       switch (context)
       {
         case RoundAction.WaterVote:
@@ -81,7 +66,8 @@ export default class Player
         default :
               throw new Error('Context error in choosePlayerIdToVoteAgainst with player', this);
       }
-      return players.filter(p => p.userId === chosenPlayerId)[0]; 
+
+      return players.filter(p => p.userId === chosenPlayerId)[0];
     }
 
     chooseFinalPlayerIdToVoteAgainst(players)
@@ -107,7 +93,8 @@ export default class Player
     getListPotentialActionsToPerform(game)
     {
       //todo
-      return [
+      return
+      [
         RoundAction.Nothing,
         RoundAction.CollectWater,
         RoundAction.CollectFood,
@@ -174,8 +161,10 @@ export default class Player
           }
     }
 
-    toDoc() {
-        return {
+    toDoc()
+    {
+        return
+        {
             userId : this.userId,
             nickname : this.nickname,
             _sickenessLevel : this._sickenessLevel,
@@ -189,7 +178,8 @@ export default class Player
 
     static fromDoc(doc) {
       let player = null;
-      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
+      {
           const loggedInUser = new LoggedInUser(doc['userId'], doc['nickname']);
           player = new Player(loggedInUser);
           player._sickenessLevel = doc['_sickenessLevel'];

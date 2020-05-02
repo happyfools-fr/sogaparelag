@@ -9,7 +9,7 @@ export const SERDE_KEYS = [
 
 export class GameTable
 {
-    
+
     constructor(players, indexOfHeadPlayer = 0, indexOfCurrentPlayer = 0, roundIndex = 1)
     {
         this.players = players
@@ -24,20 +24,14 @@ export class GameTable
         this._initCurrentPlayer();
         console.log("_initCurrentPlayer over");
         this.roundIndex = roundIndex ? roundIndex : 1;
-        
+
         this.endOfRound = false;
     }
 
-    get headPlayer()
-    {
-        return this._headPlayer.player
-    }
-    
-    get currentPlayer()
-    {
-        return this._currentPlayer.player
-    }
-    
+    get headPlayer() { return this._headPlayer.player }
+
+    get currentPlayer() { return this._currentPlayer.player }
+
     * getPlayerEnumerator()
     {
         yield this._headPlayer;
@@ -77,7 +71,7 @@ export class GameTable
         this.indexOfCurrentPlayer = this.indexOfCurrentPlayer === this.playersCount - 1 ?
                                       0 : this.indexOfCurrentPlayer + 1
     }
-    
+
     _initTable(players, indexOfHeadPlayer = 0)
     {
         let previousCreatedPlayerOnTable = this._headPlayer;
@@ -150,7 +144,7 @@ export class GameTable
             this.endOfRound = true
             return
         }
-        
+
         this.assignNextCurrentPlayer();
     }
 
@@ -201,8 +195,10 @@ export class GameTable
         this.playersCount = this.players.length
     }
 
-    toDoc() {
-        return {
+    toDoc()
+    {
+        return
+        {
           players: this.players.map((p) => {return p ? p.toDoc() : null;}),
           playersCount: this.playersCount,
           indexOfHeadPlayer: this.indexOfHeadPlayer,
@@ -211,17 +207,15 @@ export class GameTable
         }
     }
 
-    static fromDoc(doc) {
+    static fromDoc(doc)
+    {
       let gameTable;
-      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc))){
-        const players = doc['players'].map((pDoc) => {
-          return Player.fromDoc(pDoc);
-        })
+      if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
+      {
+        const players = doc['players'].map((pDoc) => { return Player.fromDoc(pDoc); })
         const indexOfHeadPlayer = doc['indexOfHeadPlayer'];
         const indexOfCurrentPlayer = doc['indexOfCurrentPlayer']
-        gameTable = new GameTable(
-          players, indexOfHeadPlayer, indexOfCurrentPlayer, parseInt(doc['roundIndex'])
-        );
+        gameTable = new GameTable(players, indexOfHeadPlayer, indexOfCurrentPlayer, parseInt(doc['roundIndex']) );
       }
       return gameTable;
     }

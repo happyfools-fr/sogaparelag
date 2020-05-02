@@ -60,7 +60,8 @@ export class WaterManager
 
     toDoc()
     {
-        return {
+        return
+        {
             waterSupply: this.inventory,
             _weathers: this._weathers
         }
