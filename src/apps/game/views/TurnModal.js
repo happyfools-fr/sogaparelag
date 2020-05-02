@@ -6,9 +6,9 @@ import {Form, Modal, ToggleButton, ButtonGroup, Button} from 'react-bootstrap';
 import {RoundAction} from '../model/RoundAction'
 
 const ROUND_ACTION_TYPES_MAPPING = new Map()
-ROUND_ACTION_TYPES_MAPPING.set(RoundAction.CollectWater, "water")
-ROUND_ACTION_TYPES_MAPPING.set(RoundAction.CollectFood, "food")
-ROUND_ACTION_TYPES_MAPPING.set(RoundAction.CollectWood, "wood")
+ROUND_ACTION_TYPES_MAPPING.set("water", RoundAction.CollectWater)
+ROUND_ACTION_TYPES_MAPPING.set("food", RoundAction.CollectFood)
+ROUND_ACTION_TYPES_MAPPING.set("wood", RoundAction.CollectWood)
 
 export default function TurnModal(props) {
 
