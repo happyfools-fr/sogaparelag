@@ -12,7 +12,7 @@ ROUND_ACTION_TYPES_MAPPING.set("wood", RoundAction.CollectWood)
 
 export default function TurnModal(props) {
 
-    const [show, setShow] = useState(props.show)
+    const show = props.show
 
     const onAction = (props.onAction) ? props.onAction : (a ,b) => {console.log(a, b)}
 
@@ -82,9 +82,10 @@ export default function TurnModal(props) {
                         variant="primary"
                         disabled={!choice}
                         type="button"
-                        onClick={() => {onAction(ROUND_ACTION_TYPES_MAPPING.get(choice), extras);setShow(false)}}
+                        onClick={() => {onAction(ROUND_ACTION_TYPES_MAPPING.get(choice), extras)}}
                     > Confirm </Button>
                 </Modal.Footer>
-            </Form>        </Modal>
+            </Form>
+        </Modal>
     );
 }
