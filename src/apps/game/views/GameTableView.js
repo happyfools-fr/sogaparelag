@@ -6,6 +6,8 @@ import FoodSupplyComponent from "./supply-components/FoodSupplyComponent";
 import WaterSupplyComponent from './supply-components/WaterSupplyComponent';
 import WoodSupplyComponent from './supply-components/WoodSupplyComponent';
 import RaftComponent from './supply-components/RaftComponent';
+import WeatherComponent from './supply-components/WeatherComponent';
+import DayComponent from './supply-components/DayComponent';
 
 
 export default function GameTableView(props) {
@@ -17,27 +19,27 @@ export default function GameTableView(props) {
             <Card.Body>
             <Card.Title>Welcome to Island of {props.slugname} </Card.Title>
             <Container>
-                <p>{game.playersCount}&nbsp;players in the game</p>
+                <h6>{game.playersCount}&nbsp;survivors on the island</h6>
                 <Row>
-                    <Col sm={3}>
+                    <DayComponent day={game._gameTable.roundIndex} />
+
+                    <WeatherComponent weather={game._waterManager.currentWeather} />
+
                     <WaterSupplyComponent inventory={game.waterSupply} />
-                    </Col>
-                    <Col sm={3}>
+
                     <FoodSupplyComponent inventory={game.foodSupply} />
-                    </Col>
-                    <Col sm={3}>
+
                     <WoodSupplyComponent inventory={game.woodSupply%6} />
-                    </Col>
-                    <Col sm={3}>
+
                     <RaftComponent inventory={~~(game.woodSupply/6)} />
-                    </Col>
+
                 </Row>
                 {
                 <Row className='mt-3'>
                     <Table striped bordered hover>
                     <thead>
                         <tr>
-                            <th>Round #</th>
+                            <th>Day #</th>
                             <th>Total Moves #</th>
                             <th>Current Player</th>
                             <th>Next Player</th>

@@ -4,10 +4,10 @@ import {Card} from 'react-bootstrap';
 
 export default function FoodSupplyComponent(props) {
     return (
-        <Card bg="secondary" text="white">
-            <Card.Header>Food supplies</Card.Header>
+        <Card bg="secondary" text="white" className="mr-1">
             <Card.Body>
-                <Card.Title><i className="fas fa-fish" />&nbsp;&nbsp;{props.inventory}</Card.Title>
+                <h2><i className="fas fa-fish" />&nbsp;&nbsp;{props.inventory}</h2>
+                <span style={{fontSize: 10}}>Food supplies</span>
             </Card.Body>
         </Card>
     );
