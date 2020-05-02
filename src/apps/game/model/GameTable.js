@@ -182,6 +182,7 @@ export class GameTable
             if (currentPlayer.done)
                 break
 
+            currentPlayer.value.player.onRoundEnded()
             currentPlayer.value.player.hasPlayedThisRound = false
         }
 
