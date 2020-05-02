@@ -4,6 +4,7 @@ import {RoundAction} from './RoundAction'
 import {WaterManager} from "./WaterManager";
 import {FoodManager} from "./FoodManager";
 import {WoodManager} from "./WoodManager";
+import {Weather} from "./Weather";
 
 import {GameTable} from "./GameTable";
 import {PollManager} from "./PollManager";
@@ -291,7 +292,7 @@ export default class Game
         this.history.push(
           {
               type: 'info',
-              value: "The weather today is" + this._waterManager.currentWeather
+              value: "The weather today is " + Weather.weatherToText[this._waterManager.currentWeather] + " (" + this._waterManager.currentWeather + ")"
           }
         );
 

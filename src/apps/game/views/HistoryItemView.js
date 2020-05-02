@@ -27,11 +27,13 @@ ROUND_ACTION_TYPES_MAPPING.set(RoundAction.CollectWood, "wood")
 
 export default function HistoryItemView(props) {
 
-    const type = (props.type) ? props.type : "food"
+    const type = (ROUND_ACTION_TYPES_MAPPING.get(props.type))
+        ? ROUND_ACTION_TYPES_MAPPING.get(props.type)
+        : props.type
 
     return (
-        <Alert className="mt-2 mr-3" variant={LOG_TYPES[ROUND_ACTION_TYPES_MAPPING.get(type)].variant}>
-            <i className={"fas fa-" + LOG_TYPES[ROUND_ACTION_TYPES_MAPPING.get(type)].icon} />
+        <Alert className="mt-2 mr-3" variant={LOG_TYPES[type].variant}>
+            <i className={"fas fa-" + LOG_TYPES[type].icon} />
             &nbsp;
             &nbsp;
             {props.value}

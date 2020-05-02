@@ -27,7 +27,7 @@ export default function SavedView(props) {
             + "!" }
         </h2>
         <h3> You have escaped the deserted island of {slugname} </h3>
-        <img className="mt-4 " centered src={require('../../../assets/isolated-island.jpg') } />
+        <img className="mt-4 " src={require('../../../assets/isolated-island.jpg') } />
         </div>
     );
 }
