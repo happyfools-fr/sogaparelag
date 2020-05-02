@@ -19,6 +19,7 @@ import PollEndValidationModal from './PollEndValidationModal';
 import GameTableView from './GameTableView';
 import AllPlayersView from './AllPlayersView';
 import SavedView from './SavedView';
+import GameOverView from './GameOverView'
 
 import {RoundAction} from '../model/RoundAction'
 
