@@ -24,6 +24,7 @@ export default class Game
 
         this._lastRound = false
         this._win = false
+        this._mustLeave = false
 
         this._waterManager = waterManager
         this._foodManager = foodManager
