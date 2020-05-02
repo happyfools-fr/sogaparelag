@@ -43,6 +43,28 @@ export class GameTable
         }
     }
 
+    // * getPlayerEnumeratorFrom(fromPlayer)
+    // {
+    //     let playerIt = this.getPlayerEnumerator()
+    //     while (true)
+    //     {
+    //         let currentPlayer = playerEnumerator.next()
+    //         if (currentPlayer.done)
+    //             return
+    //
+    //         if (currentPlayer.value._player.userId === fromPlayer.userId)
+    //         {
+    //             yield currentPlayer;
+    //             let innerCurrentPlayer = currentPlayer.next;
+    //             while (innerCurrentPlayer.player !== currentPlayer.player)
+    //             {
+    //                 yield innerCurrentPlayer;
+    //                 innerCurrentPlayer = innerCurrentPlayer.next
+    //             }
+    //         }
+    //     }
+    // }
+
     * getHealthyPlayerEnumerator()
     {
         if (!this._headPlayer.player.isSick)
@@ -60,16 +82,44 @@ export class GameTable
     assignNextHeadPlayer()
     {
         this._headPlayer = this._headPlayer.previous;
-        this.indexOfHeadPlayer = this.indexOfHeadPlayer === 0 ?
-                                  this.playersCount - 1 :
-                                  this.indexOfHeadPlayer - 1
+        this.indexOfHeadPlayer = this.indexOfHeadPlayer === 0 ? this.playersCount - 1 : this.indexOfHeadPlayer - 1
+        if (this._headPlayer.player.isSick)
+        {
+            assignNextCurrentPlayer()
+            this.indexOfCurrentPlayer = this.getIndexFromPlayer(this.currentPlayer.player)
+        }
+        else
+        {
+            this._currentPlayer = this._headPlayer
+            this.indexOfCurrentPlayer = this.indexOfHeadPlayer
+        }
     }
 
     assignNextCurrentPlayer()
     {
-        this._currentPlayer = this._currentPlayer.next;
-        this.indexOfCurrentPlayer = this.indexOfCurrentPlayer === this.playersCount - 1 ?
-                                      0 : this.indexOfCurrentPlayer + 1
+        while (true)
+        {
+            this._currentPlayer = this._headPlayer.next
+
+            if (this.currentPlayer.player.isSick)
+            {
+                this.onPlayerTurnEnded()
+                if (this.endOfRound)
+                {
+                    return
+                }
+            }
+        }
+    }
+
+    getIndexFromPlayer(player)
+    {
+        for (let i = 0; i < players.length; i++)
+        {
+          if (players[it] === player)
+              return i;
+        }
+        throw Error('Can not find player ' + player)
     }
 
     _initTable(players, indexOfHeadPlayer = 0)
@@ -120,9 +170,6 @@ export class GameTable
     {
         this.assignNextHeadPlayer();
         this.endOfRound = false
-        this._currentPlayer = this._headPlayer.next
-        this.indexOfCurrentPlayer = this.indexOfCurrentPlayer === this.playersCount - 1 ?
-                                      0 : this.indexOfCurrentPlayer + 1
         this.roundIndex = this.roundIndex + 1;
         let playerEnumerator = this.getPlayerEnumerator()
         while (true)
