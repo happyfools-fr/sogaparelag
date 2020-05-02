@@ -123,7 +123,7 @@ describe('WaterManager', function()
                 break;
             };
         };
-        assert.equal(indexOfFlood > 6, true);
+        assert.equal(indexOfFlood >= 6, true);
     });
 
     it('should convert to doc object', () =>
