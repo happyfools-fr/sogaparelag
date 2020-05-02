@@ -30,37 +30,30 @@ export default function PlayerView(props) {
 
         return (
             <Card
-                className="text-center m-1"
+                className={
+                    (props.currentPlayerId === player.id)
+                    ? "text-center m-1 shadow-lg"
+                    : "text-center m-1 shadow-none"
+                }
                 style={{"width": "18vh"}}
                 bg={
                     (props.headPlayerId === player.id)
-                    ? "dark"
-                    : (props.currentPlayerId === player.id)
-                        ? "secondary"
-                        : "light"
+                    ? "secondary"
+                    : "light"
                 }
                 text={
                     (props.headPlayerId === player.id)
                     ? "white"
-                    : (props.currentPlayerId === player.id)
-                        ? "white"
-                        : "dark"
+                    : "dark"
+                }
+
+                border={
+                    (props.currentPlayerId === player.id)
+                    ? "dark"
+                    : ""
                 }
             >
             <Card.Body>
-                {/*<Card.Title>
-                    {
-                        (props.headPlayerId === player.id)
-                        ? <i className="fas fa-user-ninja" />
-                        : <span />
-                    }
-                    &nbsp;&nbsp;&nbsp;
-                    {
-                        (props.currentPlayerId === player.id)
-                        ? <i className="fas fa-hand-paper" />
-                        : <span />
-                    }
-                </Card.Title>*/}
                 <Card.Text>
                     {
                         (player.isDead)
@@ -73,9 +66,6 @@ export default function PlayerView(props) {
                     <small>{player.nickname}</small>
                 </Card.Text>
             </Card.Body>
-            {/* <Card.Body>
-                 {currentHand.map((card, i) => {return(<Card.Link key={i}>{card}</Card.Link>) })}
-             </Card.Body>*/}
             </Card>
         );
     } else {

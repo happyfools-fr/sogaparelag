@@ -33,9 +33,8 @@ export default function GameHistoryView(props) {
           }
           `}
         </style>
-        <Card border="light">
-        <Card.Body>
-        <Card.Title>Game Log</Card.Title>
+        <div>
+        <h6>Game Log</h6>
         <ListGroup>
             {
 
@@ -53,8 +52,7 @@ export default function GameHistoryView(props) {
             }
             <div ref={logsEndRef} />
         </ListGroup>
-        </Card.Body>
-        </Card>
+        </div>
         </>
     )
 }
