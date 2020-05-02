@@ -32,12 +32,12 @@ function GameView(props) {
 
     const gameId = props.gameId;
     const user = props.user;
-
+    
     const gameController = new GameController(props.firebaseService.ft)
     const [game, setGame] = useState();
 
     const playerController = new PlayerController(props.firebaseService.ft)
-
+    
     useEffect(
         () => {
             const unsubscribe = gameController.listen(gameId, setGame);
@@ -45,11 +45,11 @@ function GameView(props) {
         },
         [gameId, setGame]
     );
-
+    
     console.log('After UseEffect');
     const clientPlayer = (game && user) ? game._gameTable.players.filter(p => p.id === user._id)[0] : null;
-
-    const showPollEndValidation = (game && clientPlayer)
+    
+    const showPollEndValidation = (game && clientPlayer) 
       ? (game.headPlayerId === clientPlayer.id && (game.waterVoteEnded || game.footVoteEnded )) : false;
 
     const canPlay = (clientPlayer) ? !clientPlayer.isSick && !clientPlayer.isDead : false;
@@ -57,21 +57,19 @@ function GameView(props) {
     const showPollFood = (game && clientPlayer) ? (game.pollFood && !clientPlayer.foodVote && canPlay) : false;
     const showPoll = !showPollEndValidation && ((showPollWater && !showPollFood) || (!showPollWater && showPollFood));
     const pollType = showPollWater ? "drink" : "eat";
-
+    
     const showAction = (game && clientPlayer) ? (game.currentPlayerId === clientPlayer.id && !showPoll  && canPlay && !showPollEndValidation): false;
-
-    if (game){
-        console.log(game.currentPlayerId === clientPlayer.id, !showPoll, canPlay, !showPollEndValidation)
-        console.log(showAction)
-    }
-
-    const handleAction = (action, show) => {
-
+    console.log("showAction ", showAction)
+    console.log("showPollEndValidation ", showPollEndValidation)
+    game &&  clientPlayer && console.log("game.currentPlayerId, clientPlayer.id", game.currentPlayerId, clientPlayer.id)
+    
+    const handleAction = (action, extras) => {
+      
         const player = game.currentPlayer;
         console.log("Selected action = ", action)
         alert("You have chosen to go to "+ action);
-
-        player.performAction(game, action, 0);
+        
+        player.performAction(game, action, extras);
         console.log("player.performAction(game ", game)
         game._gameTable.players.forEach((p, i) => {
           playerController.update(p)
@@ -79,14 +77,14 @@ function GameView(props) {
         gameController.update(game);
         // Update game in waiting room if needed
     };
-
+    
     const handleVoteSubmit = (chosenPlayer) => {
-
+      
         console.log("chosenPlayer", chosenPlayer);
         const votedPlayer = game._gameTable.players.filter(p => chosenPlayer.id === p.id)[0];
         console.log(`${clientPlayer.nickname} voted for ${votedPlayer.nickname}`)
         alert(`You have voted for ${votedPlayer.nickname}`);
-
+        
         const actionToPerform = showPollWater ? RoundAction.WaterVote : RoundAction.FoodVote;
         clientPlayer.performVote(game, actionToPerform, votedPlayer.id);
         console.log("clientPlayer after vote", clientPlayer);
@@ -96,8 +94,8 @@ function GameView(props) {
         gameController.update(game);
         // Update game in waiting room if needed
     };
-
-
+    
+    
     const handlePollEndValidation = () => {
         console.log(`You have validated the end of the vote`);
         alert(`You have validated the end of the vote`);
@@ -120,8 +118,8 @@ function GameView(props) {
                   <Row>
                       <Col>
                           <GameTableView className='mt-5' slugname={props.slugname} game={game}/>
-                          <AllPlayersView
-                              players={game._gameTable.players}
+                          <AllPlayersView 
+                              players={game._gameTable.players} 
                               currentPlayerId={game.currentPlayerId}
                               headPlayerId={game.headPlayerId}
                               firebaseService={props.firebaseService}
@@ -150,7 +148,7 @@ function GameView(props) {
           );
         } else {
             return (
-              <SavedView
+              <SavedView 
                 players={game._gameTable.players}
                 slugname={props.slugname}
               />
