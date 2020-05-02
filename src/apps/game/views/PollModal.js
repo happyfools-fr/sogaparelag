@@ -41,7 +41,11 @@ export default function PollModal(props) {
                     <PollComponent players={players} vote={vote} handleSelect={setVote}/>
                     </Form.Group>
                     <Modal.Footer>
-                        <Button variant="primary" type="button" onClick={() => handleVoteSubmit(vote)}>
+                        <Button variant="primary" type="button"
+                            onClick={
+                                () => {handleVoteSubmit(vote); setVote();}
+                            }
+                        >
                             Vote
                         </Button>
                     </Modal.Footer>

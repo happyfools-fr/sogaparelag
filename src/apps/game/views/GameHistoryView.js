@@ -27,31 +27,40 @@ export default function GameHistoryView(props) {
         <>
         <style type="text/css">
           {`
+           .no-scoll-div {
+               width:100%;
+             overflow-y: hidden;
+             overflow-x: hidden
+           }
+
           .list-group {
             height: 73vh;
-            overflow-x: hidden;
+            width: 105%;
+            overflow-y: scroll;
           }
           `}
         </style>
         <div>
         <h6>Game Log</h6>
-        <ListGroup>
-            {
+        <div className="no-scoll-div">
+            <ListGroup>
+                {
 
-                props.game.history
-                    .map(
-                        (state,i) => {return (
-                            <HistoryItemView
-                                key={i}
-                                icon="fa-info-circle"
-                                type={state.type}
-                                value={state.value}
-                            />
-                        )}
-                    )
-            }
-            <div ref={logsEndRef} />
-        </ListGroup>
+                    props.game.history
+                        .map(
+                            (state,i) => {return (
+                                <HistoryItemView
+                                    key={i}
+                                    icon="fa-info-circle"
+                                    type={state.type}
+                                    value={state.value}
+                                />
+                            )}
+                        )
+                }
+                <div ref={logsEndRef} />
+            </ListGroup>
+        </div>
         </div>
         </>
     )

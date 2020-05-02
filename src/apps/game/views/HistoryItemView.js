@@ -29,7 +29,7 @@ export default function HistoryItemView(props) {
     const type = (props.type) ? props.type : "food"
 
     return (
-        <Alert className="mt-2" variant={LOG_TYPES[ROUND_ACTION_TYPES_MAPPING.get(type)].variant}>
+        <Alert className="mt-2 mr-3" variant={LOG_TYPES[ROUND_ACTION_TYPES_MAPPING.get(type)].variant}>
             <i className={"fas fa-" + LOG_TYPES[ROUND_ACTION_TYPES_MAPPING.get(type)].icon} />
             &nbsp;
             &nbsp;
