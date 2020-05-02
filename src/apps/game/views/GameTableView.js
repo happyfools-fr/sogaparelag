@@ -19,7 +19,6 @@ export default function GameTableView(props) {
             <Card.Body>
             <Card.Title>Welcome to Island of {props.slugname} </Card.Title>
             <Container>
-                <h6>{game.playersCount}&nbsp;survivors on the island</h6>
                 <Row>
                     <DayComponent day={game._gameTable.roundIndex} />
 
@@ -34,7 +33,7 @@ export default function GameTableView(props) {
                     <RaftComponent inventory={~~(game.woodSupply/6)} />
 
                 </Row>
-                {
+                {/*
                 <Row className='mt-3'>
                     <Table striped bordered hover>
                     <thead>
@@ -55,7 +54,8 @@ export default function GameTableView(props) {
                     </tbody>
                     </Table>
                 </Row>
-                }
+                <h6>{game.playersCount}&nbsp;survivors on the island</h6>
+                */}
             </Container>
             </Card.Body>
         </Card>

@@ -47,8 +47,8 @@ export default function PlayerView(props) {
                     {player.nickname}
                 </Card.Title>
                 <Card.Text>
-                    <span> {player.id} </span>
-                    <br />
+                    {/*<span> {player.id} </span>
+                    <br />*/}
                     <span>
                         {
                             (player.isDead)
@@ -60,9 +60,9 @@ export default function PlayerView(props) {
                     </span>
                 </Card.Text>
             </Card.Body>
-            <Card.Body>
-                {currentHand.map((card, i) => {return(<Card.Link key={i}>{card}</Card.Link>) })}
-            </Card.Body>
+            {/* <Card.Body>
+                 {currentHand.map((card, i) => {return(<Card.Link key={i}>{card}</Card.Link>) })}
+             </Card.Body>*/}
             </Card>
         );
     } else {
