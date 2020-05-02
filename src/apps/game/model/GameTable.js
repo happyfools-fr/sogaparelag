@@ -26,8 +26,8 @@ export class GameTable
 
         this.endOfRound = false;
 
-        console.log("GameTable.constructor")
-        console.log(this.toDoc())
+        // console.log("GameTable.constructor")
+        // console.log(this.toDoc())
     }
 
     get headPlayer() { return this._headPlayer.player }

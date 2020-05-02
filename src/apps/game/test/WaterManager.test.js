@@ -46,7 +46,7 @@ describe('WaterManager', function()
     {
         const _waterManager = new WaterManager()
 
-        _waterManager.inventory = 5
+        _waterManager.inventory = 2
         assert.equal(_waterManager.authorizeLeaving(3), false)
     });
 
@@ -54,14 +54,14 @@ describe('WaterManager', function()
     {
         const _waterManager = new WaterManager()
 
-        _waterManager.inventory = 6
+        _waterManager.inventory = 3
         assert.equal(_waterManager.authorizeLeaving(3), true)
     });
 
     it('should leave if more than enough water', () =>
     {
         const _waterManager = new WaterManager()
-        _waterManager.inventory = 10
+        _waterManager.inventory = 5
         assert.equal(_waterManager.authorizeLeaving(3), true)
     });
 

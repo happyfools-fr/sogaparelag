@@ -46,7 +46,7 @@ describe('FoodManager', function()
     {
         const _foodManager = new FoodManager()
 
-        _foodManager.inventory = 5
+        _foodManager.inventory = 1
         assert.equal(_foodManager.authorizeLeaving(3), false)
     });
 
@@ -54,7 +54,7 @@ describe('FoodManager', function()
     {
         const _foodManager = new FoodManager()
 
-        _foodManager.inventory = 6
+        _foodManager.inventory = 3
         assert.equal(_foodManager.authorizeLeaving(3), true)
     });
 
@@ -62,7 +62,7 @@ describe('FoodManager', function()
     {
         const _foodManager = new FoodManager()
 
-        _foodManager.inventory = 10
+        _foodManager.inventory = 5
         assert.equal(_foodManager.authorizeLeaving(3), true)
     });
 
