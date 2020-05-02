@@ -3,14 +3,37 @@ import React from 'react';
 
 // Style imports
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ListGroup from 'react-bootstrap/ListGroup'
+import {Alert} from 'react-bootstrap'
+
+//
+import {RoundAction} from '../model/RoundAction'
+
+const LOG_TYPES = {
+    water : {icon: 'tint', variant: 'info'},
+    wood : {icon: 'shapes', variant: 'warning'},
+    food : {icon: 'fish', variant: 'secondary'},
+    info : {icon: 'info', variant: 'light'},
+    raft : {icon: 'sign-out-alt', variant: 'success'},
+    dead : {icon: 'skull-crossbones', variant: 'danger'},
+    sick : {icon: 'dizzy', variant: 'dark'},
+}
+
+const ROUND_ACTION_TYPES_MAPPING = new Map()
+ROUND_ACTION_TYPES_MAPPING.set(RoundAction.CollectWater, "water")
+ROUND_ACTION_TYPES_MAPPING.set(RoundAction.CollectFood, "food")
+ROUND_ACTION_TYPES_MAPPING.set(RoundAction.CollectWood, "wood")
+
 
 export default function HistoryItemView(props) {
+
+    const type = (props.type) ? props.type : "food"
+
     return (
-        <ListGroup.Item>
-            <i className={"fas " + props.icon} />
+        <Alert className="mt-2" variant={LOG_TYPES[ROUND_ACTION_TYPES_MAPPING.get(type)].variant}>
+            <i className={"fas fa-" + LOG_TYPES[ROUND_ACTION_TYPES_MAPPING.get(type)].icon} />
+            &nbsp;
             &nbsp;
             {props.value}
-        </ListGroup.Item>
+        </Alert>
     );
 };

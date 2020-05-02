@@ -68,8 +68,7 @@ describe('FoodManager', function()
 
     it('should convert to doc object', () =>
     {
-        const _foodManager = new FoodManager()
-        _foodManager.inventory = 10;
+        const _foodManager = new FoodManager(10)
         const doc = _foodManager.toDoc()
         assert.equal(doc['foodSupply'], _foodManager.inventory);
         assert.deepEqual(Object.keys(doc), ['foodSupply']);

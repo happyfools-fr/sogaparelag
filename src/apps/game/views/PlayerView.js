@@ -26,8 +26,6 @@ export default function PlayerView(props) {
 
     if (player) {
 
-        console.log("Player ", player)
-
         const currentHand = (player.currentHand) ? player.currentHand : ["Card1", "Card2", "Card3", "Card4"]
 
         return (
@@ -35,7 +33,7 @@ export default function PlayerView(props) {
             <Card.Body>
                 <Card.Title>
                     {
-                        (props.headPlayer === player.id)
+                        (props.headPlayerId === player.id)
                         ? <i className="fas fa-user-ninja" />
                         : <span />
                     }
@@ -50,7 +48,8 @@ export default function PlayerView(props) {
                 </Card.Title>
                 <Card.Text>
                     <span> {player.id} </span>
-                    <p>
+                    <br />
+                    <span>
                         {
                             (player.isDead)
                             ? <i className="fas fa-skull-crossbones fa-5x" />
@@ -58,7 +57,7 @@ export default function PlayerView(props) {
                                 ? <i className="fas fa-dizzy fa-5x" />
                                 : <i className="fas fa-smile fa-5x" />
                         }
-                    </p>
+                    </span>
                 </Card.Text>
             </Card.Body>
             <Card.Body>

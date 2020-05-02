@@ -3,6 +3,13 @@ import React, {useState} from 'react';
 
 import {Form, Modal, ToggleButton, ButtonGroup, Button} from 'react-bootstrap';
 
+import {RoundAction} from '../model/RoundAction'
+
+const ROUND_ACTION_TYPES_MAPPING = new Map()
+ROUND_ACTION_TYPES_MAPPING.set(RoundAction.CollectWater, "water")
+ROUND_ACTION_TYPES_MAPPING.set(RoundAction.CollectFood, "food")
+ROUND_ACTION_TYPES_MAPPING.set(RoundAction.CollectWood, "wood")
+
 export default function TurnModal(props) {
 
     const [show, setShow] = useState((props.show) ? props.show : true)
@@ -53,6 +60,7 @@ export default function TurnModal(props) {
             <Modal.Header>
                 <Modal.Title>It's your turn</Modal.Title>
             </Modal.Header>
+
             <Form>
                 <Modal.Body>
                     Choose your action, and choose wisely ...
@@ -74,10 +82,9 @@ export default function TurnModal(props) {
                         variant="primary"
                         disabled={!choice}
                         type="button"
-                        onClick={() => {onAction(choice, extras);setShow(false)}}
+                        onClick={() => {onAction(ROUND_ACTION_TYPES_MAPPING.get(choice), extras);setShow(false)}}
                     > Confirm </Button>
                 </Modal.Footer>
-            </Form>
-        </Modal>
+            </Form>        </Modal>
     );
 }

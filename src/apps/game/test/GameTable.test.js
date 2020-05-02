@@ -208,21 +208,25 @@ describe('GameTable', function()
         assert.equal(thirdPlayer.next.id, 1)
         assert.equal(thirdPlayer.previous.id, 2)
     });
-    
+
     it('convert to valid doc', () =>
     {
         let player1 = new Player(user1)
         let player2 = new Player(user2)
         let player3 = new Player(user3)
         const listPlayers = [player1, player2, player3];
-        const gameTable = new GameTable(listPlayers, 1);
+        let roundIndex = 10;
+        const gameTable = new GameTable(listPlayers, 1, 1, roundIndex);
 
         const doc = gameTable.toDoc();
-        
+
         assert.deepEqual(Object.keys(doc), SERDE_KEYS);
         assert.deepEqual(doc['players'], listPlayers.map(p => {return p.toDoc();}));
         assert.equal(doc['playersCount'], gameTable.playersCount);
         assert.deepEqual(doc['indexOfHeadPlayer'], gameTable.indexOfHeadPlayer);
+        assert.deepEqual(doc['indexOfCurrentPlayer'], gameTable.indexOfCurrentPlayer);
+        assert.deepEqual(doc['roundIndex'], gameTable.roundIndex);
+
     });
 
     it('instantiate from doc object', () =>
@@ -234,18 +238,72 @@ describe('GameTable', function()
           newListPlayers.push(player);
         }
         let indexOfHeadPlayer = 4;
-
+        let indexOfCurrentPlayer = 0
+        let roundIndex = 10;
         const doc = {
-          players: newListPlayers.map((p) => {return p.toDoc();}), 
+          players: newListPlayers.map((p) => {return p.toDoc();}),
           playersCount: newListPlayers.length,
           indexOfHeadPlayer: indexOfHeadPlayer,
+          indexOfCurrentPlayer: indexOfCurrentPlayer,
+          roundIndex: roundIndex,
         }
-        
+
         let gameTable = GameTable.fromDoc(doc);
         assert.deepEqual(gameTable.players, newListPlayers);
         assert.equal(gameTable.playersCount, newListPlayers.length);
         assert.deepEqual(gameTable.indexOfHeadPlayer, indexOfHeadPlayer);
+        assert.deepEqual(gameTable.indexOfCurrentPlayer, indexOfCurrentPlayer);
+        assert.equal(gameTable.roundIndex, roundIndex);
 
     });
 
+    it('assignNextCurrentPlayer correctly', () =>
+    {
+        let listPlayers = [];
+        for(var i = 0; i < MAX_NUMBER_PLAYERS-1; i++){
+          let player = new Player(new LoggedInUser(`titi${i}`, "ToTO"));
+          listPlayers.push(player);
+        }
+        let gameTable = new GameTable(listPlayers, 3, 1);
+
+        assert.deepEqual(gameTable.currentPlayer, listPlayers[1]);
+        gameTable.assignNextCurrentPlayer()
+        assert.deepEqual(gameTable.currentPlayer, listPlayers[2]);
+
+
+        gameTable = new GameTable(listPlayers, 3, 2);
+        assert.deepEqual(gameTable.currentPlayer, listPlayers[2]);
+        gameTable.assignNextCurrentPlayer()
+        assert.deepEqual(gameTable.currentPlayer, listPlayers[3]);
+    });
+
+    it('assignNextCurrentPlayer correctly exluding sick players', () =>
+    {
+        let listPlayers = [];
+        for(var i = 0; i < MAX_NUMBER_PLAYERS-1; i++){
+          let player = new Player(new LoggedInUser(`titi${i}`, "ToTO"));
+          if(i === 3){
+             player.onGetSick();
+           }
+          listPlayers.push(player);
+        }
+        let gameTable = new GameTable(listPlayers, 1, 1);
+
+        assert.deepEqual(gameTable.currentPlayer, listPlayers[1]);
+        gameTable.assignNextCurrentPlayer()
+        assert.deepEqual(gameTable.currentPlayer, listPlayers[2]);
+        gameTable.assignNextCurrentPlayer()
+        assert.deepEqual(gameTable.currentPlayer, listPlayers[4]);
+
+    });
+
+    it('assignNextHeadPlayer correctly', () =>
+    {
+        assert(true);
+    });
+
+    it('assignNextCurrentPlayer correctly after assignNextHeadPlayer', () =>
+    {
+        assert(true);
+    });
 });

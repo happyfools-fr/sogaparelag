@@ -10,11 +10,17 @@ import GameHistoryView from './GameHistoryView';
 
 // Controller imports
 import GameController from '../controller/GameController';
+import PlayerController from '../controller/PlayerController';
 
 // View imports
 import TurnModal from './TurnModal';
+import PollModal from './PollModal';
+import PollEndValidationModal from './PollEndValidationModal';
 import GameTableView from './GameTableView';
 import AllPlayersView from './AllPlayersView';
+import SavedView from './SavedView';
+
+import {RoundAction} from '../model/RoundAction'
 
 
 /**
@@ -25,14 +31,13 @@ import AllPlayersView from './AllPlayersView';
 function GameView(props) {
 
     const gameId = props.gameId;
-
+    const user = props.user;
+    
     const gameController = new GameController(props.firebaseService.ft)
     const [game, setGame] = useState();
 
-
-    const show = (game) ? game.currentPlayerId === props.user.id : false;
-
-
+    const playerController = new PlayerController(props.firebaseService.ft)
+    
     useEffect(
         () => {
             const unsubscribe = gameController.listen(gameId, setGame);
@@ -40,35 +45,112 @@ function GameView(props) {
         },
         [gameId, setGame]
     );
+    
+    console.log('After UseEffect');
+    const clientPlayer = (game && user) ? game._gameTable.players.filter(p => p.id === user._id)[0] : null;
+    
+    const showPollEndValidation = (game && clientPlayer) 
+      ? (game.headPlayerId === clientPlayer.id && (game.waterVoteEnded || game.footVoteEnded )) : false;
 
-
+    const canPlay = (clientPlayer) ? !clientPlayer.isSick && !clientPlayer.isDead : false;
+    const showPollWater = (game && clientPlayer) ? (game.pollWater && !clientPlayer.waterVote && canPlay) : false;
+    const showPollFood = (game && clientPlayer) ? (game.pollFood && !clientPlayer.foodVote && canPlay) : false;
+    const showPoll = !showPollEndValidation && ((showPollWater && !showPollFood) || (!showPollWater && showPollFood));
+    const pollType = showPollWater ? "drink" : "eat";
+    
+    const showAction = (game && clientPlayer) ? (game.currentPlayerId === clientPlayer.id && !showPoll  && canPlay && !showPollEndValidation): false;
+    
     const handleAction = (action, show) => {
+      
+        const player = game.currentPlayer;
+        console.log("Selected action = ", action)
         alert("You have chosen to go to "+ action);
-        game.history.push(props.user.nickname + " went for " + action);
-        game._waterManager.collect();
+        
+        player.performAction(game, action, 0);
+        console.log("player.performAction(game ", game)
+        game._gameTable.players.forEach((p, i) => {
+          playerController.update(p)
+        });
         gameController.update(game);
+        // Update game in waiting room if needed
+    };
+    
+    const handleVoteSubmit = (chosenPlayer) => {
+      
+        console.log("chosenPlayer", chosenPlayer);
+        const votedPlayer = game._gameTable.players.filter(p => chosenPlayer.id === p.id)[0];
+        console.log(`${clientPlayer.nickname} voted for ${votedPlayer.nickname}`)
+        alert(`You have voted for ${votedPlayer.nickname}`);
+        
+        const actionToPerform = showPollWater ? RoundAction.WaterVote : RoundAction.FoodVote;
+        clientPlayer.performVote(game, actionToPerform, votedPlayer.id);
+        console.log("clientPlayer after vote", clientPlayer);
+        game._gameTable.players.forEach((p, i) => {
+          playerController.update(p)
+        });
+        gameController.update(game);
+        // Update game in waiting room if needed
+    };
+    
+    
+    const handlePollEndValidation = () => {
+        console.log(`You have validated the end of the vote`);
+        alert(`You have validated the end of the vote`);
+        if (showPollWater){
+          game.onWaterVoteEnded()
+        } else {
+          game.onFoodVoteEnded()
+        }
+        game._gameTable.players.forEach((p, i) => {
+          playerController.update(p)
+        });
+        gameController.update(game);
+        // Update game in waiting room if needed
     };
 
     if (game) {
-        return (
-            <Container>
-                <Row>
-                    <Col>
-                        <GameTableView className='mt-5' slugname={props.slugname} game={game}/>
-                        <AllPlayersView players={game._gameTable.players} currentPlayerId={game.currentPlayerId}
-                                    headPlayer={game._gameTable.headPlayer._id}
-                                    firebaseService={props.firebaseService}/>
-                        <TurnModal
-                            show={show}
-                            onAction={handleAction}
-                        />
-                    </Col>
-                    <Col sm={3}>
-                        <GameHistoryView game={game} />
-                    </Col>
-                </Row>
-            </Container>
-        );
+      if(!game._win){
+          return (
+              <Container fluid>
+                  <Row>
+                      <Col>
+                          <GameTableView className='mt-5' slugname={props.slugname} game={game}/>
+                          <AllPlayersView 
+                              players={game._gameTable.players} 
+                              currentPlayerId={game.currentPlayerId}
+                              headPlayerId={game.headPlayerId}
+                              firebaseService={props.firebaseService}
+                          />
+                          <TurnModal
+                              show={showAction}
+                              onAction={handleAction}
+                          />
+                          <PollModal
+                              show={showPoll}
+                              players={game._gameTable.players.filter(p => !p.isDead)}
+                              pollType={pollType}
+                              handleVoteSubmit={handleVoteSubmit}
+                          />
+                          <PollEndValidationModal
+                              show={showPollEndValidation}
+                              pollType={pollType}
+                              handlePollEndValidation={handlePollEndValidation}
+                          />
+                      </Col>
+                      <Col sm={4}>
+                          <GameHistoryView game={game} />
+                      </Col>
+                  </Row>
+              </Container>
+          );
+        } else {
+            return (
+              <SavedView 
+                players={game._gameTable.players}
+                slugname={props.slugname}
+              />
+            );
+        }
     } else {
         return(<div />)
     }

@@ -34,7 +34,6 @@ export default function WaitingRoomApp(props) {
     const onJoinWaitingRoom = () => {
         if (waitingRoom && waitingRoom.addLoggedInUser(props.user)) {
             waitingRoomController.push(waitingRoom);
-            setWaitingRoom(waitingRoom);
         } else {
             console.log('Player' + props.user.nickname +' has already joined' + waitingRoom.slugname);
         }
@@ -42,13 +41,12 @@ export default function WaitingRoomApp(props) {
 
 
     const handleStartGame = (click) => {
-        const newGame = waitingRoom.startGame();
-        gameController.push(newGame);
-        newGame._gameTable.players.map(
+        waitingRoom.startGame();
+        gameController.push(waitingRoom._currentGame);
+        waitingRoom._currentGame._gameTable.players.map(
             (player) => playerController.push(player)
         );
         waitingRoomController.update(waitingRoom);
-        setWaitingRoom(waitingRoom)
         alert(`Game started for room: ${waitingRoom.slugname}`);
     }
 
