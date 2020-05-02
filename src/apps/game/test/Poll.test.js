@@ -2,6 +2,7 @@ import {PollManager} from '../model/PollManager'
 import {GameTable} from '../model/GameTable'
 import Player from '../model/Player'
 import LoggedInUser from '../model/LoggedInUser'
+import {RoundAction} from '../model/RoundAction'
 import {MockPlayer} from './MockPlayer'
 import { v1 as uuidv1 } from 'uuid';
 
@@ -72,7 +73,7 @@ describe('PollManager', function()
         const gameTable = new GameTable([player1, player2, player3, player42])
         const _poll = new PollManager(gameTable)
 
-        assert.equal(_poll.vote(), 42)
+        assert.equal(_poll.voteWithContext(RoundAction.WaterVote), 42)
     });
 
     it('2 againt #42 - 1 against #1 - 1 against #2', () =>
@@ -92,7 +93,7 @@ describe('PollManager', function()
         const gameTable = new GameTable([player1, player2, player3, player42])
         const _poll = new PollManager(gameTable)
 
-        assert.equal(_poll.vote(), 42)
+        assert.equal(_poll.voteWithContext(RoundAction.WaterVote), 42)
     });
 
     it('2 againt #42 - 2 against #1 - with #1 votes #42', () =>
@@ -118,7 +119,7 @@ describe('PollManager', function()
         const gameTable = new GameTable([player1, player2, player3, player42])
         const _poll = new PollManager(gameTable)
 
-        assert.equal(_poll.vote(), id42)
+        assert.equal(_poll.voteWithContext(RoundAction.WaterVote), id42)
     });
 
     it('2 againt #42 - 2 against #1 - with #1 votes #1', () =>
@@ -144,7 +145,7 @@ describe('PollManager', function()
         const gameTable = new GameTable([player1, player2, player3, player42])
         const _poll = new PollManager(gameTable)
 
-        assert.equal(_poll.vote(), id1)
+        assert.equal(_poll.voteWithContext(RoundAction.WaterVote), id1)
     });
 
     it('2 againt #42 - 2 against #1 - with #1 votes #2 throws', () =>
@@ -194,7 +195,7 @@ describe('PollManager', function()
 
         const _poll = new PollManager(gameTable)
 
-        assert.equal(_poll.vote(), 1)
+        assert.equal(_poll.voteWithContext(RoundAction.WaterVote), 1)
     });
 
 });

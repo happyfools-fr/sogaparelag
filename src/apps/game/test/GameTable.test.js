@@ -289,12 +289,14 @@ describe('GameTable', function()
         }
         let gameTable = new GameTable(listPlayers, 1, 1);
 
+        console.log('COUCOU 1')
         assert.deepEqual(gameTable.currentPlayer, listPlayers[1]);
         gameTable.assignNextCurrentPlayer()
+        console.log('COUCOU 2')
         assert.deepEqual(gameTable.currentPlayer, listPlayers[2]);
         gameTable.assignNextCurrentPlayer()
+        console.log('COUCOU 3')
         assert.deepEqual(gameTable.currentPlayer, listPlayers[4]);
-
     });
 
     it('assignNextHeadPlayer correctly', () =>

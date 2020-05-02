@@ -61,6 +61,7 @@ export class GameTable
     {
         this._headPlayer = this._headPlayer.previous;
         this.indexOfHeadPlayer = this.indexOfHeadPlayer === 0 ? this.playersCount - 1 : this.indexOfHeadPlayer - 1
+
         if (this._headPlayer.player.isSick)
         {
             this._currentPlayer = this._headPlayer;
@@ -73,35 +74,37 @@ export class GameTable
 
             this._currentPlayer = this._headPlayer
             this.indexOfCurrentPlayer = this.indexOfHeadPlayer
-            
+
             console.log("this.indexOfCurrentPlayer B", this.indexOfCurrentPlayer)
 
         }
-        
+
     }
 
     assignNextCurrentPlayer()
     {
         while (true)
         {
-            console.log("assignNextCurrentPlayer A this._currentPlayer.player ", this._currentPlayer.player)
+            // console.log("assignNextCurrentPlayer A this._currentPlayer.player ", this._currentPlayer.player)
             this._currentPlayer = this._currentPlayer.next
-            
+            if (this._currentPlayer === this._headPlayer)
+            {
+                this.endOfRound = true
+                return
+            }
 
             if (this._currentPlayer.player.isSick)
             {
-                this.onPlayerTurnEnded()
-                if (this.endOfRound)
-                {
-                    break;
-                }
-            } else {
+                this._currentPlayer.player.hasPlayedThisRound = true
+            }
+            else
+            {
               break;
             }
         }
         this.indexOfCurrentPlayer = this.getIndexFromPlayer(this._currentPlayer.player);
-        console.log("assignNextCurrentPlayer indexOfCurrentPlayer B", this.indexOfCurrentPlayer)
-        console.log("assignNextCurrentPlayer B this._currentPlayer.player ", this._currentPlayer.player)
+        // console.log("assignNextCurrentPlayer indexOfCurrentPlayer B", this.indexOfCurrentPlayer)
+        // console.log("assignNextCurrentPlayer B this._currentPlayer.player ", this._currentPlayer.player)
 
     }
 
@@ -183,7 +186,7 @@ export class GameTable
         this._currentPlayer.player.hasPlayedThisRound = true
 
         this.assignNextCurrentPlayer();
-        
+
         console.log("B this._currentPlayer.player ", this._currentPlayer.player)
 
         if (this._currentPlayer === this._headPlayer)
