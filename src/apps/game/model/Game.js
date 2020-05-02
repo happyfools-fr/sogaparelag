@@ -104,7 +104,7 @@ export default class Game
 
     get waterVoteEnded()
     {
-       return this._gameTable.players.filter(p => !p.isSick && !p.isDead).every(p => p.waterVote !== null);
+       return this._gameTable.players.filter(p => !p.isDead).every(p => p.waterVote !== null);
     }
 
     onPlayerWaterVote()
@@ -119,7 +119,7 @@ export default class Game
 
     get footVoteEnded()
     {
-       return this._gameTable.players.filter(p => !p.isSick && !p.isDead).every(p => p.foodVote !== null);
+       return this._gameTable.players.filter(p => !p.isDead).every(p => p.foodVote !== null);
     }
 
     onWaterVoteEnded()

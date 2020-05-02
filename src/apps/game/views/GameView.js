@@ -53,7 +53,7 @@ function GameView(props) {
     const showPollEndValidation = (game && clientPlayer)
       ? (game.headPlayerId === clientPlayer.id && (game.waterVoteEnded || game.footVoteEnded )) : false;
 
-    const canPlay = (clientPlayer) ? !clientPlayer.isSick && !clientPlayer.isDead : false;
+    const canPlay = (clientPlayer) ?  !clientPlayer.isDead : false;
     const showPollWater = (game && clientPlayer) ? (game.pollWater && !clientPlayer.waterVote && canPlay) : false;
     const showPollFood = (game && clientPlayer) ? (game.pollFood && !clientPlayer.foodVote && canPlay) : false;
     const showPoll = !showPollEndValidation && ((showPollWater && !showPollFood) || (!showPollWater && showPollFood));
