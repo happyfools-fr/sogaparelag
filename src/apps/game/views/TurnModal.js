@@ -36,22 +36,6 @@ export default function TurnModal(props) {
             <Modal.Header>
                 <Modal.Title>It's your turn</Modal.Title>
             </Modal.Header>
-<<<<<<< Updated upstream
-            <Modal.Body>Choose your action, and choose wisely ...</Modal.Body>
-            <Modal.Footer>
-                <ButtonGroup>
-                    <Button variant="primary" margin-right="1em" onClick={() => props.onAction("water")}>
-                        Get water
-                    </Button>
-                    <Button variant="success" margin-right="1em"  onClick={() => props.onAction("wood")}>
-                        Get wood
-                    </Button>
-                    <Button variant="danger" margin-right="1em" onClick={() => props.onAction("wood")}>
-                        Get food
-                    </Button>
-                </ButtonGroup>
-            </Modal.Footer>
-=======
             <Form>
                 <Modal.Body>Choose your action, and choose wisely ...</Modal.Body>
                     <ButtonGroup toggle onChange={setChoice}>
@@ -70,7 +54,6 @@ export default function TurnModal(props) {
                     <Button variant="primary" type="submit"> Confirm choice </Button>
                 </Modal.Footer>
             </Form>
->>>>>>> Stashed changes
         </Modal>
     );
 }
