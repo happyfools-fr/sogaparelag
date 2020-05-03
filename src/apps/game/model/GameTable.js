@@ -4,13 +4,13 @@ import Utils from './Utils'
 
 export const SERDE_KEYS = [
   'players', 'playersCount', 'indexOfHeadPlayer',
-  'indexOfCurrentPlayer', 'roundIndex'
+  'indexOfCurrentPlayer', 'roundIndex', 'killedPlayers'
 ];
 
 export class GameTable
 {
 
-    constructor(players, indexOfHeadPlayer = 0, indexOfCurrentPlayer = 0, roundIndex = 1)
+    constructor(players, indexOfHeadPlayer = 0, indexOfCurrentPlayer = 0, roundIndex = 1, killedPlayers=[])
     {
         this.players = players
         this.playersCount = players.length
@@ -25,6 +25,8 @@ export class GameTable
         this.roundIndex = roundIndex ? roundIndex : 1;
 
         this.endOfRound = false;
+        
+        this.killedPlayers = killedPlayers;
 
         // console.log("GameTable.constructor")
         // console.log(this.toDoc())
@@ -219,6 +221,10 @@ export class GameTable
             if (currentPlayer.value.id === playerIdToKill)
             {
                 currentPlayer.value.player.isDead = true;
+                console.log("this.killedPlayers before push", this.killedPlayers)
+                this.killedPlayers.push(currentPlayer.value.player);
+                console.log("this.killedPlayers after push", this.killedPlayers)
+
                 let previousPlayer = currentPlayer.value.previous
                 let nextPlayer = currentPlayer.value.next
                 if (currentPlayer.value.player === nextPlayer.player)
@@ -272,6 +278,7 @@ export class GameTable
           indexOfHeadPlayer: this.indexOfHeadPlayer,
           indexOfCurrentPlayer: this.indexOfCurrentPlayer,
           roundIndex: this.roundIndex,
+          killedPlayers: this.killedPlayers.map((p) => { return p ? p.toDoc() : null; }),
         }
     }
 
@@ -282,8 +289,9 @@ export class GameTable
       {
         const players = doc['players'].map((pDoc) => { return Player.fromDoc(pDoc) })
         const indexOfHeadPlayer = doc['indexOfHeadPlayer'];
-        const indexOfCurrentPlayer = doc['indexOfCurrentPlayer']
-        gameTable = new GameTable(players, indexOfHeadPlayer, indexOfCurrentPlayer, parseInt(doc['roundIndex']) );
+        const indexOfCurrentPlayer = doc['indexOfCurrentPlayer'];
+        const killedPlayers = doc['killedPlayers'].map((pDoc) => { return Player.fromDoc(pDoc) });
+        gameTable = new GameTable(players, indexOfHeadPlayer, indexOfCurrentPlayer, parseInt(doc['roundIndex']), killedPlayers);        
       }
       return gameTable;
     }
