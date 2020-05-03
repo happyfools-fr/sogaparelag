@@ -5,32 +5,42 @@ export class PollManager
         this._gameTable = gameTable;
     }
 
+    /*
+    * The underlying type vote is held in context: 
+    *  context = RoundAction.WaterVote or RoundAction.WaterVote
+    */
     voteWithContext(context)
     {
         let votesByPlayerId = this._initVotingPolls()
-        let healthyPlayerEnumerator = this._gameTable.getHealthyPlayerEnumerator()
+        let playerEnumerator = this._gameTable.getPlayerEnumerator()
         while (true)
         {
-            let currentPlayer = healthyPlayerEnumerator.next()
-            if (currentPlayer.done)
-                break
-
+            let currentPlayer = playerEnumerator.next()
+            if (currentPlayer.done){
+                break;
+            }
             let chosenPlayerId = currentPlayer.value.player.choosePlayerIdToVoteAgainst(this._gameTable.players, context)
-            votesByPlayerId[chosenPlayerId] ++
+            console.log("voteWithContext, chosenPlayerId", chosenPlayerId)
+            console.log("voteWithContext, votesByPlayerId[chosenPlayerId] A", votesByPlayerId[chosenPlayerId])
+            votesByPlayerId[chosenPlayerId]  = votesByPlayerId[chosenPlayerId] + 1;
+            console.log("voteWithContext, votesByPlayerId[chosenPlayerId] B", votesByPlayerId[chosenPlayerId])
+
         }
 
-        console.log(votesByPlayerId)
+        console.log("votesByPlayerId: ", votesByPlayerId);
         
         let playersWithMaxVote = this._getPlayerIdsWithMaxVote(votesByPlayerId)
         if (playersWithMaxVote.length > 1)
         {
             let finalVoteByHeadPlayer = this._gameTable.headPlayer.chooseFinalPlayerIdToVoteAgainst(playersWithMaxVote)
 
-            if (playersWithMaxVote.includes(finalVoteByHeadPlayer))
-                return finalVoteByHeadPlayer
-
-            throw Error()
+            if (playersWithMaxVote.includes(finalVoteByHeadPlayer)) {
+                return finalVoteByHeadPlayer;
+            }
+            throw Error("Error in voteWithContext")
         }
+
+        console.log("playersWithMaxVote[0]: ", playersWithMaxVote[0]);
 
         return playersWithMaxVote[0]
     }

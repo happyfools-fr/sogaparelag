@@ -37,13 +37,6 @@ describe('Player', function()
         assert.equal(_player._sickenessLevel, 0);
     });
 
-    it('vote against first playerId', () =>
-    {
-        const _player = new Player(loggedInUser);
-        let players = [5, 4, 3, 2, 1]
-        assert.equal(_player.choosePlayerIdToVoteAgainst(players), 5)
-    });
-
     it('final vote against first playerId', () =>
     {
         const _player = new Player(loggedInUser);
