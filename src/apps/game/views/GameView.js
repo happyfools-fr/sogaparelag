@@ -49,9 +49,8 @@ function GameView(props) {
     );
 
     console.log('GameView: after UseEffect');
-    let clientPlayerFromPlayerDb = null;
-    let showDeadModal = false;
     let clientPlayer = null;
+    let showDeadModal = false;
     let showPollEndValidation = false;
     let showPollWater = false;
     let showPollFood = false;
@@ -63,20 +62,22 @@ function GameView(props) {
     {
       if (game && user)
       {
-        clientPlayerFromPlayerDb = playerController.get(user.id);
-        showDeadModal = clientPlayerFromPlayerDb.isDead && !clientPlayerFromPlayerDb.spectateGame;
-        if(!showDeadModal && !clientPlayerFromPlayerDb.isDead)
+        if (game._gameTable.players.filter(p => p.id === user.id).length > 0){
+          clientPlayer = game._gameTable.players.filter(p => p.id === user.id)[0];
+          console.log("clientPlayer is found in _gameTable.players", clientPlayer);
+        } else {
+          clientPlayer = game._gameTable.killedPlayers.filter(p => p.id === user.id)[0];
+          console.log("clientPlayer is found in _gameTable.killedPlayers", clientPlayer);
+        }
+        showDeadModal = clientPlayer.isDead && !clientPlayer.spectateGame;
+        if(!showDeadModal && !clientPlayer.isDead)
         {
-          if(game._gameTable.players.filter(p => p.id === user.id).length > 0){
-            clientPlayer = game._gameTable.players.filter(p => p.id === user.id)[0];
-            showPollEndValidation = (game.headPlayerId === clientPlayer.id) && (game.waterVoteEnded || game.footVoteEnded );
-            showPollWater = !showPollEndValidation && game.pollWater && !clientPlayer.waterVote;
-            showPollFood = !showPollEndValidation && game.pollFood && !clientPlayer.foodVote;
-            showPoll = !showPollEndValidation && ((showPollWater && !showPollFood) || (!showPollWater && showPollFood));
-            pollType = showPollWater ? "drink" : "eat";
-            showAction = !showPollEndValidation && !showPoll && !clientPlayer.isSick && (game.currentPlayerId === clientPlayer.id);
-            return;
-          }
+          showPollEndValidation = (game.headPlayerId === clientPlayer.id) && (game.waterVoteEnded || game.footVoteEnded );
+          showPollWater = !showPollEndValidation && game.pollWater && !clientPlayer.waterVote;
+          showPollFood = !showPollEndValidation && game.pollFood && !clientPlayer.foodVote;
+          showPoll = !showPollEndValidation && ((showPollWater && !showPollFood) || (!showPollWater && showPollFood));
+          pollType = showPollWater ? "drink" : "eat";
+          showAction = !showPollEndValidation && !showPoll && !clientPlayer.isSick && (game.currentPlayerId === clientPlayer.id);
           return;
         }
         showPollEndValidation = false;
@@ -89,15 +90,14 @@ function GameView(props) {
     }
     
     setShowBoolean(game, user);
-    console.log("clientPlayerFromPlayerDb, showDeadModal, clientPlayer, showPollEndValidation, showPollWater, showPollFood, showPoll, pollType, showAction", 
-      clientPlayerFromPlayerDb, showDeadModal, clientPlayer, showPollEndValidation, showPollWater, showPollFood, showPoll, pollType, showAction);
+    console.log("clientPlayer, showDeadModal, clientPlayer, showPollEndValidation, showPollWater, showPollFood, showPoll, pollType, showAction", 
+      clientPlayer, showDeadModal, clientPlayer, showPollEndValidation, showPollWater, showPollFood, showPoll, pollType, showAction);
     
 
     const handleAction = (action, extras) => {
 
         const player = game.currentPlayer;
         console.log("Selected action = ", action)
-        alert("You have chosen to go to "+ action);
         console.log("extras", extras);
 
         let intExtras = parseInt(extras);
@@ -105,6 +105,9 @@ function GameView(props) {
         player.performAction(game, action, parseInt(extras));
         console.log("player.performAction(game ", game)
         game._gameTable.players.forEach((p, i) => {
+          playerController.update(p)
+        });
+        game._gameTable.killedPlayers.forEach((p, i) => {
           playerController.update(p)
         });
         gameController.update(game);
@@ -116,12 +119,14 @@ function GameView(props) {
         console.log("chosenPlayer", chosenPlayer);
         const votedPlayer = game._gameTable.players.filter(p => chosenPlayer.id === p.id)[0];
         console.log(`${clientPlayer.nickname} voted for ${votedPlayer.nickname}`)
-        alert(`You have voted for ${votedPlayer.nickname}`);
 
         const actionToPerform = showPollWater ? RoundAction.WaterVote : RoundAction.FoodVote;
         clientPlayer.performVote(game, actionToPerform, votedPlayer.id);
         console.log("clientPlayer after vote", clientPlayer);
         game._gameTable.players.forEach((p, i) => {
+          playerController.update(p)
+        });
+        game._gameTable.killedPlayers.forEach((p, i) => {
           playerController.update(p)
         });
         gameController.update(game);
@@ -140,14 +145,22 @@ function GameView(props) {
         game._gameTable.players.forEach((p, i) => {
           playerController.update(p)
         });
+        game._gameTable.killedPlayers.forEach((p, i) => {
+          playerController.update(p)
+        });
         gameController.update(game);
         // Update game in waiting room if needed
     };
     
     const handleSpectate = () => {
       alert(`You are dead man!`);
-      clientPlayerFromPlayerDb.spectateGame = true;
-      playerController.update(clientPlayerFromPlayerDb)
+      clientPlayer.spectateGame = true;
+      playerController.update(clientPlayer)
+      game._gameTable.killedPlayers.forEach((p, i) => {
+        playerController.update(p)
+      });
+      gameController.update(game);
+
     }
 
     if (game) {
