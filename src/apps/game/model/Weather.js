@@ -7,6 +7,8 @@ export class Weather
     static Flood = '4';
     static None = '5';
 
+    static weatherToText = ['Drought', 'Drizzle', 'Rain', 'Thunderstorm', 'Flood', 'None']
+
     static getWaterFromWeather(weather)
     {
         switch (weather)
