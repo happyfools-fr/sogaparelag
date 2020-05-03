@@ -90,15 +90,6 @@ export default class Game
 
     onActionRoundEnded()
     {
-        // CanLeave should only be tested after all management
-
-        // if (this._canLeave())
-        // {
-        //   alert("You are saved!");
-        //   this._win = true
-        //   return;
-        // }
-
         this.history.push(
           {
               type: 'info',
@@ -141,7 +132,6 @@ export default class Game
       {
         this._endOfGame = true
         this._win = false
-        alert("GAME OVER");
         return
       }
 
@@ -233,7 +223,6 @@ export default class Game
       {
         this._endOfGame = true
         this._win = false
-        alert("GAME OVER");
         return
       }
 
@@ -264,14 +253,13 @@ export default class Game
       {
           this._win = true
           this._endOfGame = true
-          alert("You are safe!");
           return;
       }
       if (this._mustLeave)
       {
           this._endOfGame = true
           this._win = false
-          alert("GAME OVER");
+          return
       }
       else if (this._waterManager.mustLeave())
       {

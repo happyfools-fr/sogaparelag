@@ -47,7 +47,6 @@ export default function WaitingRoomApp(props) {
             (player) => playerController.push(player)
         );
         waitingRoomController.update(waitingRoom);
-        alert(`Game started for room: ${waitingRoom.slugname}`);
     }
 
 

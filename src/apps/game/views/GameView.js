@@ -137,7 +137,6 @@ function GameView(props) {
 
     const handlePollEndValidation = () => {
         console.log(`You have validated the end of the vote`);
-        alert(`You have validated the end of the vote`);
         if (showPollWater){
           game.onWaterVoteEnded()
         } else {
