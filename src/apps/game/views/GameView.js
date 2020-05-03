@@ -66,6 +66,8 @@ function GameView(props) {
     {
         thisPlayer = game._gameTable.players.filter(p => p.id === user.id)[0];
 
+        if (!thisPlayer) {return}
+
         const shouldShowPoll = (game.pollWater || game.pollFood)
         const shouldShowAction = (thisPlayer.id === game.currentPlayerId) && !thisPlayer.isSick
         const shouldShowSick = (thisPlayer.id === game.currentPlayerId) && thisPlayer.isSick

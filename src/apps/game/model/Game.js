@@ -128,13 +128,13 @@ export default class Game
       console.log('onWaterVoteEnded killing player playerIdToKill = ' + playerIdToKill)
       this._gameTable.killPlayer(playerIdToKill)
 
-      if (this._gameTable.playersCount === 1)
+      if (this._gameTable.playersCount === 0)
       {
         this._endOfGame = true
         this._win = false
         return
       }
-      
+
       //enough water to play next round?
       if (this._gameTable.playersCount - this._waterManager.inventory <= 0)
       {
@@ -220,14 +220,12 @@ export default class Game
       console.log('onFoodVoteEnded killing player playerIdToKill = ' + playerIdToKill)
       this._gameTable.killPlayer(playerIdToKill)
 
-      if (this._gameTable.playersCount === 1)
+      if (this._gameTable.playersCount === 0)
       {
         this._endOfGame = true
         this._win = false
         return
       }
-
-      this._gameTable.killPlayer(playerIdToKill)
 
       //enough water to play next round?
       if (this._gameTable.playersCount - this._foodManager.inventory <= 0)
