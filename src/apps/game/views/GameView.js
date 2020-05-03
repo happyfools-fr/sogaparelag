@@ -48,8 +48,8 @@ function GameView(props) {
         [gameId, setGame]
     );
 
-    console.log('GameView: after UseEffect');
-    console.log("Game :",game)
+    // console.log('GameView: after UseEffect');
+    // console.log("Game :",game)
     let clientPlayer = null;
     let showDeadModal = false;
     let showPollEndValidation = false;

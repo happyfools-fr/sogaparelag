@@ -218,6 +218,7 @@ export default class Game
       //Kill the voted Player
       let playerIdToKill = this._pollManager.voteWithContext(RoundAction.FoodVote)
       console.log('onFoodVoteEnded killing player playerIdToKill = ' + playerIdToKill)
+      this._gameTable.killPlayer(playerIdToKill)
 
       if (this._gameTable.playersCount === 0)
       {
@@ -225,8 +226,6 @@ export default class Game
         this._win = false
         return
       }
-
-      this._gameTable.killPlayer(playerIdToKill)
 
       //enough water to play next round?
       if (this._gameTable.playersCount - this._foodManager.inventory <= 0)
@@ -248,11 +247,12 @@ export default class Game
 
     onAllManagementEnded()
     {
+
       //CAN LEAVE?
       if (this._canLeave())
       {
-          this._win = true
           this._endOfGame = true
+          this._win = true
           return;
       }
       if (this._mustLeave)
