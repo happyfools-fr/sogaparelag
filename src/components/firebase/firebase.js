@@ -19,11 +19,11 @@ export default class FirebaseService {
         this.auth = app.auth();
         this.ft = app.firestore();
     }
-    
+
     onAuthStateChange(callback) {
       return this.auth.onAuthStateChanged(user => callback(user))
     };
-    
+
     authenticateWithGoogle() {
       let provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('profile');
@@ -40,7 +40,7 @@ export default class FirebaseService {
       });
      }
 
-    onSignOut() {      
+    onSignOut() {
       return new Promise((resolve, reject) => {
         this.auth.signOut()
         .then( () => {
