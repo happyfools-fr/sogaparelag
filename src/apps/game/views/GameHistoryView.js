@@ -17,7 +17,6 @@ export default function GameHistoryView(props) {
     const logs = (props.game) ? props.game.history : []
 
     const scrollToBottom = () => {
-        console.log("scroll")
         logsEndRef.current.scrollIntoView({ behavior: "smooth" })
     }
 

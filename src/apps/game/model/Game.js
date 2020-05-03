@@ -90,15 +90,6 @@ export default class Game
 
     onActionRoundEnded()
     {
-        // CanLeave should only be tested after all management
-
-        // if (this._canLeave())
-        // {
-        //   alert("You are saved!");
-        //   this._win = true
-        //   return;
-        // }
-
         this.history.push(
           {
               type: 'info',
@@ -121,7 +112,7 @@ export default class Game
         console.log("!waterVoteEnded", this.waterVoteEnded)
         return;
       }
-      alert("onWaterVoteEnded");
+      console.log("onWaterVoteEnded");
       this.onWaterVoteEnded();
     }
 
@@ -134,14 +125,13 @@ export default class Game
     {
       //Kill the voted Player
       let playerIdToKill = this._pollManager.voteWithContext(RoundAction.WaterVote)
-      alert('onWaterVoteEnded killing player playerIdToKill = ' + playerIdToKill)
+      console.log('onWaterVoteEnded killing player playerIdToKill = ' + playerIdToKill)
       this._gameTable.killPlayer(playerIdToKill)
 
       if (this._gameTable.playersCount === 0)
       {
         this._endOfGame = true
         this._win = false
-        alert("GAME OVER");
         return
       }
 
@@ -168,7 +158,7 @@ export default class Game
     {
       if (this._gameTable.playersCount - this._waterManager.inventory > 0)
       {
-        alert("Time for Water Vote!");
+        console.log("Time for Water Vote!");
         this.pollWater = true;
         this._gameTable.players.forEach( p => {
           p.waterVote = null;
@@ -192,7 +182,7 @@ export default class Game
     {
       if (this._gameTable.playersCount - this._foodManager.inventory > 0)
       {
-        alert("Time for Food Vote!");
+          console.log("Time for Food Vote!");
         this.pollFood = true;
         this._gameTable.players.forEach( p => {
           p.foodVote = null;
@@ -219,7 +209,7 @@ export default class Game
           console.log("!this.footVoteEnded", !this.footVoteEnded)
           return
       }
-      alert("onFoodVoteEnded");
+      console.log("onFoodVoteEnded");
       this.onFoodVoteEnded();
     }
 
@@ -227,14 +217,13 @@ export default class Game
     {
       //Kill the voted Player
       let playerIdToKill = this._pollManager.voteWithContext(RoundAction.FoodVote)
-      alert('onFoodVoteEnded killing player playerIdToKill = ' + playerIdToKill)
+      console.log('onFoodVoteEnded killing player playerIdToKill = ' + playerIdToKill)
       this._gameTable.killPlayer(playerIdToKill)
 
       if (this._gameTable.playersCount === 0)
       {
         this._endOfGame = true
         this._win = false
-        alert("GAME OVER");
         return
       }
 
@@ -258,19 +247,19 @@ export default class Game
 
     onAllManagementEnded()
     {
+
       //CAN LEAVE?
       if (this._canLeave())
       {
-          this._win = true
           this._endOfGame = true
-          alert("You are safe!");
+          this._win = true
           return;
       }
       if (this._mustLeave)
       {
           this._endOfGame = true
           this._win = false
-          alert("GAME OVER");
+          return
       }
       else if (this._waterManager.mustLeave())
       {
