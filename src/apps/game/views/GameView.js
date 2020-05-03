@@ -21,6 +21,7 @@ import GameTableView from './GameTableView';
 import AllPlayersView from './AllPlayersView';
 import SavedView from './SavedView';
 import GameOverView from './GameOverView'
+import SickModal from './SickModal'
 
 import {RoundAction} from '../model/RoundAction'
 
@@ -38,8 +39,6 @@ function GameView(props) {
     const gameController = new GameController(props.firebaseService.ft)
     const [game, setGame] = useState();
 
-    const playerController = new PlayerController(props.firebaseService.ft)
-
     useEffect(
         () => {
             const unsubscribe = gameController.listen(gameId, setGame);
@@ -48,50 +47,52 @@ function GameView(props) {
         [gameId, setGame]
     );
 
-    let clientPlayer = null;
-    let showDeadModal = false;
-    let showPollEndValidation = false;
-    let showPollWater = false;
-    let showPollFood = false;
-    let showPoll = false;
-    let pollType = "unknown";
-    let showAction = false;
+    const playerController = new PlayerController(props.firebaseService.ft)
+    let thisPlayer = playerController.get(user.id);
+
+    const [poll, setPoll] = useState({show: false, type: "", endValidation: false})
+
+    const [showAction, setShowAction] = useState(false)
+
+    const [showDead, setShowDead] = useState(
+        (thisPlayer)
+        ? thisPlayer.isDead && !thisPlayer.spectateGame
+        : false
+    )
+
+    const [showSick, setShowSick] = useState({show : false, click : 0})
 
     function setShowBoolean(game, user)
     {
-      if (game && user)
-      {
-        if (game._gameTable.players.filter(p => p.id === user.id).length > 0){
-          clientPlayer = game._gameTable.players.filter(p => p.id === user.id)[0];
-          console.log("clientPlayer is found in _gameTable.players", clientPlayer);
-        } else {
-          clientPlayer = game._gameTable.killedPlayers.filter(p => p.id === user.id)[0];
-          console.log("clientPlayer is found in _gameTable.killedPlayers", clientPlayer);
+        thisPlayer = game._gameTable.players.filter(p => p.id === user.id)[0];
+
+        if (!thisPlayer) {return}
+
+        const shouldShowPoll = (game.pollWater || game.pollFood)
+        const shouldShowAction = (thisPlayer.id === game.currentPlayerId) && !thisPlayer.isSick
+        const shouldShowSick = (thisPlayer.id === game.currentPlayerId) && thisPlayer.isSick
+
+        if (!poll.show && shouldShowPoll) {
+            setPoll( {
+                show : true,
+                type : (game.pollWater) ? "drink" : "eat",
+                endValidation : (thisPlayer.id === game.headPlayerId) && (game.waterVoteEnded || game.footVoteEnded),
+            })
+        } else if (!showAction && shouldShowAction){
+            setShowAction(true)
+        } else if (shouldShowSick && !showSick.show) {
+            setShowSick({show: true, click: 0})
+        } else if (!shouldShowSick && showSick.show) {
+            setShowSick({show: false, click: 0})
         }
-        showDeadModal = clientPlayer.isDead && !clientPlayer.spectateGame;
-        if(!showDeadModal && !clientPlayer.isDead)
-        {
-          showPollEndValidation = (game.headPlayerId === clientPlayer.id) && (game.waterVoteEnded || game.footVoteEnded );
-          showPollWater = !showPollEndValidation && game.pollWater && !clientPlayer.waterVote;
-          showPollFood = !showPollEndValidation && game.pollFood && !clientPlayer.foodVote;
-          showPoll = !showPollEndValidation && ((showPollWater && !showPollFood) || (!showPollWater && showPollFood));
-          pollType = showPollWater ? "drink" : "eat";
-          showAction = !showPollEndValidation && !showPoll && !clientPlayer.isSick && (game.currentPlayerId === clientPlayer.id);
-          return;
-        }
-        showPollEndValidation = false;
-        showPollWater = false;
-        showPollFood = false;
-        showPoll = false;
-        pollType = "unknown";
-        showAction = false;
-      }
     }
 
-    setShowBoolean(game, user);
-    console.log("clientPlayer, showDeadModal, clientPlayer, showPollEndValidation, showPollWater, showPollFood, showPoll, pollType, showAction",
-      clientPlayer, showDeadModal, clientPlayer, showPollEndValidation, showPollWater, showPollFood, showPoll, pollType, showAction);
+    (game && user && !showDead && (!showSick.show || showSick.click) && !poll.endValidation) && setShowBoolean(game, user);
 
+
+    const handleSick = () => {
+        setShowSick({show: true, click: showSick.click + 1})
+    }
 
     const handleAction = (action, extras) => {
 
@@ -109,17 +110,19 @@ function GameView(props) {
           playerController.update(p)
         });
         gameController.update(game);
+
+        setShowAction(false)
     };
 
     const handleVoteSubmit = (chosenPlayer) => {
 
         console.log("chosenPlayer", chosenPlayer);
         const votedPlayer = game._gameTable.players.filter(p => chosenPlayer.id === p.id)[0];
-        console.log(`${clientPlayer.nickname} voted for ${votedPlayer.nickname}`)
+        console.log(`${thisPlayer.nickname} voted for ${votedPlayer.nickname}`)
 
-        const actionToPerform = showPollWater ? RoundAction.WaterVote : RoundAction.FoodVote;
-        clientPlayer.performVote(game, actionToPerform, votedPlayer.id);
-        console.log("clientPlayer after vote", clientPlayer);
+        const actionToPerform = (poll.type === "drink") ? RoundAction.WaterVote : RoundAction.FoodVote;
+        thisPlayer.performVote(game, actionToPerform, votedPlayer.id);
+        console.log("thisPlayer after vote", thisPlayer);
         game._gameTable.players.forEach((p, i) => {
           playerController.update(p)
         });
@@ -127,16 +130,25 @@ function GameView(props) {
           playerController.update(p)
         });
         gameController.update(game);
+
+        setPoll({
+            show: false,
+            type: "",
+            endValidation: false,
+        })
     };
 
 
     const handlePollEndValidation = () => {
-      
+
         console.log(`You have validated the end of the vote`);
-        if (showPollWater){
+        alert(`You have validated the end of the vote`);
+        if (poll.show && poll.type==="drink"){
           game.onWaterVoteEnded()
-        } else {
+        } else if (poll.show && poll.type==="eat") {
           game.onFoodVoteEnded()
+        } else {
+          console.error("PollEndValidation fail");
         }
         game._gameTable.players.forEach((p, i) => {
           playerController.update(p)
@@ -145,13 +157,18 @@ function GameView(props) {
           playerController.update(p)
         });
         gameController.update(game);
+
+        setPoll({
+            show: false,
+            type: "",
+            endValidation: false,
+        })
     };
 
     const handleSpectate = () => {
-  
-      console.log(`${clientPlayer.id}, ${clientPlayer.nickname} has been killed, clientPlayer = `, clientPlayer);
-      clientPlayer.spectateGame = true;
-      playerController.update(clientPlayer)
+      thisPlayer.spectateGame = true;
+      playerController.update(thisPlayer)
+      setShowDead(false)
       game._gameTable.killedPlayers.forEach((p, i) => {
         playerController.update(p)
       });
@@ -175,19 +192,23 @@ function GameView(props) {
                               show={showAction}
                               onAction={handleAction}
                           />
+                          <SickModal
+                              showSick={showSick}
+                              handleSick={handleSick}
+                          />
                           <PollModal
-                              show={showPoll}
+                              show={poll.show}
                               players={game._gameTable.players.filter(p => !p.isDead)}
-                              pollType={pollType}
+                              pollType={poll.type}
                               handleVoteSubmit={handleVoteSubmit}
                           />
                           <PollEndValidationModal
-                              show={showPollEndValidation}
-                              pollType={pollType}
+                              show={poll.endValidation}
+                              pollType={poll.type}
                               handlePollEndValidation={handlePollEndValidation}
                           />
                           <DeadModal
-                              show={showDeadModal}
+                              show={showDead}
                               handleSpectate={handleSpectate}
                           />
                       </Col>
