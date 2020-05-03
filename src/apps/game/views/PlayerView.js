@@ -2,7 +2,14 @@
 import React, {useState, useEffect} from 'react';
 
 // Import bootstrap
-import {Card}  from 'react-bootstrap';
+import {
+  Card,
+  Container,
+  Row,
+  Col,
+  Image,
+  Media
+}  from 'react-bootstrap';
 
 // Controller imports
 import PlayerController from "../controller/PlayerController"
@@ -28,6 +35,7 @@ export default function PlayerView(props) {
 
         const currentHand = (player.currentHand) ? player.currentHand : ["Card1", "Card2", "Card3", "Card4"]
 
+        player && console.log("player.photoURL", player.photoURL);
         return (
             <Card
                 className={
@@ -53,6 +61,20 @@ export default function PlayerView(props) {
                     : ""
                 }
             >
+            <Card.Header>
+                <Media>
+                  <img
+                    width={40}
+                    height={40}
+                    className="mr-3"
+                    src={player.photoURL}
+                    alt="profilePicture"
+                  />
+                  <Media.Body>
+                    <h5><small>{player.nickname}</small></h5>
+                  </Media.Body>
+                </Media>
+            </Card.Header>
             <Card.Body>
                 <Card.Text>
                     {
@@ -63,7 +85,6 @@ export default function PlayerView(props) {
                             : <i className="fas fa-smile fa-5x" />
                     }
                     <br />
-                    <small>{player.nickname}</small>
                 </Card.Text>
             </Card.Body>
             </Card>

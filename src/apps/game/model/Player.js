@@ -6,6 +6,7 @@ export const SERDE_KEYS = [
   'userId', 'nickname', '_sickenessLevel',
 'isDead', 'currentHand', 'hasPlayedThisRound',
 'waterVote', 'foodVote', 'spectateGame',
+'photoURL',
 ];
 /**
  * Player holds player state in game
@@ -24,6 +25,8 @@ export default class Player
         this.waterVote = null
         this.foodVote = null
         this.spectateGame = null
+        
+        this.photoURL = loggedInUser.photoURL
     }
 
     get id() { return this.userId; }
@@ -172,7 +175,7 @@ export default class Player
             waterVote: this.waterVote,
             foodVote: this.foodVote,
             spectateGame: this.spectateGame,
-            
+            photoURL: this.photoURL,
         }
     }
 
@@ -180,7 +183,7 @@ export default class Player
       let player = null;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
       {
-          const loggedInUser = new LoggedInUser(doc['userId'], doc['nickname']);
+          const loggedInUser = new LoggedInUser(doc['userId'], doc['nickname'], doc['photoURL']);
           player = new Player(loggedInUser);
           player._sickenessLevel = doc['_sickenessLevel'];
           player.isDead = doc['isDead'];

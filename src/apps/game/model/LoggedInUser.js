@@ -1,6 +1,6 @@
 import Utils from './Utils'
 
-const SERDE_KEYS = ['_id', 'nickname'];
+const SERDE_KEYS = ['_id', 'nickname', 'photoURL'];
 /**
  * Features:
  * - connect to a GamingRoom by slugname
@@ -8,10 +8,11 @@ const SERDE_KEYS = ['_id', 'nickname'];
 export default class LoggedInUser
 {
 
-  constructor (uid, nickname)
+  constructor (uid, nickname, photoURL=null)
   {
     this._id = uid;
     this.nickname = nickname;
+    this.photoURL = photoURL;
   }
 
 
@@ -28,6 +29,7 @@ export default class LoggedInUser
       return {
         _id: this._id,
         nickname: this.nickname,
+        photoURL: this.photoURL,
       };
   }
 
@@ -36,7 +38,11 @@ export default class LoggedInUser
     let loggedInUser;
     if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
     {
-        loggedInUser = new LoggedInUser(doc['_id'], doc['nickname']);
+        loggedInUser = new LoggedInUser(
+          doc['_id'], 
+          doc['nickname'],
+          doc['photoURL'],
+        );
     }
     return loggedInUser;
   }
