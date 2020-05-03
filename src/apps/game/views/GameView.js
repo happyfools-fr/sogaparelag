@@ -49,6 +49,7 @@ function GameView(props) {
     );
 
     console.log('GameView: after UseEffect');
+    console.log("Game :",game)
     let clientPlayer = null;
     let showDeadModal = false;
     let showPollEndValidation = false;
@@ -57,7 +58,7 @@ function GameView(props) {
     let showPoll = false;
     let pollType = "unknown";
     let showAction = false;
-    
+
     function setShowBoolean(game, user)
     {
       if (game && user)
@@ -85,14 +86,14 @@ function GameView(props) {
         showPollFood = false;
         showPoll = false;
         pollType = "unknown";
-        showAction = false;  
+        showAction = false;
       }
     }
-    
+
     setShowBoolean(game, user);
-    console.log("clientPlayer, showDeadModal, clientPlayer, showPollEndValidation, showPollWater, showPollFood, showPoll, pollType, showAction", 
+    console.log("clientPlayer, showDeadModal, clientPlayer, showPollEndValidation, showPollWater, showPollFood, showPoll, pollType, showAction",
       clientPlayer, showDeadModal, clientPlayer, showPollEndValidation, showPollWater, showPollFood, showPoll, pollType, showAction);
-    
+
 
     const handleAction = (action, extras) => {
 
@@ -151,7 +152,7 @@ function GameView(props) {
         gameController.update(game);
         // Update game in waiting room if needed
     };
-    
+
     const handleSpectate = () => {
       alert(`You are dead man!`);
       clientPlayer.spectateGame = true;

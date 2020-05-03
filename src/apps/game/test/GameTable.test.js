@@ -15,6 +15,13 @@ const assert = require('assert');
 
 describe('GameTable', function()
 {
+    /* Need to handle this because it can happen that we load a game with all dead players*/
+    it('init 0 player game without crashing', () =>
+    {
+        const _gameTable = new GameTable([])
+    });
+
+
     it('init 1 player game without crashing', () =>
     {
         let player1 = new Player(user1)

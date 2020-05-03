@@ -25,7 +25,7 @@ export class GameTable
         this.roundIndex = roundIndex ? roundIndex : 1;
 
         this.endOfRound = false;
-        
+
         this.killedPlayers = killedPlayers;
 
         // console.log("GameTable.constructor")
@@ -152,6 +152,11 @@ export class GameTable
 
     _initCurrentPlayer()
     {
+
+        if (this.players.length === 0) {
+            return
+        }
+
         let currentPlayerId = this.players[this.indexOfCurrentPlayer].userId
 
         let playerEnumerator = this.getPlayerEnumerator()
@@ -255,7 +260,8 @@ export class GameTable
         while (true)
         {
             let currentPlayer = playerEnumerator.next()
-            if (currentPlayer.done)
+
+            if (currentPlayer.done || !currentPlayer.value)
                 break
 
             if (currentPlayer.value.player === this._headPlayer.player)
@@ -291,7 +297,7 @@ export class GameTable
         const indexOfHeadPlayer = doc['indexOfHeadPlayer'];
         const indexOfCurrentPlayer = doc['indexOfCurrentPlayer'];
         const killedPlayers = doc['killedPlayers'].map((pDoc) => { return Player.fromDoc(pDoc) });
-        gameTable = new GameTable(players, indexOfHeadPlayer, indexOfCurrentPlayer, parseInt(doc['roundIndex']), killedPlayers);        
+        gameTable = new GameTable(players, indexOfHeadPlayer, indexOfCurrentPlayer, parseInt(doc['roundIndex']), killedPlayers);
       }
       return gameTable;
     }

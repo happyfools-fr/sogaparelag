@@ -121,7 +121,7 @@ export default class Game
         console.log("!waterVoteEnded", this.waterVoteEnded)
         return;
       }
-      alert("onWaterVoteEnded");
+      console.log("onWaterVoteEnded");
       this.onWaterVoteEnded();
     }
 
@@ -134,7 +134,7 @@ export default class Game
     {
       //Kill the voted Player
       let playerIdToKill = this._pollManager.voteWithContext(RoundAction.WaterVote)
-      alert('onWaterVoteEnded killing player playerIdToKill = ' + playerIdToKill)
+      console.log('onWaterVoteEnded killing player playerIdToKill = ' + playerIdToKill)
       this._gameTable.killPlayer(playerIdToKill)
 
       if (this._gameTable.playersCount === 0)
@@ -168,7 +168,7 @@ export default class Game
     {
       if (this._gameTable.playersCount - this._waterManager.inventory > 0)
       {
-        alert("Time for Water Vote!");
+        console.log("Time for Water Vote!");
         this.pollWater = true;
         this._gameTable.players.forEach( p => {
           p.waterVote = null;
@@ -192,7 +192,7 @@ export default class Game
     {
       if (this._gameTable.playersCount - this._foodManager.inventory > 0)
       {
-        alert("Time for Food Vote!");
+          console.log("Time for Food Vote!");
         this.pollFood = true;
         this._gameTable.players.forEach( p => {
           p.foodVote = null;
@@ -219,7 +219,7 @@ export default class Game
           console.log("!this.footVoteEnded", !this.footVoteEnded)
           return
       }
-      alert("onFoodVoteEnded");
+      console.log("onFoodVoteEnded");
       this.onFoodVoteEnded();
     }
 
@@ -227,8 +227,7 @@ export default class Game
     {
       //Kill the voted Player
       let playerIdToKill = this._pollManager.voteWithContext(RoundAction.FoodVote)
-      alert('onFoodVoteEnded killing player playerIdToKill = ' + playerIdToKill)
-      this._gameTable.killPlayer(playerIdToKill)
+      console.log('onFoodVoteEnded killing player playerIdToKill = ' + playerIdToKill)
 
       if (this._gameTable.playersCount === 0)
       {
@@ -237,6 +236,8 @@ export default class Game
         alert("GAME OVER");
         return
       }
+
+      this._gameTable.killPlayer(playerIdToKill)
 
       //enough water to play next round?
       if (this._gameTable.playersCount - this._foodManager.inventory <= 0)
