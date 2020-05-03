@@ -8,12 +8,20 @@ import {MIN_NUMBER_PLAYERS, MAX_NUMBER_PLAYERS} from '../model/WaitingRoom'
 const user1 = new LoggedInUser(1, 'toto')
 const user2 = new LoggedInUser(2, 'tata')
 const user3 = new LoggedInUser(3, 'titi')
+const user4 = new LoggedInUser(3, 'titicaca')
 
 const assert = require('assert');
 
 
 describe('GameTable', function()
 {
+    /* Need to handle this because it can happen that we load a game with all dead players*/
+    it('init 0 player game without crashing', () =>
+    {
+        const _gameTable = new GameTable([])
+    });
+
+
     it('init 1 player game without crashing', () =>
     {
         let player1 = new Player(user1)
@@ -214,9 +222,11 @@ describe('GameTable', function()
         let player1 = new Player(user1)
         let player2 = new Player(user2)
         let player3 = new Player(user3)
+        let killedPlayer4 = new Player(user3)
         const listPlayers = [player1, player2, player3];
         let roundIndex = 10;
         const gameTable = new GameTable(listPlayers, 1, 1, roundIndex);
+        const killedPlayers = [killedPlayer4];
 
         const doc = gameTable.toDoc();
 
@@ -226,6 +236,8 @@ describe('GameTable', function()
         assert.deepEqual(doc['indexOfHeadPlayer'], gameTable.indexOfHeadPlayer);
         assert.deepEqual(doc['indexOfCurrentPlayer'], gameTable.indexOfCurrentPlayer);
         assert.deepEqual(doc['roundIndex'], gameTable.roundIndex);
+        assert.deepEqual(doc['killedPlayers'], gameTable.killedPlayers.map(p => {return p.toDoc();}));
+
 
     });
 
@@ -240,12 +252,14 @@ describe('GameTable', function()
         let indexOfHeadPlayer = 4;
         let indexOfCurrentPlayer = 0
         let roundIndex = 10;
+        let killedPlayers = [];
         const doc = {
           players: newListPlayers.map((p) => {return p.toDoc();}),
           playersCount: newListPlayers.length,
           indexOfHeadPlayer: indexOfHeadPlayer,
           indexOfCurrentPlayer: indexOfCurrentPlayer,
           roundIndex: roundIndex,
+          killedPlayers: killedPlayers.map((p) => {return p.toDoc();}),
         }
 
         let gameTable = GameTable.fromDoc(doc);
@@ -254,6 +268,7 @@ describe('GameTable', function()
         assert.deepEqual(gameTable.indexOfHeadPlayer, indexOfHeadPlayer);
         assert.deepEqual(gameTable.indexOfCurrentPlayer, indexOfCurrentPlayer);
         assert.equal(gameTable.roundIndex, roundIndex);
+        assert.deepEqual(gameTable.killedPlayers, killedPlayers);
 
     });
 

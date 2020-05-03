@@ -107,9 +107,9 @@ export default class WaitingRoom
         waitingRoom._id = doc['_id'];
         waitingRoom.slugname = doc['slugname'];
         waitingRoom._loggedInUsers = doc['_loggedInUsers'].map((uDoc) => { return LoggedInUser.fromDoc(uDoc); });
-        console.log("doc['_currentGame']", doc['_currentGame'])
+        // console.log("doc['_currentGame']", doc['_currentGame'])
         const game = Game.fromDoc(doc['_currentGame']);
-        console.log("fromDoc game", game)
+        // console.log("fromDoc game", game)
         waitingRoom._currentGame = game;
       }
 

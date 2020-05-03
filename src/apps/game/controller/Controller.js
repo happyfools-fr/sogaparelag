@@ -37,6 +37,7 @@ class Controller {
     }
 
     async push(object) {
+      // console.log("object in Controller.push", object);
         await this._database.collection(this._objectType)
             .doc(this._getObjectId(object))
             .set(this._objectToFirestoreDoc(object))
@@ -100,6 +101,7 @@ class Controller {
             .onSnapshot(
                 (snapshot) => {
                     let object = this._objectFromFirestoreDoc(snapshot.data());
+                    // console.log("listen object ", object);
                     observer(object)
                 }
             );

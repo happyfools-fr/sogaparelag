@@ -105,6 +105,9 @@ function GameView(props) {
         game._gameTable.players.forEach((p, i) => {
           playerController.update(p)
         });
+        game._gameTable.killedPlayers.forEach((p, i) => {
+          playerController.update(p)
+        });
         gameController.update(game);
         // Update game in waiting room if needed
 
@@ -122,6 +125,9 @@ function GameView(props) {
         thisPlayer.performVote(game, actionToPerform, votedPlayer.id);
         console.log("thisPlayer after vote", thisPlayer);
         game._gameTable.players.forEach((p, i) => {
+          playerController.update(p)
+        });
+        game._gameTable.killedPlayers.forEach((p, i) => {
           playerController.update(p)
         });
         gameController.update(game);
@@ -149,6 +155,9 @@ function GameView(props) {
         game._gameTable.players.forEach((p, i) => {
           playerController.update(p)
         });
+        game._gameTable.killedPlayers.forEach((p, i) => {
+          playerController.update(p)
+        });
         gameController.update(game);
         // Update game in waiting room if needed
 
@@ -164,6 +173,10 @@ function GameView(props) {
       thisPlayer.spectateGame = true;
       playerController.update(thisPlayer)
       setShowDead(false)
+      game._gameTable.killedPlayers.forEach((p, i) => {
+        playerController.update(p)
+      });
+      gameController.update(game);
     }
 
     if (game) {
