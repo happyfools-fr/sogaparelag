@@ -60,7 +60,7 @@ function GameView(props) {
         : false
     )
 
-    const [showSick, setShowSick] = useState(false)
+    const [showSick, setShowSick] = useState({show : false, click : 0})
 
     function setShowBoolean(game, user)
     {
@@ -78,17 +78,18 @@ function GameView(props) {
             })
         } else if (!showAction && shouldShowAction){
             setShowAction(true)
-        } else if (!showSick && shouldShowSick) {
-            setShowSick(true)
+        } else if (shouldShowSick && !showSick.show) {
+            setShowSick({show: true, click: 0})
+        } else if (!shouldShowSick && showSick.show) {
+            setShowSick({show: false, click: 0})
         }
     }
 
-    (game && user && !showDead && !showSick && !poll.endValidation) && setShowBoolean(game, user);
+    (game && user && !showDead && (!showSick.show || showSick.click) && !poll.endValidation) && setShowBoolean(game, user);
 
 
     const handleSick = () => {
-        console.log("handleSick")
-        setShowSick(false)
+        setShowSick({show: true, click: showSick.click + 1})
     }
 
     const handleAction = (action, extras) => {
@@ -183,8 +184,8 @@ function GameView(props) {
                               onAction={handleAction}
                           />
                           <SickModal
-                              show={showSick}
-                              onAction={handleSick}
+                              showSick={showSick}
+                              handleSick={handleSick}
                           />
                           <PollModal
                               show={poll.show}

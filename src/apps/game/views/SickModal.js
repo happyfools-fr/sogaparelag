@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import {Modal, Button} from 'react-bootstrap';
 
@@ -9,12 +9,13 @@ import {Modal, Button} from 'react-bootstrap';
 */
 export default function DeadModal(props) {
 
-    let show = props.show
+    // console.log("is sick :", props.showSick.show)
+    // console.log("has click :", props.showSick.click)
 
-    const handleSick = (props.handleSick) ? props.handleSick : () => {show = false}
+    const show = (props.showSick.show && !props.showSick.click)
 
     return (
-        <Modal show={show} centered onHide={handleSick}>
+        <Modal show={show} centered onHide={props.handleSick}>
             <Modal.Header closeButton>
                 <Modal.Title>
                     You're sick &nbsp;&nbsp;
@@ -24,9 +25,6 @@ export default function DeadModal(props) {
             <Modal.Body>
                 You lost all the wood you went for... And you won't be able to play in the next round.
             </Modal.Body>
-            {/* <Modal.Footer>
-                <Button variant="dark" onClick={handleSick}>Oh...</Button>
-            </Modal.Footer> */}
         </Modal>
     )
 }
