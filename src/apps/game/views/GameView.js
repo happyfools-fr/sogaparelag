@@ -48,8 +48,6 @@ function GameView(props) {
         [gameId, setGame]
     );
 
-    // console.log('GameView: after UseEffect');
-    // console.log("Game :",game)
     let clientPlayer = null;
     let showDeadModal = false;
     let showPollEndValidation = false;
@@ -98,13 +96,12 @@ function GameView(props) {
     const handleAction = (action, extras) => {
 
         const player = game.currentPlayer;
-        console.log("Selected action = ", action)
+        console.log("Selected action = ", action);
         console.log("extras", extras);
-
         let intExtras = parseInt(extras);
         console.log("intExtras", intExtras);
-        player.performAction(game, action, parseInt(extras));
-        console.log("player.performAction(game ", game)
+        player.performAction(game, action, intExtras);
+        console.log("After player.performAction: game", game)
         game._gameTable.players.forEach((p, i) => {
           playerController.update(p)
         });
@@ -112,7 +109,6 @@ function GameView(props) {
           playerController.update(p)
         });
         gameController.update(game);
-        // Update game in waiting room if needed
     };
 
     const handleVoteSubmit = (chosenPlayer) => {
@@ -131,11 +127,11 @@ function GameView(props) {
           playerController.update(p)
         });
         gameController.update(game);
-        // Update game in waiting room if needed
     };
 
 
     const handlePollEndValidation = () => {
+      
         console.log(`You have validated the end of the vote`);
         if (showPollWater){
           game.onWaterVoteEnded()
@@ -149,19 +145,18 @@ function GameView(props) {
           playerController.update(p)
         });
         gameController.update(game);
-        // Update game in waiting room if needed
     };
 
     const handleSpectate = () => {
-      alert(`You are dead man!`);
+  
+      console.log(`${clientPlayer.id}, ${clientPlayer.nickname} has been killed, clientPlayer = `, clientPlayer);
       clientPlayer.spectateGame = true;
       playerController.update(clientPlayer)
       game._gameTable.killedPlayers.forEach((p, i) => {
         playerController.update(p)
       });
       gameController.update(game);
-
-    }
+    };
 
     if (game) {
       if(!game._endOfGame){

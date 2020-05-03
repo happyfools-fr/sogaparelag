@@ -1,6 +1,11 @@
 // React imports
 import React, { useState, useEffect } from 'react';
-
+import {
+  Redirect,
+  Route,
+  useHistory,
+  useLocation,
+} from "react-router-dom";
 import GameMenuView from './views/GameMenuView';
 import WaitingRoom from './model/WaitingRoom'
 import WaitingRoomController from './controller/WaitingRoomController'
@@ -14,6 +19,9 @@ export default function GameApp(props) {
   const [waitingRoomId, setWaitingRoomId] = useState();
 
   const [slugname, setSlugname] = useState(props.slugname);
+    
+  let history = useHistory();
+
 
   useEffect(
       () => {
@@ -26,13 +34,13 @@ export default function GameApp(props) {
       [slugname, setWaitingRoomId]
   );
 
-
   const handleClickCreateNewGame = (click) => {
       let waitingRoom = new WaitingRoom();
       waitingRoomController.push(waitingRoom);
       alert('New game created, share this: ' + window.location.origin + '/game/' + waitingRoom.slugname);
       setSlugname(waitingRoom.slugname);
       setWaitingRoomId(waitingRoom._id);
+      history.push('/game/' + waitingRoom.slugname)
   }
 
 
