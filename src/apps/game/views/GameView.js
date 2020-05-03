@@ -48,12 +48,11 @@ function GameView(props) {
         [gameId, setGame]
     );
 
-    console.log('After UseEffect');
+    console.log('GameView: after UseEffect');
     let clientPlayerFromPlayerDb = null;
     let showDeadModal = false;
     let clientPlayer = null;
     let showPollEndValidation = false;
-    let canPlay = false;
     let showPollWater = false;
     let showPollFood = false;
     let showPoll = false;
@@ -66,22 +65,32 @@ function GameView(props) {
       {
         clientPlayerFromPlayerDb = playerController.get(user.id);
         showDeadModal = clientPlayerFromPlayerDb.isDead && !clientPlayerFromPlayerDb.spectateGame;
-        if(!showDeadModal)
+        if(!showDeadModal && !clientPlayerFromPlayerDb.isDead)
         {
-          clientPlayer = game._gameTable.players.filter(p => p.id === user.id)[0];
-          showPollEndValidation = (game.headPlayerId === clientPlayer.id) && (game.waterVoteEnded || game.footVoteEnded );
-          showPollWater = !showPollEndValidation && game.pollWater && !clientPlayer.waterVote;
-          showPollFood = !showPollEndValidation && game.pollFood && !clientPlayer.foodVote;
-          showPoll = !showPollEndValidation && ((showPollWater && !showPollFood) || (!showPollWater && showPollFood));
-          pollType = showPollWater ? "drink" : "eat";
-          showAction = !showPollEndValidation && !showPoll && !clientPlayer.isSick && (game.currentPlayerId === clientPlayer.id);
+          if(game._gameTable.players.filter(p => p.id === user.id).length > 0){
+            clientPlayer = game._gameTable.players.filter(p => p.id === user.id)[0];
+            showPollEndValidation = (game.headPlayerId === clientPlayer.id) && (game.waterVoteEnded || game.footVoteEnded );
+            showPollWater = !showPollEndValidation && game.pollWater && !clientPlayer.waterVote;
+            showPollFood = !showPollEndValidation && game.pollFood && !clientPlayer.foodVote;
+            showPoll = !showPollEndValidation && ((showPollWater && !showPollFood) || (!showPollWater && showPollFood));
+            pollType = showPollWater ? "drink" : "eat";
+            showAction = !showPollEndValidation && !showPoll && !clientPlayer.isSick && (game.currentPlayerId === clientPlayer.id);
+            return;
+          }
+          return;
         }
+        showPollEndValidation = false;
+        showPollWater = false;
+        showPollFood = false;
+        showPoll = false;
+        pollType = "unknown";
+        showAction = false;  
       }
     }
     
     setShowBoolean(game, user);
-    console.log("clientPlayerFromPlayerDb, showDeadModal, clientPlayer, showPollEndValidation, canPlay, showPollWater, showPollFood, showPoll, pollType, showAction", 
-      clientPlayerFromPlayerDb, showDeadModal, clientPlayer, showPollEndValidation, canPlay, showPollWater, showPollFood, showPoll, pollType, showAction);
+    console.log("clientPlayerFromPlayerDb, showDeadModal, clientPlayer, showPollEndValidation, showPollWater, showPollFood, showPoll, pollType, showAction", 
+      clientPlayerFromPlayerDb, showDeadModal, clientPlayer, showPollEndValidation, showPollWater, showPollFood, showPoll, pollType, showAction);
     
 
     const handleAction = (action, extras) => {

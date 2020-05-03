@@ -96,7 +96,7 @@ describe('PollManager', function()
         assert.equal(_poll.voteWithContext(RoundAction.WaterVote), 42)
     });
 
-    it('2 againt #42 - 2 against #1 - with #1 votes #42', () =>
+    it('2 against #42 - 2 against #1 - with #1 votes #42', () =>
     {
         let id1 = uuidv1();
         let id2 = uuidv1();
@@ -122,7 +122,7 @@ describe('PollManager', function()
         assert.equal(_poll.voteWithContext(RoundAction.WaterVote), id42)
     });
 
-    it('2 againt #42 - 2 against #1 - with #1 votes #1', () =>
+    it('2 against #42 - 2 against #1 - with #1 votes #1', () =>
     {
         let id1 = uuidv1();
         let id2 = uuidv1();
@@ -148,7 +148,7 @@ describe('PollManager', function()
         assert.equal(_poll.voteWithContext(RoundAction.WaterVote), id1)
     });
 
-    it('2 againt #42 - 2 against #1 - with #1 votes #2 throws', () =>
+    it('2 against #42 - 2 against #1 - with #1 votes #2 throws', () =>
     {
         let id1 = uuidv1();
         let id2 = uuidv1();
@@ -174,7 +174,7 @@ describe('PollManager', function()
         assert.throws(() => { _polll.vote() })
     });
 
-    it('everybody votes againt playerId #42 but all but him are sick', () =>
+    it('everybody votes against playerId #42 but all but him are sick', () =>
     {
         let player1 = new MockPlayer(new LoggedInUser(1, 'toto'))
         player1._choosePlayerIdToVoteAgainst = 42
@@ -195,7 +195,7 @@ describe('PollManager', function()
 
         const _poll = new PollManager(gameTable)
 
-        assert.equal(_poll.voteWithContext(RoundAction.WaterVote), 1)
+        assert.equal(_poll.voteWithContext(RoundAction.WaterVote), 42)
     });
 
 });
