@@ -22,7 +22,7 @@ export default function PollModal(props) {
         {_id: 7, nickname: "Tutu"}, {_id: 8, nickname: "Toto"},
     ];
 
-    const handleVoteSubmit = (props.handleVoteSubmit) ? props.handleVoteSubmit : (submit) => {
+    const handlePoll = (props.handlePoll) ? props.handlePoll : (submit) => {
         console.log(vote._id);
     };
 
@@ -43,7 +43,7 @@ export default function PollModal(props) {
                     <Modal.Footer>
                         <Button variant="primary" type="button"
                             onClick={
-                                () => {handleVoteSubmit(vote); setVote();}
+                                () => {handlePoll(vote); setVote();}
                             }
                         >
                             Vote

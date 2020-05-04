@@ -125,6 +125,17 @@ export class GameTable
         throw Error('Cannot find player ' + player)
     }
 
+    getPlayerFromId(playerId)
+    {
+        for (let i = 0; i < this.players.length; i++)
+        {
+          if (this.players[i].id === playerId){
+              return this.players[i];
+          }
+        }
+        throw Error('Cannot find player ' + playerId)
+    }
+
     _initTable(players, indexOfHeadPlayer = 0)
     {
         let previousCreatedPlayerOnTable = this._headPlayer;

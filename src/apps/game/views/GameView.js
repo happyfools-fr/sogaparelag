@@ -1,36 +1,17 @@
 // React imports
 import React, { useState, useEffect } from 'react';
 
-// Bootstrap imports
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Col, Row } from 'react-bootstrap';
-
-// Component imports
-import GameHistoryView from './GameHistoryView';
-
 // Controller imports
 import GameController from '../controller/GameController';
 import PlayerController from '../controller/PlayerController';
 
 // View imports
-import TurnModal from './TurnModal';
-import PollModal from './PollModal';
-import DeadModal from './DeadModal';
-import PollEndValidationModal from './PollEndValidationModal';
-import GameTableView from './GameTableView';
-import AllPlayersView from './AllPlayersView';
+import DayView from './DayView';
+import NightView from './NightView';
 import SavedView from './SavedView';
-import GameOverView from './GameOverView'
-import SickModal from './SickModal'
-
-import {RoundAction} from '../model/RoundAction'
+import GameOverView from './GameOverView';
 
 
-/**
-* @params (Game) game
-* @params {LoggedInUser} user
-* @params {FirebaseService} firebaseService
-*/
 function GameView(props) {
 
     const gameId = props.gameId;
@@ -49,18 +30,6 @@ function GameView(props) {
 
     const playerController = new PlayerController(props.firebaseService.ft)
     let thisPlayer = playerController.get(user.id);
-
-    const [poll, setPoll] = useState({show: false, type: "", endValidation: false})
-
-    const [showAction, setShowAction] = useState(false)
-
-    const [showDead, setShowDead] = useState(
-        (thisPlayer)
-        ? thisPlayer.isDead && !thisPlayer.spectateGame
-        : false
-    )
-
-    const [showSick, setShowSick] = useState({show : false, click : 0})
 
     function setShowBoolean(game, user)
     {
@@ -90,134 +59,25 @@ function GameView(props) {
     (game && user && !showDead && (!showSick.show || showSick.click) && !poll.endValidation) && setShowBoolean(game, user);
 
 
-    const handleSick = () => {
-        setShowSick({show: true, click: showSick.click + 1})
+    const updateGameAndPlayers = () => {
+        game._gameTable.players.forEach((p, i) => {
+          playerController.update(p)
+        });
+        game._gameTable.killedPlayers.forEach((p, i) => {
+          playerController.update(p)
+        });
+        gameController.update(game);
     }
 
-    const handleAction = (action, extras) => {
 
-        const player = game.currentPlayer;
-        console.log("Selected action = ", action);
-        console.log("extras", extras);
-        let intExtras = parseInt(extras);
-        console.log("intExtras", intExtras);
-        player.performAction(game, action, intExtras);
-        console.log("After player.performAction: game", game)
-        game._gameTable.players.forEach((p, i) => {
-          playerController.update(p)
-        });
-        game._gameTable.killedPlayers.forEach((p, i) => {
-          playerController.update(p)
-        });
-        gameController.update(game);
-
-        setShowAction(false)
-    };
-
-    const handleVoteSubmit = (chosenPlayer) => {
-
-        console.log("chosenPlayer", chosenPlayer);
-        const votedPlayer = game._gameTable.players.filter(p => chosenPlayer.id === p.id)[0];
-        console.log(`${thisPlayer.nickname} voted for ${votedPlayer.nickname}`)
-
-        const actionToPerform = (poll.type === "drink") ? RoundAction.WaterVote : RoundAction.FoodVote;
-        thisPlayer.performVote(game, actionToPerform, votedPlayer.id);
-        console.log("thisPlayer after vote", thisPlayer);
-        game._gameTable.players.forEach((p, i) => {
-          playerController.update(p)
-        });
-        game._gameTable.killedPlayers.forEach((p, i) => {
-          playerController.update(p)
-        });
-        gameController.update(game);
-
-        setPoll({
-            show: false,
-            type: "",
-            endValidation: false,
-        })
-    };
-
-
-    const handlePollEndValidation = () => {
-
-        console.log(`You have validated the end of the vote`);
-        alert(`You have validated the end of the vote`);
-        if (poll.show && poll.type==="drink"){
-          game.onWaterVoteEnded()
-        } else if (poll.show && poll.type==="eat") {
-          game.onFoodVoteEnded()
-        } else {
-          console.error("PollEndValidation fail");
-        }
-        game._gameTable.players.forEach((p, i) => {
-          playerController.update(p)
-        });
-        game._gameTable.killedPlayers.forEach((p, i) => {
-          playerController.update(p)
-        });
-        gameController.update(game);
-
-        setPoll({
-            show: false,
-            type: "",
-            endValidation: false,
-        })
-    };
-
-    const handleSpectate = () => {
-      thisPlayer.spectateGame = true;
-      playerController.update(thisPlayer)
-      setShowDead(false)
-      game._gameTable.killedPlayers.forEach((p, i) => {
-        playerController.update(p)
-      });
-      gameController.update(game);
-    };
 
     if (game) {
-      if(!game._endOfGame){
-          return (
-              <Container fluid>
-                  <Row>
-                      <Col className="p-2">
-                          <GameTableView className='mt-5' slugname={props.slugname} game={game}/>
-                          <AllPlayersView
-                              players={game._gameTable.players}
-                              currentPlayerId={game.currentPlayerId}
-                              headPlayerId={game.headPlayerId}
-                              firebaseService={props.firebaseService}
-                          />
-                          <TurnModal
-                              show={showAction}
-                              onAction={handleAction}
-                          />
-                          <SickModal
-                              showSick={showSick}
-                              handleSick={handleSick}
-                          />
-                          <PollModal
-                              show={poll.show}
-                              players={game._gameTable.players.filter(p => !p.isDead)}
-                              pollType={poll.type}
-                              handleVoteSubmit={handleVoteSubmit}
-                          />
-                          <PollEndValidationModal
-                              show={poll.endValidation}
-                              pollType={poll.type}
-                              handlePollEndValidation={handlePollEndValidation}
-                          />
-                          <DeadModal
-                              show={showDead}
-                              handleSpectate={handleSpectate}
-                          />
-                      </Col>
-                      <Col sm={4} className="p-2">
-                          <GameHistoryView game={game} />
-                      </Col>
-                  </Row>
-              </Container>
-          );
+        if(!game._endOfGame){
+            if (day) {
+                <DayView />
+            } else {
+                <NightView />
+            }
         } else if (game._win){
             return (
               <SavedView
