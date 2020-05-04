@@ -70,7 +70,9 @@ export default function App() {
   function ProtectedGameAppWithSlugname({user, firebaseService}) {
     let match = useRouteMatch("/game/:gameSlugname");
     let slugname = match ? match.params.gameSlugname : null;
-    let loggedInUser = user.info ? new LoggedInUser(user.info.uid, user.info.displayName) : null;
+    let loggedInUser = user.info ? new LoggedInUser(user.info.uid, user.info.displayName, user.info.photoURL) : null;
+    console.log("ProtectedGameAppWithSlugname loggedInUser", loggedInUser)
+    
     return (
       user.loggedIn
       &&
