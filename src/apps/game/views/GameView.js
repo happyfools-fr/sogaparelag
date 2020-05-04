@@ -97,13 +97,12 @@ function GameView(props) {
     const handleAction = (action, extras) => {
 
         const player = game.currentPlayer;
-        console.log("Selected action = ", action)
+        console.log("Selected action = ", action);
         console.log("extras", extras);
-
         let intExtras = parseInt(extras);
         console.log("intExtras", intExtras);
-        player.performAction(game, action, parseInt(extras));
-        console.log("player.performAction(game ", game)
+        player.performAction(game, action, intExtras);
+        console.log("After player.performAction: game", game)
         game._gameTable.players.forEach((p, i) => {
           playerController.update(p)
         });
@@ -111,8 +110,6 @@ function GameView(props) {
           playerController.update(p)
         });
         gameController.update(game);
-        // Update game in waiting room if needed
-
 
         setShowAction(false)
     };
@@ -133,7 +130,6 @@ function GameView(props) {
           playerController.update(p)
         });
         gameController.update(game);
-        // Update game in waiting room if needed
 
         setPoll({
             show: false,
@@ -161,7 +157,6 @@ function GameView(props) {
           playerController.update(p)
         });
         gameController.update(game);
-        // Update game in waiting room if needed
 
         setPoll({
             show: false,
@@ -171,7 +166,6 @@ function GameView(props) {
     };
 
     const handleSpectate = () => {
-      alert(`You are dead man!`);
       thisPlayer.spectateGame = true;
       playerController.update(thisPlayer)
       setShowDead(false)
@@ -179,7 +173,7 @@ function GameView(props) {
         playerController.update(p)
       });
       gameController.update(game);
-    }
+    };
 
     if (game) {
       if(!game._endOfGame){
