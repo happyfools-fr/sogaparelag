@@ -18,19 +18,16 @@ import GameHistoryView from './GameHistoryView';
 export default function DayView(props) {
 
     const game = props.game
-
     const thisPlayer = props.thisPlayer
 
     const [showAction, setShowAction] = useState(false)
+    const [showSick, setShowSick] = useState(false)
 
-    const [showSick, setShowSick] = useState({show : false, click : 0})
-
-    const handleSick = () => {
-        setShowSick({show: true, click: showSick.click + 1})
-    }
+    console.log("showAction", showAction)
+    console.log("showSick", showSick)
 
     const handleAction = (action, extras) => {
-        let intExtras = parseInt(extras);
+        const intExtras = parseInt(extras);
         thisPlayer.performAction(game, action, intExtras);
         props.updateGameAndPlayers()
         setShowAction(false)
@@ -39,9 +36,16 @@ export default function DayView(props) {
     if (!game._endOfGame) {
 
         if (thisPlayer.id === game.currentPlayerId) {
-            if (thisPlayer.isSick && !showSick.click && !showSick.show) {
-                setShowSick({show : true, click : 0})
-            } else if (!showAction) {
+            // If player is sick, show sick modal
+            if (thisPlayer.isSick && !showSick) {
+                setShowSick(true)
+
+            // If player is not sick anymore and he has not closedthe modal, hide it
+            } else if (showSick && !thisPlayer.isSick) {
+                setShowSick(false)
+
+            // Show action when it is players turn and he is not sick anymore
+            } else if (!thisPlayer.isSick && !showAction) {
                 setShowAction(true)
             }
         }
@@ -54,7 +58,7 @@ export default function DayView(props) {
                 />
                 <SickModal
                     showSick={showSick}
-                    handleSick={handleSick}
+                    handleSick={() => setShowSick(false)}
                 />
                 <Container fluid>
                     <Row>
