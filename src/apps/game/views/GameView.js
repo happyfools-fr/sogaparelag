@@ -29,34 +29,11 @@ function GameView(props) {
     );
 
     const playerController = new PlayerController(props.firebaseService.ft)
-    let thisPlayer = playerController.get(user.id);
+    const thisPlayer = playerController.get(user.id);
 
-    function setShowBoolean(game, user)
-    {
-        thisPlayer = game._gameTable.players.filter(p => p.id === user.id)[0];
-
-        if (!thisPlayer) {return}
-
-        const shouldShowPoll = (game.pollWater || game.pollFood)
-        const shouldShowAction = (thisPlayer.id === game.currentPlayerId) && !thisPlayer.isSick
-        const shouldShowSick = (thisPlayer.id === game.currentPlayerId) && thisPlayer.isSick
-
-        if (!poll.show && shouldShowPoll) {
-            setPoll( {
-                show : true,
-                type : (game.pollWater) ? "drink" : "eat",
-                endValidation : (thisPlayer.id === game.headPlayerId) && (game.waterVoteEnded || game.footVoteEnded),
-            })
-        } else if (!showAction && shouldShowAction){
-            setShowAction(true)
-        } else if (shouldShowSick && !showSick.show) {
-            setShowSick({show: true, click: 0})
-        } else if (!shouldShowSick && showSick.show) {
-            setShowSick({show: false, click: 0})
-        }
+    const showNight = () => {
+        return (game.pollWater || game.pollFood)
     }
-
-    (game && user && !showDead && (!showSick.show || showSick.click) && !poll.endValidation) && setShowBoolean(game, user);
 
 
     const updateGameAndPlayers = () => {
@@ -70,13 +47,24 @@ function GameView(props) {
     }
 
 
-
-    if (game) {
+    if (game && thisPlayer) {
         if(!game._endOfGame){
-            if (day) {
-                <DayView />
+            if showNight() {
+                <NightView
+                    slugname={props.slugname}
+                    game={game}
+                    thisPlayer = {thisPlayer}
+                    updateGameAndPlayers = {updateGameAndPlayers}
+                    firebaseService = {props.firebaseService}
+                />
             } else {
-                <NightView />
+                <DayView
+                    slugname={props.slugname}
+                    game={game}
+                    thisPlayer = {thisPlayer}
+                    updateGameAndPlayers = {updateGameAndPlayers}
+                    firebaseService = {props.firebaseService}
+                />
             }
         } else if (game._win){
             return (

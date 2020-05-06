@@ -8,24 +8,38 @@ import SickModal from './SickModal';
 import GameTableView from './GameTableView';
 import GameHistoryView from './GameHistoryView';
 
-
+/**
+*   @param (String) slugname
+*   @param (Game) game
+*   @param (Player) player
+*   @param (() => void) updateGameAndPlayers
+*   @param (?) firebaseService
+*/
 export default function DayView(props) {
 
     const game = props.game
+
+    const thisPlayer = props.thisPlayer
 
     const [showAction, setShowAction] = useState(false)
 
     const [showSick, setShowSick] = useState({show : false, click : 0})
 
+    if (thisPlayer.id === game.currentPlayerId) {
+        if (thisPlayer.isSick && !showSick.click && !showSick.show) {
+            setShowSick({show : true, click : 0})
+        } else if (!showAction) {
+            setShowAction(true)
+        }
+    }
 
     const handleSick = () => {
         setShowSick({show: true, click: showSick.click + 1})
     }
 
     const handleAction = (action, extras) => {
-        const player = game.currentPlayer;
         let intExtras = parseInt(extras);
-        player.performAction(game, action, intExtras);
+        thisPlayer.performAction(game, action, intExtras);
         props.updateGameAndPlayers()
         setShowAction(false)
     };

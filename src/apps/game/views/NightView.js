@@ -11,10 +11,19 @@ import GameHistoryView from './GameHistoryView';
 
 import {RoundAction} from '../model/RoundAction'
 
-
+/**
+*   @param (String) slugname
+*   @param (Game) game
+*   @param (Player) player
+*   @param (() => void) updateGameAndPlayers
+*   @param (?) firebaseService
+*
+*/
 export default function NightView (props) {
 
     const game = props.game
+
+    const thisPlayer = props.thisPlayer
 
     const [poll, setPoll] = useState({show: false, type: "", endValidation: false})
 
@@ -23,6 +32,15 @@ export default function NightView (props) {
         ? thisPlayer.isDead && !thisPlayer.spectateGame
         : false
     )
+
+
+    if (!poll.show) {
+        setPoll( {
+            show : true,
+            type : (game.pollWater) ? "drink" : "eat",
+            endValidation : (thisPlayer.id === game.headPlayerId) && (game.waterVoteEnded || game.footVoteEnded),
+        })
+    }
 
     const handlePoll = (chosenPlayer) => {
         const actionToPerform = (poll.type === "drink") ? RoundAction.WaterVote : RoundAction.FoodVote;
@@ -37,12 +55,8 @@ export default function NightView (props) {
 
     const handleSpectate = () => {
       thisPlayer.spectateGame = true;
-      playerController.update(thisPlayer)
       setShowDead(false)
-      game._gameTable.killedPlayers.forEach((p, i) => {
-        playerController.update(p)
-      });
-      gameController.update(game);
+      props.updateGameAndPlayers()
     };
 
 
@@ -64,6 +78,7 @@ export default function NightView (props) {
             endValidation: false,
         })
     };
+
 
     return(
         <div>
