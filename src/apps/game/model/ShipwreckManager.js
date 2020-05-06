@@ -1,4 +1,4 @@
-import ShipwreckCard, {FullDeck} from './ShipwreckCard'
+import {FullDeck} from './ShipwreckCard'
 import shuffle from 'shuffle-array'
 
 export default class ShipwreckManager {

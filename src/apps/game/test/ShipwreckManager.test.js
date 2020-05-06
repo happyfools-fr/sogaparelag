@@ -1,5 +1,5 @@
 import ShipwreckManager from '../model/ShipwreckManager'
-import ShipwreckCard, {FullDeck} from '../model/ShipwreckCard'
+import {FullDeck} from '../model/ShipwreckCard'
 
 const assert = require('assert');
 
