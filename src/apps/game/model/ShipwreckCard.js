@@ -1,5 +1,5 @@
 
-class ShipwreckCard {
+export default class ShipwreckCard {
   
   /*
     Cards can be played, exchanged, or just displayed.
@@ -69,3 +69,39 @@ class ShipwreckCard {
   // Others ??
   
 }
+
+export const FullDeck = [
+  ShipwreckCard.Revolver,
+
+  ShipwreckCard.Club,
+  ShipwreckCard.Tole,
+  ShipwreckCard.CrystalBall,
+  ShipwreckCard.Axe,
+  ShipwreckCard.FishingPoll,
+  ShipwreckCard.Gourd,
+
+  ShipwreckCard.GiftBasket,
+  ShipwreckCard.WaterBottle,
+  ShipwreckCard.Sandwich,
+  ShipwreckCard.StagnantWater,
+  ShipwreckCard.RottenFish,
+  ShipwreckCard.Sardines,
+  ShipwreckCard.Coconut,
+
+  ShipwreckCard.Bullet,
+  ShipwreckCard.AspiVenom,
+  ShipwreckCard.Medication,
+  ShipwreckCard.VoodooDoll,
+  ShipwreckCard.Telescope,
+  ShipwreckCard.WoodenPlank,
+  ShipwreckCard.CannibalistBBQKit,
+  ShipwreckCard.SleepingPill,
+  ShipwreckCard.Pendulum,
+  ShipwreckCard.Matches,
+
+  ShipwreckCard.WinningLottoTicket,
+  ShipwreckCard.BoardGame,
+  ShipwreckCard.DirtyUnderwear,
+  ShipwreckCard.TolietBroom,
+  ShipwreckCard.CarKeys,
+]
