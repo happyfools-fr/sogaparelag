@@ -128,6 +128,8 @@ export default class Game
       console.log('onWaterVoteEnded killing player playerIdToKill = ' + playerIdToKill)
       this._gameTable.killPlayer(playerIdToKill)
 
+      console.log("playerKilled")
+
       if (this._gameTable.playersCount === 0)
       {
         this._endOfGame = true

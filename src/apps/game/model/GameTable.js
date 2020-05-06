@@ -133,6 +133,13 @@ export class GameTable
               return this.players[i];
           }
         }
+
+        for (let i = 0; i < this.killedPlayers.length; i++)
+        {
+          if (this.killedPlayers[i].id === playerId){
+              return this.killedPlayers[i];
+          }
+        }
         throw Error('Cannot find player ' + playerId)
     }
 

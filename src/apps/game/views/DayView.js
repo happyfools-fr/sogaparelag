@@ -25,19 +25,6 @@ export default function DayView(props) {
 
     const [showSick, setShowSick] = useState({show : false, click : 0})
 
-    console.log("player ", thisPlayer.id )
-    console.log("current ", game.currentPlayerId )
-
-    if (thisPlayer.id === game.currentPlayerId) {
-        console.log("current player")
-        if (thisPlayer.isSick && !showSick.click && !showSick.show) {
-            setShowSick({show : true, click : 0})
-        } else if (!showAction) {
-            console.log("show action")
-            setShowAction(true)
-        }
-    }
-
     const handleSick = () => {
         setShowSick({show: true, click: showSick.click + 1})
     }
@@ -49,31 +36,44 @@ export default function DayView(props) {
         setShowAction(false)
     };
 
-    return(
-        <div>
-            <TurnModal
-                show={showAction}
-                onAction={handleAction}
-            />
-            <SickModal
-                showSick={showSick}
-                handleSick={handleSick}
-            />
-            <Container fluid>
-                <Row>
-                    <Col className="p-2">
-                        <GameTableView
-                            className='mt-5'
-                            slugname={props.slugname}
-                            game={game}
-                            firebaseService={props.firebaseService}
-                        />
-                    </Col>
-                    <Col sm={4} className="p-2">
-                        <GameHistoryView game={game} />
-                    </Col>
-                </Row>
-            </Container>
-        </div>
-    );
+    if (!game._endOfGame) {
+
+        if (thisPlayer.id === game.currentPlayerId) {
+            if (thisPlayer.isSick && !showSick.click && !showSick.show) {
+                setShowSick({show : true, click : 0})
+            } else if (!showAction) {
+                setShowAction(true)
+            }
+        }
+
+        return(
+            <div>
+                <TurnModal
+                    show={showAction}
+                    onAction={handleAction}
+                />
+                <SickModal
+                    showSick={showSick}
+                    handleSick={handleSick}
+                />
+                <Container fluid>
+                    <Row>
+                        <Col className="p-2">
+                            <GameTableView
+                                className='mt-5'
+                                slugname={props.slugname}
+                                game={game}
+                                firebaseService={props.firebaseService}
+                            />
+                        </Col>
+                        <Col sm={4} className="p-2">
+                            <GameHistoryView game={game} />
+                        </Col>
+                    </Row>
+                </Container>
+            </div>
+        );
+    } else {
+        return(<div />)
+    }
 }

@@ -29,20 +29,6 @@ export default function NightView (props) {
 
     const [showDead, setShowDead] = useState(false)
 
-
-    if (thisPlayer.isDead && !thisPlayer.spectateGame && !showDead) {
-        setShowDead(true)
-    }
-
-
-    if (!poll.show) {
-        setPoll( {
-            show : true,
-            type : (game.pollWater) ? "drink" : "eat",
-            endValidation : (thisPlayer.id === game.headPlayerId) && (game.waterVoteEnded || game.footVoteEnded),
-        })
-    }
-
     const handlePoll = (chosenPlayer) => {
         const actionToPerform = (poll.type === "drink") ? RoundAction.WaterVote : RoundAction.FoodVote;
         thisPlayer.performVote(game, actionToPerform, chosenPlayer.id);
@@ -55,14 +41,13 @@ export default function NightView (props) {
     };
 
     const handleSpectate = () => {
-      thisPlayer.spectateGame = true;
-      setShowDead(false)
-      props.updateGameAndPlayers()
+        thisPlayer.spectateGame = true;
+        setShowDead(false)
+        props.updateGameAndPlayers()
     };
 
 
     const handlePollEndValidation = () => {
-
         if (poll.show && poll.type==="drink"){
           game.onWaterVoteEnded()
         } else if (poll.show && poll.type==="eat") {
@@ -70,9 +55,7 @@ export default function NightView (props) {
         } else {
           console.error("PollEndValidation fail");
         }
-
         props.updateGameAndPlayers()
-
         setPoll({
             show: false,
             type: "",
@@ -80,39 +63,55 @@ export default function NightView (props) {
         })
     };
 
+    if (!game._endOfGame) {
 
-    return(
-        <div>
-            <PollModal
-                show={poll.show}
-                players={game._gameTable.players.filter(p => !p.isDead)}
-                pollType={poll.type}
-                handlePoll={handlePoll}
-            />
-            <PollEndValidationModal
-                show={poll.endValidation}
-                pollType={poll.type}
-                handlePollEndValidation={handlePollEndValidation}
-            />
-            <DeadModal
-                show={showDead}
-                handleSpectate={handleSpectate}
-            />
-            <Container fluid>
-                <Row>
-                    <Col className="p-2">
-                        <GameTableView
-                            className='mt-5'
-                            slugname={props.slugname}
-                            game={game}
-                            firebaseService={props.firebaseService}
-                        />
-                    </Col>
-                    <Col sm={4} className="p-2">
-                        <GameHistoryView game={game} />
-                    </Col>
-                </Row>
-            </Container>
-        </div>
-    );
+        if (thisPlayer.isDead && !thisPlayer.spectateGame && !showDead) {
+            setShowDead(true)
+        }
+
+        if (!poll.show) {
+            setPoll( {
+                show : true,
+                type : (game.pollWater) ? "drink" : "eat",
+                endValidation : (thisPlayer.id === game.headPlayerId) && (game.waterVoteEnded || game.footVoteEnded),
+            })
+        }
+
+        return(
+            <div style={{"backgroundColor": "#e9ecef"}}>
+                <PollModal
+                    show={poll.show}
+                    players={game._gameTable.players.filter(p => !p.isDead)}
+                    pollType={poll.type}
+                    handlePoll={handlePoll}
+                />
+                <PollEndValidationModal
+                    show={poll.endValidation}
+                    pollType={poll.type}
+                    handlePollEndValidation={handlePollEndValidation}
+                />
+                <DeadModal
+                    show={showDead}
+                    handleSpectate={handleSpectate}
+                />
+                <Container fluid>
+                    <Row>
+                        <Col className="p-2">
+                            <GameTableView
+                                className='mt-5'
+                                slugname={props.slugname}
+                                game={game}
+                                firebaseService={props.firebaseService}
+                            />
+                        </Col>
+                        <Col sm={4} className="p-2">
+                            <GameHistoryView game={game} />
+                        </Col>
+                    </Row>
+                </Container>
+            </div>
+        );
+    } else {
+        return(<div />)
+    }
 }

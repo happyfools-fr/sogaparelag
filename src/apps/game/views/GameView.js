@@ -12,12 +12,12 @@ import SavedView from './SavedView';
 import GameOverView from './GameOverView';
 
 
-function GameView(props) {
+export default function GameView (props) {
 
     const gameId = props.gameId;
     const user = props.user;
 
-    const gameController = new GameController(props.firebaseService.ft)
+    const gameController = new GameController(props.firebaseService.ft);
     const [game, setGame] = useState();
 
     useEffect(
@@ -29,12 +29,10 @@ function GameView(props) {
     );
 
     const playerController = new PlayerController(props.firebaseService.ft)
-    // const thisPlayer = playerController.get(user.id);
 
     const showNight = () => {
         return (game.pollWater || game.pollFood)
     }
-
 
     const updateGameAndPlayers = () => {
         game._gameTable.players.forEach((p, i) => {
@@ -46,30 +44,31 @@ function GameView(props) {
         gameController.update(game);
     }
 
-
     if (game) {
 
         const thisPlayer = game._gameTable.getPlayerFromId(user.id)
 
         if(!game._endOfGame){
             if (showNight()) {
-                console.log("NightView")
-                return (<NightView
-                    slugname={props.slugname}
-                    game={game}
-                    thisPlayer = {thisPlayer}
-                    updateGameAndPlayers = {updateGameAndPlayers}
-                    firebaseService = {props.firebaseService}
-                />)
+                return (
+                    <NightView
+                        slugname={props.slugname}
+                        game={game}
+                        thisPlayer = {thisPlayer}
+                        updateGameAndPlayers = {updateGameAndPlayers}
+                        firebaseService = {props.firebaseService}
+                    />
+                )
             } else {
-                console.log("DayView")
-                return(<DayView
-                    slugname={props.slugname}
-                    game={game}
-                    thisPlayer = {thisPlayer}
-                    updateGameAndPlayers = {updateGameAndPlayers}
-                    firebaseService = {props.firebaseService}
-                />)
+                return(
+                    <DayView
+                        slugname={props.slugname}
+                        game={game}
+                        thisPlayer = {thisPlayer}
+                        updateGameAndPlayers = {updateGameAndPlayers}
+                        firebaseService = {props.firebaseService}
+                    />
+                )
             }
         } else if (game._win){
             return (
@@ -89,6 +88,3 @@ function GameView(props) {
         return(<div />)
     }
 }
-
-
-export default GameView;
