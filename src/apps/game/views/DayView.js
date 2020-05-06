@@ -23,8 +23,6 @@ export default function DayView(props) {
     const [showAction, setShowAction] = useState(false)
     const [showSick, setShowSick] = useState(false)
 
-    console.log("showAction", showAction)
-    console.log("showSick", showSick)
 
     const handleAction = (action, extras) => {
         const intExtras = parseInt(extras);
