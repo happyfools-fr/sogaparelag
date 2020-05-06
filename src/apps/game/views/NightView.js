@@ -22,12 +22,11 @@ import {RoundAction} from '../model/RoundAction'
 export default function NightView (props) {
 
     const game = props.game
-
     const thisPlayer = props.thisPlayer
 
     const [poll, setPoll] = useState({show: false, type: "", endValidation: false})
-
     const [showDead, setShowDead] = useState(false)
+
 
     const handlePoll = (chosenPlayer) => {
         const actionToPerform = (poll.type === "drink") ? RoundAction.WaterVote : RoundAction.FoodVote;
@@ -39,6 +38,7 @@ export default function NightView (props) {
             endValidation: false,
         })
     };
+
 
     const handleSpectate = () => {
         thisPlayer.spectateGame = true;
