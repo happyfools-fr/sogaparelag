@@ -111,6 +111,7 @@ export default function NightView (props) {
                 </Container>
             </div>
         );
+
     } else {
         return(<div />)
     }

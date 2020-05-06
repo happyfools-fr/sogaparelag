@@ -73,6 +73,7 @@ export default function DayView(props) {
                 </Container>
             </div>
         );
+
     } else {
         return(<div />)
     }

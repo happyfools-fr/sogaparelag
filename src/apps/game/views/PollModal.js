@@ -43,7 +43,7 @@ export default function PollModal(props) {
                     <Modal.Footer>
                         <Button variant="primary" type="button"
                             onClick={
-                                () => {handlePoll(vote); setVote();}
+                                () => {if (vote) {handlePoll(vote); setVote();}}
                             }
                         >
                             Vote
