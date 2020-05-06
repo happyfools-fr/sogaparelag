@@ -37,7 +37,7 @@ export default function TurnModal(props) {
                         <ButtonGroup className="mt-2" toggle type="radio" onChange={(change) => setExtras(change.target.value)}>
                         {
                             [0,1,2,3,4,5,6].map((i) => {
-                                return(<ToggleButton checked={extras==i} type="radio" variant="dark" key={i} value={i}> {i} </ToggleButton>)
+                                return(<ToggleButton checked={extras===i} type="radio" variant="dark" key={i} value={i}> {i} </ToggleButton>)
                             })
                         }
                         </ButtonGroup>
@@ -65,13 +65,13 @@ export default function TurnModal(props) {
                 <Modal.Body>
                     Choose your action, and choose wisely ...
                     <ButtonGroup className="mt-2" toggle onChange={(change) => setChoice(change.target.value)}>
-                        <ToggleButton checked={choice=="water"} type="radio" variant="info" value="water">
+                        <ToggleButton checked={choice==="water"} type="radio" variant="info" value="water">
                             <i className="fas fa-tint" />&nbsp;&nbsp;Get water
                         </ToggleButton>
-                        <ToggleButton checked={choice=="wood"} type="radio" variant="warning" value="wood">
+                        <ToggleButton checked={choice==="wood"} type="radio" variant="warning" value="wood">
                             <i className="fas fa-shapes" />&nbsp;&nbsp;Get wood
                         </ToggleButton>
-                        <ToggleButton checked={choice=="food"} type="radio" variant="secondary" value="food">
+                        <ToggleButton checked={choice==="food"} type="radio" variant="secondary" value="food">
                             <i className="fas fa-fish" />&nbsp;&nbsp;Get food
                         </ToggleButton>
                     </ButtonGroup>

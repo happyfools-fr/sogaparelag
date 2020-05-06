@@ -1,10 +1,8 @@
 import React from 'react';
 
-import {Card, Container, Row} from 'react-bootstrap';
+import { Container, Row} from 'react-bootstrap';
 
 import PlayerView from './PlayerView';
-import Player from '../model/Player';
-import LoggedInUser from '../model/LoggedInUser';
 
 export default function AllPlayersView(props) {
 

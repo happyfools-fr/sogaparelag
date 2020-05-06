@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Card, Container, Col, Row, Table} from 'react-bootstrap';
+import { Container, Row} from 'react-bootstrap';
 
 import FoodSupplyComponent from "./supply-components/FoodSupplyComponent";
 import WaterSupplyComponent from './supply-components/WaterSupplyComponent';
@@ -10,14 +10,16 @@ import WeatherComponent from './supply-components/WeatherComponent';
 import DayComponent from './supply-components/DayComponent';
 
 
+import AllPlayersView from './AllPlayersView';
+
 export default function GameTableView(props) {
 
     const game = props.game
 
     return (
-        <div className='mt-2'>
+        <div>
             <h5>Welcome to Island of {props.slugname} </h5>
-            <Container>
+            <Container className='mt-2'>
                 <Row>
                     <DayComponent day={game._gameTable.roundIndex} />
 
@@ -33,6 +35,12 @@ export default function GameTableView(props) {
 
                 </Row>
             </Container>
+            <AllPlayersView
+                players={game._gameTable.players}
+                currentPlayerId={game.currentPlayerId}
+                headPlayerId={game.headPlayerId}
+                firebaseService={props.firebaseService}
+            />
         </div>
     );
 };
