@@ -29,7 +29,7 @@ function GameView(props) {
     );
 
     const playerController = new PlayerController(props.firebaseService.ft)
-    const thisPlayer = playerController.get(user.id);
+    // const thisPlayer = playerController.get(user.id);
 
     const showNight = () => {
         return (game.pollWater || game.pollFood)
@@ -47,24 +47,29 @@ function GameView(props) {
     }
 
 
-    if (game && thisPlayer) {
+    if (game) {
+
+        const thisPlayer = game._gameTable.getPlayerFromId(user.id)
+
         if(!game._endOfGame){
-            if showNight() {
-                <NightView
+            if (showNight()) {
+                console.log("NightView")
+                return (<NightView
                     slugname={props.slugname}
                     game={game}
                     thisPlayer = {thisPlayer}
                     updateGameAndPlayers = {updateGameAndPlayers}
                     firebaseService = {props.firebaseService}
-                />
+                />)
             } else {
-                <DayView
+                console.log("DayView")
+                return(<DayView
                     slugname={props.slugname}
                     game={game}
                     thisPlayer = {thisPlayer}
                     updateGameAndPlayers = {updateGameAndPlayers}
                     firebaseService = {props.firebaseService}
-                />
+                />)
             }
         } else if (game._win){
             return (

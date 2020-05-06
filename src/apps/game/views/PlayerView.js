@@ -4,10 +4,6 @@ import React, {useState, useEffect} from 'react';
 // Import bootstrap
 import {
   Card,
-  Container,
-  Row,
-  Col,
-  Image,
   Media
 }  from 'react-bootstrap';
 

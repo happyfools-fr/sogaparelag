@@ -7,9 +7,6 @@ import ListGroup from 'react-bootstrap/ListGroup'
 // Direct imports
 import HistoryItemView from './HistoryItemView';
 
-// Bootstrap
-import {Card} from 'react-bootstrap'
-
 export default function GameHistoryView(props) {
 
     const logsEndRef = useRef(null)

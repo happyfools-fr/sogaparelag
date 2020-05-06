@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Card, Container, Col, Row, Table} from 'react-bootstrap';
+import { Container, Row} from 'react-bootstrap';
 
 import FoodSupplyComponent from "./supply-components/FoodSupplyComponent";
 import WaterSupplyComponent from './supply-components/WaterSupplyComponent';

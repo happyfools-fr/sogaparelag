@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { Container, Col, Row } from 'react-bootstrap';
 
@@ -27,11 +27,12 @@ export default function NightView (props) {
 
     const [poll, setPoll] = useState({show: false, type: "", endValidation: false})
 
-    const [showDead, setShowDead] = useState(
-        (thisPlayer)
-        ? thisPlayer.isDead && !thisPlayer.spectateGame
-        : false
-    )
+    const [showDead, setShowDead] = useState(false)
+
+
+    if (thisPlayer.isDead && !thisPlayer.spectateGame && !showDead) {
+        setShowDead(true)
+    }
 
 
     if (!poll.show) {

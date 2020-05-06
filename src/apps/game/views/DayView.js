@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { Container, Col, Row } from 'react-bootstrap';
 
@@ -25,10 +25,15 @@ export default function DayView(props) {
 
     const [showSick, setShowSick] = useState({show : false, click : 0})
 
+    console.log("player ", thisPlayer.id )
+    console.log("current ", game.currentPlayerId )
+
     if (thisPlayer.id === game.currentPlayerId) {
+        console.log("current player")
         if (thisPlayer.isSick && !showSick.click && !showSick.show) {
             setShowSick({show : true, click : 0})
         } else if (!showAction) {
+            console.log("show action")
             setShowAction(true)
         }
     }

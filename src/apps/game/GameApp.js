@@ -1,10 +1,7 @@
 // React imports
 import React, { useState, useEffect } from 'react';
 import {
-  Redirect,
-  Route,
   useHistory,
-  useLocation,
 } from "react-router-dom";
 import GameMenuView from './views/GameMenuView';
 import WaitingRoom from './model/WaitingRoom'
@@ -19,7 +16,7 @@ export default function GameApp(props) {
   const [waitingRoomId, setWaitingRoomId] = useState();
 
   const [slugname, setSlugname] = useState(props.slugname);
-    
+
   let history = useHistory();
 
 

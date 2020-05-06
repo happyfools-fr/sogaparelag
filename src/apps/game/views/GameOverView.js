@@ -13,7 +13,7 @@ export default function GameOverView(props) {
             Game Over ...
         </h2>
         <h3> You have all died on the deserted island of {slugname} </h3>
-        <img className="mt-4 " src={require('../../../assets/tombstone.jpg') } />
+        <img alt="" className="mt-4 " src={require('../../../assets/tombstone.jpg') } />
         </div>
     );
 }

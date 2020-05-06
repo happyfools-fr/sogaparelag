@@ -24,7 +24,6 @@ import PollModal from './apps/game/views/PollModal'
 import DeadModal from './apps/game/views/DeadModal'
 import SavedView from './apps/game/views/SavedView'
 import TurnModal from './apps/game/views/TurnModal'
-import AllPlayersView from './apps/game/views/AllPlayersView'
 
 //Firebase
 import FirebaseService from './components/firebase/index';
@@ -72,7 +71,7 @@ export default function App() {
     let slugname = match ? match.params.gameSlugname : null;
     let loggedInUser = user.info ? new LoggedInUser(user.info.uid, user.info.displayName, user.info.photoURL) : null;
     console.log("ProtectedGameAppWithSlugname loggedInUser", loggedInUser)
-    
+
     return (
       user.loggedIn
       &&
