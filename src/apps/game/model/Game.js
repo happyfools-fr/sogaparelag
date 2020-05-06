@@ -66,10 +66,16 @@ export default class Game
 
     get waterSupply() { return this._waterManager.inventory; }
 
+    incrWaterSupply(value) { this._waterManager.inventory += value; }
+
     get foodSupply() { return this._foodManager.inventory; }
 
-    get woodSupply() { return this._woodManager.inventory; }
+    incrFoodSupply(value) { this._foodManager.inventory += value; }
 
+    get woodSupply() { return this._woodManager.inventory; }
+    
+    incrWoodSupply(value) { this._woodManager.inventory += value; }
+    
     onPlayerActionPerformed(player, selectedAction, additionalRequest)
     {
         // Push action logs

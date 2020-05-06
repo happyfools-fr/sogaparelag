@@ -1,6 +1,6 @@
 import Utils from './Utils'
 
-export const SERDE_KEYS = ['name', 'type', 'fr'];
+export const SERDE_KEYS = ['name', 'type', 'fr', 'isDisplayed'];
 
 const CARD_TYPE_REVOLVER = 'Revolver';
 const CARD_TYPE_PERMANENT = 'Permanent';
@@ -24,9 +24,11 @@ export class ShipwreckCard{
       this.name = card.name
       this.type = card.type
       this.fr = card.fr
+      this.isDisplayed = card.isDisplayed ? card.isDisplayed : false
     }
     
-    play(){
+    play(game, player, targetedPlayer = null)
+    {
       if (!CARD_TYPES.includes(this.type))
       {
         throw Error("Unknown card type")
@@ -34,24 +36,148 @@ export class ShipwreckCard{
       {
         switch (this.type)
         {
-          case CARD_TYPE_REVOLVER:
-              break
-
-          case CARD_TYPE_PERMANENT:
-              break
-
           case CARD_TYPE_RESOURCE:
-              break
+            playResource(game, player);
+            break
               
           case CARD_TYPE_DISPOSABLE:
-              break
+            playDisposable(game, player, targetedPlayer);
+            break
 
           case CARD_TYPE_USELESS:
-              break                        
+            console.log("LOL, this card is completely useless");
+            break
+            
+          // case CARD_TYPE_REVOLVER:
+          //   console.log("Method not allowed")
+          //   break
+          // 
+          // case CARD_TYPE_PERMANENT:
+          //   console.log("Method not allowed")
+          //   break
+          default:
+            throw Error("Cannot call play with this type of card")
+        }
+        
+        //Remove can from player hand if it is not a revolver
+        if (!(this.type === CARD_TYPE_REVOLVER))
+        {
+          player.removeCardFromHand(this);
         }
       }
     }
     
+    /*CARD_TYPE_RESOURCE*/
+    playResource(game, player){
+      switch (this)
+      {
+        case ShipwreckCards.GiftBasket:
+          //todo
+          break
+
+        case ShipwreckCards.WaterBottle:
+          console.log("Add 1 water bottle to inventory");
+          game.incrWaterSupply(1);
+          break
+
+        case ShipwreckCards.Sandwich:
+          console.log("Add 1 food portion to inventory");
+          game.incrFoodSupply(1);
+          break
+            
+        case ShipwreckCards.StagnantWater:
+          console.log("Add 1 water bottle to inventory, player gets sick");
+          game.incrWaterSupply(1);
+          player.onGetSick();
+          break
+
+        case ShipwreckCards.RottenFish:
+          console.log("Add 1 food portion to inventory, player gets sick");
+          game.incrFoodSupply(1);
+          player.onGetSick();
+          break                
+                     
+        case ShipwreckCards.Sardines:
+          console.log("Add 3 food portion to inventory");
+          game.incrFoodSupply(3);
+          break           
+          
+        case ShipwreckCards.Coconut:
+          console.log("Add 3 water bootles to inventory");
+          game.incrWaterSupply(3);
+          break              
+      }
+      
+    }
+    
+    playDisposable(game, player, targetedPlayer = null) {
+      switch (this)
+      {
+        case ShipwreckCards.Bullet:
+        
+          if(player.hasRevolver)
+          {
+            cardsToDistribute = targetedPlayer.currentHand.slice();
+            game._gameTable.killPlayer(targetedPlayer.id);
+            //todo distribute cards
+          }
+          break
+
+        case ShipwreckCards.AspiVenom:
+          //Guerri d'une morsure
+          console.log("Player get healed");
+          player.onGetHealed();
+          break
+
+        case ShipwreckCards.Medication:
+          //Guerri de l'eau croupi / poisson pourri
+          console.log("Player get healed");
+          player.onGetHealed();
+          break
+            
+        case ShipwreckCards.VoodooDoll:
+          //todo
+          break
+
+        case ShipwreckCards.Telescope:
+          //Voir les cartes d'un autre naufragé
+          console.log("See the current Hand of the targeted player");
+          return targetedPlayer.currentHand
+          // break                
+                     
+        case ShipwreckCards.WoodenPlank:
+          console.log("Add a spot on a raft");
+          game.incrWoodSupply(6);
+          break           
+          
+        case ShipwreckCards.CannibalistBBQKit:
+          //Ajoute 2 rations d'eau et de nourriture par naufragés mort dans ce tour
+          //Effect apply only just before beginning of next round...
+          break        
+          
+        case ShipwreckCards.SleepingPill:
+          //Vol une carte à un naufragé
+          const shuffledHand = shuffle(targetedPlayer.currentHand.slice())
+          if (shuffledHand.length > 0)
+          {
+              player.addCardToHand(shuffledHand[0]);
+              targetedPlayer.removeCardFromHand(shuffledHand[0]);
+              break;
+
+          }
+          return null; 
+          
+        case ShipwreckCards.Pendulum:
+          //Impose un choix à qqn
+          break     
+        
+        case ShipwreckCards.Matches:
+          //Permet de transformer de l'eau croupie en bonne eau
+          break                          
+      }
+      
+    }
+
     
     toDoc()
     {
@@ -59,6 +185,7 @@ export class ShipwreckCard{
         name: this.name,
         type: this.type,
         fr: this.fr,
+        isDisplayed: this.isDisplayed,
       }  
     }
 
@@ -75,7 +202,7 @@ export class ShipwreckCard{
 }
 
 
-class ShipwreckCards {
+export class ShipwreckCards {
       
   /*
     Cards can be played, exchanged, or just displayed.

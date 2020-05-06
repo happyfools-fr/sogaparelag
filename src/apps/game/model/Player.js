@@ -1,6 +1,7 @@
 import {RoundAction} from './RoundAction'
 import LoggedInUser from  './LoggedInUser'
 import Utils from './Utils'
+import {ShipwreckCards} from './ShipwreckCard'
 
 export const SERDE_KEYS = [
   'userId', 'nickname', '_sickenessLevel',
@@ -38,6 +39,26 @@ export default class Player
     onGetSick()
     {
         this._sickenessLevel = 2;
+    }
+
+    onGetHealed()
+    {
+        this._sickenessLevel = 0;
+    }
+    
+    get hasRevolver() { return this.currentHand.includes(ShipwreckCards.Revolver); }
+    
+    removeCardFromHand(card) 
+    {
+      const index = this.currentHand.indexOf(card);
+      if (index > -1) {
+        this.currentHand.splice(index, 1);
+      }
+    }
+    
+    addCardToHand(card) 
+    {
+      this.currentHand.push(card);
     }
 
     onRoundEnded()
