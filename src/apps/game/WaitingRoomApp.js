@@ -55,9 +55,11 @@ export default function WaitingRoomApp(props) {
             return (
                 <GameView
                 slugname={waitingRoom.slugname}
+                isCreator={props.user.id == waitingRoom.creatorId}
                 gameId={waitingRoom._currentGame._id}
                 user={props.user}
                 firebaseService={props.firebaseService}
+                handleClickCreateNextGame={props.handleClickCreateNextGame}
                 />
             );
         } else {
@@ -67,6 +69,7 @@ export default function WaitingRoomApp(props) {
             return (
                 <WaitingRoomView
                 slugname={waitingRoom.slugname}
+                isCreator={props.user.id == waitingRoom.creatorId}
                 players={waitingRoom._loggedInUsers}
                 onClick={handleStartGame}
                 />

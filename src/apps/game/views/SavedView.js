@@ -1,5 +1,6 @@
 import React from 'react'
 
+import {Button} from 'react-bootstrap'
 
 /**
 *
@@ -18,16 +19,28 @@ export default function SavedView(props) {
 
     return (
         <div>
-        <h2 className="mt-4">
-            {"Well done " +
-            players
-                .filter((p) => !p.isDead)
-                .map((p) => p.nickname)
-                .join(", ")
-            + "!" }
-        </h2>
-        <h3> You have escaped the deserted island of {slugname} </h3>
-        <img alt="" className="mt-4 " src={require('../../../assets/isolated-island.jpg') } />
+            <h2 className="mt-4">
+                {"Well done " +
+                players
+                    .filter((p) => !p.isDead)
+                    .map((p) => p.nickname)
+                    .join(", ")
+                + "!" }
+            </h2>
+            <h3> You have escaped the deserted island of {slugname} </h3>
+            <div className="m-4">
+                {
+                    (props.isCreator)
+                    ? <Button
+                        variant="primary"
+                        onClick={props.handleClickCreateNextGame}
+                    >
+                        Try again - Start a new game
+                    </Button>
+                    : <div></div>
+                }
+            </div>
+            <img alt="" className="mt-4 " src={require('../../../assets/isolated-island.jpg') } />
         </div>
     );
 }
