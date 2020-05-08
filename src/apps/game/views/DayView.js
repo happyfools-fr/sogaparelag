@@ -48,8 +48,6 @@ export default function DayView(props) {
             // If player is sick, show sick modal
             if (thisPlayer.isSick && !showSick) {
                 setShowSick(true)
-                // game.onPlayerTurnEnded(thisPlayer)
-                // props.updateGameAndPlayers()
 
             // If player is not sick anymore, hide it
             } else if (showSick && !thisPlayer.isSick) {
