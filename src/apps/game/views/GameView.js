@@ -76,6 +76,7 @@ export default function GameView (props) {
                 players={game._gameTable.players}
                 slugname={props.slugname}
                 isCreator={props.isCreator}
+                handleClickCreateNextGame={props.handleClickCreateNextGame}
               />
             );
         } else {
@@ -83,6 +84,7 @@ export default function GameView (props) {
               <GameOverView
                 slugname={props.slugname}
                 isCreator={props.isCreator}
+                handleClickCreateNextGame={props.handleClickCreateNextGame}
               />
             );
         }

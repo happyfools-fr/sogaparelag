@@ -59,6 +59,7 @@ export default function WaitingRoomApp(props) {
                 gameId={waitingRoom._currentGame._id}
                 user={props.user}
                 firebaseService={props.firebaseService}
+                handleClickCreateNextGame={props.handleClickCreateNextGame}
                 />
             );
         } else {

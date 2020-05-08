@@ -33,9 +33,7 @@ export default function SavedView(props) {
                     (props.isCreator)
                     ? <Button
                         variant="primary"
-                        onClick={
-                            (click) => props.handleClickCreateNewGame(click)
-                        }
+                        onClick={props.handleClickCreateNextGame}
                     >
                         Try again - Start a new game
                     </Button>

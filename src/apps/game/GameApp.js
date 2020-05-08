@@ -52,6 +52,7 @@ export default function GameApp(props) {
             user={props.user}
             slugname = {slugname}
             waitingRoomId={waitingRoomId}
+            handleClickCreateNextGame={handleClickCreateNewGame}
             firebaseService={props.firebaseService}
           />
         )
