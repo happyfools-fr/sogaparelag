@@ -10,9 +10,9 @@ ROUND_ACTION_TYPES_MAPPING.set("water", RoundAction.CollectWater)
 ROUND_ACTION_TYPES_MAPPING.set("food", RoundAction.CollectFood)
 ROUND_ACTION_TYPES_MAPPING.set("wood", RoundAction.CollectWood)
 
-export default function TurnModal(props) {
+export default function ActionModal(props) {
 
-    const show = props.show
+    const show = (props.show) ? props.show : true
 
     const onAction = (props.onAction) ? props.onAction : (a ,b) => {console.log(a, b)}
 

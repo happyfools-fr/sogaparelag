@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 
 import { Container, Col, Row } from 'react-bootstrap';
 
-import TurnModal from './TurnModal';
+import ActionModal from './ActionModal';
 import SickModal from './SickModal';
+import ActionResultModal from './ActionResultModal';
 
 import GameTableView from './GameTableView';
 import GameHistoryView from './GameHistoryView';
@@ -50,7 +51,11 @@ export default function DayView(props) {
 
         return(
             <div>
-                <TurnModal
+                <ActionModal
+                    show={showAction}
+                    onAction={handleAction}
+                />
+                <ActionResultModal
                     show={showAction}
                     onAction={handleAction}
                 />
