@@ -55,6 +55,7 @@ export default function WaitingRoomApp(props) {
             return (
                 <GameView
                 slugname={waitingRoom.slugname}
+                isCreator={props.user.id == waitingRoom.creatorId}
                 gameId={waitingRoom._currentGame._id}
                 user={props.user}
                 firebaseService={props.firebaseService}

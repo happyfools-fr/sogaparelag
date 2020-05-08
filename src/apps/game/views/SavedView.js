@@ -29,9 +29,18 @@ export default function SavedView(props) {
             </h2>
             <h3> You have escaped the deserted island of {slugname} </h3>
             <div className="m-4">
-                <Button variant="primary" onClick={(click) => {props.handleClickCreateNewGame(click)} }>
-                    Try again - Start a new game
-                </Button>
+                {
+                    (props.isCreator)
+                    ? <Button
+                        variant="primary"
+                        onClick={
+                            (click) => props.handleClickCreateNewGame(click)
+                        }
+                    >
+                        Try again - Start a new game
+                    </Button>
+                    : <div></div>
+                }
             </div>
             <img alt="" className="mt-4 " src={require('../../../assets/isolated-island.jpg') } />
         </div>
