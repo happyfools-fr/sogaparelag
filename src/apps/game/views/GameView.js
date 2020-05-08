@@ -20,6 +20,8 @@ export default function GameView (props) {
     const gameController = new GameController(props.firebaseService.ft);
     const [game, setGame] = useState();
 
+    const [showNight, setShowNight] = useState(false)
+
     useEffect(
         () => {
             const unsubscribe = gameController.listen(gameId, setGame);
@@ -29,10 +31,6 @@ export default function GameView (props) {
     );
 
     const playerController = new PlayerController(props.firebaseService.ft)
-
-    const showNight = () => {
-        return (game.pollWater || game.pollFood)
-    }
 
     const updateGameAndPlayers = () => {
         game._gameTable.players.forEach((p, i) => {
@@ -49,7 +47,7 @@ export default function GameView (props) {
         const thisPlayer = game._gameTable.getPlayerFromId(user.id)
 
         if(!game._endOfGame){
-            if (showNight()) {
+            if (showNight) {
                 return (
                     <NightView
                         slugname={props.slugname}
@@ -57,6 +55,7 @@ export default function GameView (props) {
                         thisPlayer = {thisPlayer}
                         updateGameAndPlayers = {updateGameAndPlayers}
                         firebaseService = {props.firebaseService}
+                        handleNightEnd = { () => setShowNight(false)}
                     />
                 )
             } else {
@@ -67,6 +66,7 @@ export default function GameView (props) {
                         thisPlayer = {thisPlayer}
                         updateGameAndPlayers = {updateGameAndPlayers}
                         firebaseService = {props.firebaseService}
+                        handleDayEnd = { () => setShowNight(true)}
                     />
                 )
             }

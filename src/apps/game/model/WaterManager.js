@@ -45,7 +45,7 @@ export class WaterManager
         this.inventory -= playersCount
     }
 
-    onRoundEnded()
+    onRoundStarts()
     {
         this._weathers.splice(0, 1)
     }

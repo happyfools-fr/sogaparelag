@@ -73,7 +73,7 @@ class Controller {
             .doc(this._getObjectId(newObject))
             .update(this._objectToFirestoreDoc(newObject))
             .then(
-                () => { console.log("Game successfully updated!") }
+                () => { console.log(this._objectType + " successfully updated!") }
             )
             .catch(
                 (e) => { console.log("Error updating game :", e) }
@@ -87,7 +87,7 @@ class Controller {
             .doc(this._getObjectId)
             .delete()
             .then(
-                () => { console.log("Game successfully deleted!") }
+                () => { console.log(this._objectType + "successfully deleted!") }
             )
             .catch(
                 (e) => { console.log("Error deleting game :", e) }

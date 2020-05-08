@@ -44,6 +44,12 @@ export default function DayView(props) {
 
         if (thisPlayer.id === game.currentPlayerId) {
 
+            if (game._gameTable.endOfRound) {
+                game.onActionRoundEnded()
+                props.updateGameAndPlayers()
+                props.handleDayEnd();
+            }
+
             // If player is sick, show sick modal
             if (thisPlayer.isSick && !showSick) {
                 setShowSick(true)
@@ -71,7 +77,7 @@ export default function DayView(props) {
                 />
                 <SickModal
                     showSick={showSick}
-                    handleSick={() => {console.log("test");setShowSick(false);}}
+                    handleSick={() => setShowSick(false)}
                 />
                 <Container fluid>
                     <Row>

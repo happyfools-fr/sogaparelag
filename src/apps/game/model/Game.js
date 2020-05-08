@@ -76,7 +76,9 @@ export default class Game
         const actionSummary = this.getActionSummary(player, selectedAction, actionResult);
         this.history.push(
           {
-              type: (actionResult) ? selectedAction : "sick",
+              type: (!actionResult && selectedAction===RoundAction.CollectWood)
+                    ? "sick"
+                    : selectedAction,
               value: actionSummary
           }
         );
@@ -85,10 +87,10 @@ export default class Game
 
     onPlayerTurnEnded(player)
     {
-        this._gameTable.onPlayerTurnEnded(player)
+        return this._gameTable.onPlayerTurnEnded(player)
 
-        if (this._gameTable.endOfRound)
-            this.onActionRoundEnded();
+        // if (this._gameTable.endOfRound)
+        //     this.onActionRoundEnded();
     }
 
     onActionRoundEnded()
@@ -264,7 +266,7 @@ export default class Game
       {
           this._endOfGame = true
           this._win = false
-          return
+          return;
       }
       else if (this._waterManager.mustLeave())
       {
@@ -274,7 +276,13 @@ export default class Game
       }
       else
       {
-        this._waterManager.onRoundEnded();
+        return;
+      }
+    }
+
+    onRoundStarts()
+    {
+        this._waterManager.onRoundStarts();
 
         this.history.push(
           {
@@ -291,8 +299,6 @@ export default class Game
         );
 
         this._gameTable.onRoundStarts();
-
-      }
     }
 
     onPlayerFinalWaterVote()

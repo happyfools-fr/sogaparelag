@@ -4,7 +4,7 @@ import Utils from './Utils'
 
 export const SERDE_KEYS = [
   'players', 'playersCount', 'indexOfHeadPlayer',
-  'indexOfCurrentPlayer', 'roundIndex', 'killedPlayers'
+  'indexOfCurrentPlayer', 'roundIndex', 'killedPlayers', 'endOfRound'
 ];
 
 export class GameTable
@@ -81,7 +81,6 @@ export class GameTable
         }
 
         console.log("GameTable.assignNextHeadPlayer !")
-        console.log(this.toDoc())
     }
 
     assignNextCurrentPlayer()
@@ -111,7 +110,6 @@ export class GameTable
         this.indexOfCurrentPlayer = this.getIndexFromPlayer(this._currentPlayer.player);
 
         console.log("GameTable.assignNextCurrentPlayer !")
-        console.log(this.toDoc())
     }
 
     getIndexFromPlayer(player)
@@ -212,7 +210,6 @@ export class GameTable
         this.assignNextHeadPlayer();
 
         console.log("GameTable.onRoundStarts !")
-        console.log(this.toDoc())
     }
 
     onPlayerTurnEnded(player)
@@ -225,11 +222,11 @@ export class GameTable
         this.assignNextCurrentPlayer();
         if (this._currentPlayer === this._headPlayer)
         {
+            console.log("endOfRound")
             this.endOfRound = true
         }
 
         console.log("GameTable.onPlayerTurnEnded !")
-        console.log(this.toDoc())
     }
 
     killPlayer(playerIdToKill)
@@ -302,6 +299,7 @@ export class GameTable
           indexOfHeadPlayer: this.indexOfHeadPlayer,
           indexOfCurrentPlayer: this.indexOfCurrentPlayer,
           roundIndex: this.roundIndex,
+          endOfRound: this.endOfRound,
           killedPlayers: this.killedPlayers.map((p) => { return p ? p.toDoc() : null; }),
         }
     }
@@ -316,6 +314,7 @@ export class GameTable
         const indexOfCurrentPlayer = doc['indexOfCurrentPlayer'];
         const killedPlayers = doc['killedPlayers'].map((pDoc) => { return Player.fromDoc(pDoc) });
         gameTable = new GameTable(players, indexOfHeadPlayer, indexOfCurrentPlayer, parseInt(doc['roundIndex']), killedPlayers);
+        gameTable.endOfRound = doc['endOfRound']
       }
       return gameTable;
     }

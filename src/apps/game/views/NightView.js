@@ -61,15 +61,22 @@ export default function NightView (props) {
             type: "",
             endValidation: false,
         })
+        props.handleNightEnd()
     };
 
     if (!game._endOfGame) {
+
+        if ((thisPlayer.id === game.currentPlayerId) && !game._gameTable.endOfRound) {
+            game.onRoundStarts()
+            props.updateGameAndPlayers()
+            props.handleNightEnd();
+        }
 
         if (thisPlayer.isDead && !thisPlayer.spectateGame && !showDead) {
             setShowDead(true)
         }
 
-        if (!poll.show) {
+        if ((game.pollFood || game.pollWater) && !poll.show) {
             setPoll( {
                 show : true,
                 type : (game.pollWater) ? "drink" : "eat",
