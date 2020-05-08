@@ -14,7 +14,7 @@ import { v1 as uuidv1 } from 'uuid';
 export const SERDE_KEYS = [
   '_id', '_lastRound', '_win', '_mustLeave', '_endOfGame', '_waterManager',
   '_foodManager', '_woodManager', '_gameTable', 'history',
-  'pollFood', 'pollWater',
+  'pollFood', 'pollWater', 'startDay', 'startNight',
 ];
 
 export default class Game
@@ -40,6 +40,9 @@ export default class Game
 
         this.pollFood = false;
         this.pollWater = false;
+
+        this.startDay = false;
+        this.startNight = false;
 
     }
 
@@ -70,7 +73,30 @@ export default class Game
 
     get woodSupply() { return this._woodManager.inventory; }
 
-    onPlayerActionPerformed(player, selectedAction, actionResult)
+    onRoundStarts()
+    {
+        this.startDay = false
+
+        this._waterManager.onRoundStarts();
+
+        this.history.push(
+          {
+              type: 'newday',
+              value: "Well done, you have lived to see another day on the island !"
+          }
+        );
+
+        this.history.push(
+          {
+              type: 'info',
+              value: "The weather today is " + Weather.weatherToText[this._waterManager.currentWeather] + " (" + this._waterManager.currentWeather + ")"
+          }
+        );
+
+        this._gameTable.onRoundStarts();
+    }
+
+    addPlayerActionToHistory(player, selectedAction, actionResult)
     {
         // Push action logs
         const actionSummary = this.getActionSummary(player, selectedAction, actionResult);
@@ -87,7 +113,9 @@ export default class Game
 
     onPlayerTurnEnded(player)
     {
-        return this._gameTable.onPlayerTurnEnded(player)
+        this._gameTable.onPlayerTurnEnded(player)
+        this.startNight = true
+        return
 
         // if (this._gameTable.endOfRound)
         //     this.onActionRoundEnded();
@@ -95,6 +123,8 @@ export default class Game
 
     onActionRoundEnded()
     {
+        this.startNight = false
+
         this.history.push(
           {
               type: 'info',
@@ -163,7 +193,12 @@ export default class Game
 
     _initWaterManagement()
     {
-      if (this._gameTable.playersCount - this._waterManager.inventory > 0)
+      if (this._waterManager.inventory === 0) {
+          this._endOfGame = true
+          this._win = false
+          return;
+      }
+      else if (this._gameTable.playersCount - this._waterManager.inventory > 0)
       {
         console.log("Time for Water Vote!");
         this.pollWater = true;
@@ -187,7 +222,13 @@ export default class Game
 
     _initFoodManagement()
     {
-      if (this._gameTable.playersCount - this._foodManager.inventory > 0)
+
+      if (this._foodManager.inventory === 0) {
+          this._endOfGame = true
+          this._win = false
+          return;
+      }
+      else if (this._gameTable.playersCount - this._foodManager.inventory > 0)
       {
           console.log("Time for Food Vote!");
         this.pollFood = true;
@@ -262,7 +303,7 @@ export default class Game
           this._win = true
           return;
       }
-      if (this._mustLeave)
+      else if (this._mustLeave)
       {
           this._endOfGame = true
           this._win = false
@@ -276,29 +317,10 @@ export default class Game
       }
       else
       {
+        this.startDay = true
+        this._gameTable.endOfRound = false;
         return;
       }
-    }
-
-    onRoundStarts()
-    {
-        this._waterManager.onRoundStarts();
-
-        this.history.push(
-          {
-              type: 'newday',
-              value: "Well done, you have lived to see another day on the island !"
-          }
-        );
-
-        this.history.push(
-          {
-              type: 'info',
-              value: "The weather today is " + Weather.weatherToText[this._waterManager.currentWeather] + " (" + this._waterManager.currentWeather + ")"
-          }
-        );
-
-        this._gameTable.onRoundStarts();
     }
 
     onPlayerFinalWaterVote()
@@ -357,6 +379,9 @@ export default class Game
 
             pollFood:  this.pollFood,
             pollWater: this.pollWater,
+
+            startDay : this.startDay,
+            startNight : this.startNight,
         };
     }
 
@@ -380,6 +405,8 @@ export default class Game
           game.history = doc['history'];
           game.pollFood = doc['pollFood'];
           game.pollWater = doc['pollWater'];
+          game.startDay = doc['startDay'];
+          game.startNight = doc['startNight'];
       }
       return game;
     }

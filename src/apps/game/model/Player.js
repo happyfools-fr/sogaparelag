@@ -35,6 +35,10 @@ export default class Player
 
     get isSick() { return this._sickenessLevel !== 0; }
 
+    setHasPlayedThisRound(bool) {
+        this.hasPlayedThisRound = bool;
+    }
+
     onGetSick()
     {
         this._sickenessLevel = 2;
@@ -108,7 +112,7 @@ export default class Player
     performAction(game, selectedAction, additionalRequest=0)
     {
         const actionResult = this.playAction(game, selectedAction, additionalRequest);
-        const actionSummary = game.onPlayerActionPerformed(this, selectedAction, actionResult);
+        const actionSummary = game.addPlayerActionToHistory(this, selectedAction, actionResult);
         return [actionResult, actionSummary];
     }
 

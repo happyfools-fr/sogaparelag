@@ -10,7 +10,10 @@ import DayView from './DayView';
 import NightView from './NightView';
 import SavedView from './SavedView';
 import GameOverView from './GameOverView';
+import GameHistoryView from './GameHistoryView';
 
+
+import { Container, Col, Row } from 'react-bootstrap';
 
 export default function GameView (props) {
 
@@ -19,8 +22,6 @@ export default function GameView (props) {
 
     const gameController = new GameController(props.firebaseService.ft);
     const [game, setGame] = useState();
-
-    const [showNight, setShowNight] = useState(false)
 
     useEffect(
         () => {
@@ -47,29 +48,47 @@ export default function GameView (props) {
         const thisPlayer = game._gameTable.getPlayerFromId(user.id)
 
         if(!game._endOfGame){
-            if (showNight) {
-                return (
-                    <NightView
-                        slugname={props.slugname}
-                        game={game}
-                        thisPlayer = {thisPlayer}
-                        updateGameAndPlayers = {updateGameAndPlayers}
-                        firebaseService = {props.firebaseService}
-                        handleNightEnd = { () => setShowNight(false)}
-                    />
-                )
+            if (game._gameTable.endOfRound) {
+                if (thisPlayer.id === game.currentPlayerId && game.startNight) {
+                    game.onActionRoundEnded()
+                    updateGameAndPlayers()
+                }
             } else {
-                return(
-                    <DayView
-                        slugname={props.slugname}
-                        game={game}
-                        thisPlayer = {thisPlayer}
-                        updateGameAndPlayers = {updateGameAndPlayers}
-                        firebaseService = {props.firebaseService}
-                        handleDayEnd = { () => setShowNight(true)}
-                    />
-                )
+                if (thisPlayer.id === game.currentPlayerId && game.startDay) {
+                    game.onRoundStarts()
+                    updateGameAndPlayers()
+                }
+
             }
+            return (
+                <Container fluid>
+                    <Row>
+                        <Col className="p-2">
+                            {
+                                (game._gameTable.endOfRound)
+                                ? <NightView
+                                    slugname={props.slugname}
+                                    className='mt-5'
+                                    game={game}
+                                    thisPlayer = {thisPlayer}
+                                    updateGameAndPlayers = {updateGameAndPlayers}
+                                    firebaseService = {props.firebaseService}
+                                />
+                                : <DayView
+                                slugname={props.slugname}
+                                game={game}
+                                thisPlayer = {thisPlayer}
+                                updateGameAndPlayers = {updateGameAndPlayers}
+                                firebaseService = {props.firebaseService}
+                                />
+                            }
+                        </Col>
+                        <Col sm={4} className="p-2">
+                            <GameHistoryView game={game} />
+                        </Col>
+                    </Row>
+                </Container>
+            );
         } else if (game._win){
             return (
               <SavedView

@@ -195,8 +195,8 @@ export class GameTable
         console.log("GameTable.onRoundStarts ...")
         console.log(this.toDoc())
 
-        this.endOfRound = false
         this.roundIndex = this.roundIndex + 1;
+
         let playerEnumerator = this.getPlayerEnumerator()
         while (true)
         {
@@ -204,7 +204,6 @@ export class GameTable
             if (currentPlayer.done)
                 break
 
-            currentPlayer.value.player.onRoundEnded()
             currentPlayer.value.player.hasPlayedThisRound = false
         }
         this.assignNextHeadPlayer();
@@ -217,12 +216,12 @@ export class GameTable
         console.log("GameTable.onPlayerTurnEnded ...")
         console.log(this.toDoc())
 
-        this._currentPlayer.player.hasPlayedThisRound = true
-
         this.assignNextCurrentPlayer();
+
+        player.setHasPlayedThisRound(true)
+
         if (this._currentPlayer === this._headPlayer)
         {
-            console.log("endOfRound")
             this.endOfRound = true
         }
 
