@@ -12,24 +12,26 @@ export class WoodManager {
 
     tryCollect(additionalRequest)
     {
-        if (additionalRequest === 0)
-        {
-            this.inventory += 1
-            return true;
+        if (additionalRequest > this._woods.length) {
+            throw RangeError();
         }
 
-        if (additionalRequest > this._woods.length)
-            throw RangeError();
+        let collectedWood;
 
-        shuffle(this._woods)
-        let collectedWood = WoodManager._collectSumary(this._woods, additionalRequest)
-        let sick = collectedWood === 0;
-        if (!sick)
-            this.inventory += 1 + collectedWood
-        return !sick
+        if (additionalRequest === 0)
+        {
+            collectedWood = 1
+        } else {
+            shuffle(this._woods)
+            const triedToCollectMore = WoodManager._collect(this._woods, additionalRequest)
+            collectedWood = (triedToCollectMore) ? 1 + triedToCollectMore : 0
+        }
+
+        this.inventory += collectedWood;
+        return collectedWood;
     }
 
-    static _collectSumary(shuffledWoods, additionalRequest)
+    static _collect(shuffledWoods, additionalRequest)
     {
         for (let i = 0; i < additionalRequest; i++)
         {

@@ -4,7 +4,8 @@ import {Modal, ProgressBar} from 'react-bootstrap';
 
 export default function ActionResultModal(props) {
 
-    const show = (props.show) ? props.show : true
+    const show = props.actionResult.show
+    const resultSummary = props.actionResult.summary
 
     const [timer, setTimer] = useState(0)
 
@@ -18,16 +19,23 @@ export default function ActionResultModal(props) {
         [show, timer, setTimer]
     );
 
-    console.log("render")
+    if (show && timer>5) {
+        props.onHide();
+        setTimer(0);
+    }
 
     return (
-        <Modal show={show && timer<=5} centered>
-            <Modal.Header>
+        <Modal
+            show={show}
+            centered
+            onHide={ () => {props.onHide(); setTimer(0)}}
+        >
+            <Modal.Header closeButton>
                 <Modal.Title>Well done !</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {timer}
-                <ProgressBar className="m-4" max={5} variant="secondary" now={timer} />
+                {resultSummary}
+                {/*<ProgressBar className="m-4" max={5} variant="secondary" now={timer} />*/}
             </Modal.Body>
         </Modal>
     );

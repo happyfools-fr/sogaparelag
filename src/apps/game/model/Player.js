@@ -25,7 +25,7 @@ export default class Player
         this.waterVote = null
         this.foodVote = null
         this.spectateGame = null
-        
+
         this.photoURL = loggedInUser.photoURL
     }
 
@@ -38,6 +38,7 @@ export default class Player
     onGetSick()
     {
         this._sickenessLevel = 2;
+        return 0;
     }
 
     onRoundEnded()
@@ -70,7 +71,7 @@ export default class Player
         default :
               throw new Error('Context error in choosePlayerIdToVoteAgainst with player', this);
       }
-      return players.filter(p => p.id === chosenPlayerId)[0].id; 
+      return players.filter(p => p.id === chosenPlayerId)[0].id;
     }
 
     chooseFinalPlayerIdToVoteAgainst(players)
@@ -106,8 +107,9 @@ export default class Player
 
     performAction(game, selectedAction, additionalRequest=0)
     {
-        this.playAction(game, selectedAction, additionalRequest);
-        game.onPlayerActionPerformed(this, selectedAction, additionalRequest);
+        const actionResult = this.playAction(game, selectedAction, additionalRequest);
+        const actionSummary = game.onPlayerActionPerformed(this, selectedAction, actionResult);
+        return [actionResult, actionSummary];
     }
 
     playAction(game, actionToPerform, additionalRequest=0)
@@ -115,19 +117,13 @@ export default class Player
         switch (actionToPerform)
         {
             case RoundAction.CollectWater:
-                game._waterManager.collect()
-                break;
+                return game._waterManager.collect();
 
             case RoundAction.CollectFood:
-                game._foodManager.collect()
-                break;
+                return game._foodManager.collect();
 
             case RoundAction.CollectWood:
-                if (!game._woodManager.tryCollect(additionalRequest))
-                {
-                  this.onGetSick()
-                }
-                break;
+                return game._woodManager.tryCollect(additionalRequest) || this.onGetSick()
 
             default :
                 throw new Error('Default case in RoundManager for player', this);

@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 
 import { Container, Col, Row } from 'react-bootstrap';
 
+import {RoundAction} from '../model/RoundAction'
+
 import ActionModal from './ActionModal';
 import SickModal from './SickModal';
 import ActionResultModal from './ActionResultModal';
-
 import GameTableView from './GameTableView';
 import GameHistoryView from './GameHistoryView';
 
@@ -22,30 +23,41 @@ export default function DayView(props) {
     const thisPlayer = props.thisPlayer
 
     const [showAction, setShowAction] = useState(false)
+    const [actionResult, setActionResult] = useState({show:false, summary:""})
     const [showSick, setShowSick] = useState(false)
 
 
     const handleAction = (action, extras) => {
         const intExtras = parseInt(extras);
-        thisPlayer.performAction(game, action, intExtras);
+        const [result, resultSummary] = thisPlayer.performAction(game, action, intExtras);
+        game.onPlayerTurnEnded(thisPlayer)
         props.updateGameAndPlayers()
+        if (action===RoundAction.CollectWood && !result) {
+            console.log("gotSick")
+            setShowSick(true)
+        } else {
+            setActionResult({show:true, summary:resultSummary})
+        }
         setShowAction(false)
     };
 
     if (!game._endOfGame) {
 
         if (thisPlayer.id === game.currentPlayerId) {
+
             // If player is sick, show sick modal
             if (thisPlayer.isSick && !showSick) {
                 setShowSick(true)
+                // game.onPlayerTurnEnded(thisPlayer)
+                // props.updateGameAndPlayers()
 
-            // If player is not sick anymore and he has not closedthe modal, hide it
+            // If player is not sick anymore, hide it
             } else if (showSick && !thisPlayer.isSick) {
                 setShowSick(false)
 
             // Show action when it is players turn and he is not sick anymore
-            } else if (!thisPlayer.isSick && !showAction) {
-                setShowAction(true)
+            } else if (!thisPlayer.isSick && !actionResult.show && !showSick && !showAction) {
+                setShowAction(!showAction)
             }
         }
 
@@ -53,15 +65,16 @@ export default function DayView(props) {
             <div>
                 <ActionModal
                     show={showAction}
+                    weather={game._waterManager.currentWeather}
                     onAction={handleAction}
                 />
                 <ActionResultModal
-                    show={showAction}
-                    onAction={handleAction}
+                    actionResult={actionResult}
+                    onHide={() => setActionResult({show:false, summary:""})}
                 />
                 <SickModal
                     showSick={showSick}
-                    handleSick={() => setShowSick(false)}
+                    handleSick={() => {console.log("test");setShowSick(false);}}
                 />
                 <Container fluid>
                     <Row>

@@ -35,7 +35,9 @@ export class WaterManager
 
     collect()
     {
-        this.inventory += Weather.getWaterFromWeather(this.currentWeather);
+        const collected =  Weather.getWaterFromWeather(this.currentWeather);
+        this.inventory += collected;
+        return collected;
     }
 
     drink(playersCount)

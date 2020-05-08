@@ -31,7 +31,6 @@ export default function PlayerView(props) {
 
         const currentHand = (player.currentHand) ? player.currentHand : ["Card1", "Card2", "Card3", "Card4"]
 
-        player && console.log("player.photoURL", player.photoURL);
         return (
             <Card
                 className={

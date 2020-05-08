@@ -12,12 +12,10 @@ ROUND_ACTION_TYPES_MAPPING.set("wood", RoundAction.CollectWood)
 
 export default function ActionModal(props) {
 
-    const show = (props.show) ? props.show : true
-
-    const onAction = (props.onAction) ? props.onAction : (a ,b) => {console.log(a, b)}
+    const show = props.show
+    const onAction = props.onAction
 
     const [choice, setChoice] = useState()
-
     const [extras, setExtras] = useState(0)
 
     const renderChoice = (choice) => {
@@ -25,7 +23,7 @@ export default function ActionModal(props) {
             case 'water':
                 return (
                     <div className="mt-3 mb-3">
-                        According to the weather, you will get ...!
+                        {"According to the weather, you will get " + props.weather + "!"}
                     </div>
                 );
             case 'wood':

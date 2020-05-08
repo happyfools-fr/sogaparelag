@@ -14,7 +14,9 @@ export class FoodManager
     collect()
     {
         shuffle(this._foods);
-        this.inventory += this._foods[0];
+        const collected = this._foods[0];
+        this.inventory += collected;
+        return collected;
     }
 
     eat(playersCount)
