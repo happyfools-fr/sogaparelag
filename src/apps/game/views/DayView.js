@@ -33,7 +33,6 @@ export default function DayView(props) {
         game.onPlayerTurnEnded(thisPlayer)
         props.updateGameAndPlayers()
         if (action===RoundAction.CollectWood && !result) {
-            console.log("gotSick")
             setShowSick(true)
         } else {
             setActionResult({show:true, summary:resultSummary})
