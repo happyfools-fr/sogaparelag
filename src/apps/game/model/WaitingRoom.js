@@ -7,7 +7,7 @@ import {WoodManager} from "./WoodManager";
 import LoggedInUser from "./LoggedInUser";
 import Utils from "./Utils";
 
-export const SERDE_KEYS = ['_id', 'slugname', '_loggedInUsers', '_currentGame'];
+export const SERDE_KEYS = ['_id', 'slugname', '_loggedInUsers', '_currentGame', '_creatorId'];
 /**
  * WaitingRoom
  * - Can add loggedInPlayer only if game has not started (if !this_currentGame)
@@ -38,12 +38,13 @@ const INITIAL_VALUES = [
 
 export default class WaitingRoom
 {
-    constructor()
+    constructor(creatorId)
     {
         this._id = uuidv1();
         this.slugname = this._createSlugname();
         this._loggedInUsers = [];
         this._currentGame = null;
+        this._creatorId = creatorId;
     }
 
     hasJoined(user)
@@ -80,6 +81,11 @@ export default class WaitingRoom
         return null;
     }
 
+    get creatorId()
+    {
+        return this._creatorId;
+    }
+
     _createSlugname()
     {
         const json = require('../../../assets/words.json');
@@ -95,6 +101,7 @@ export default class WaitingRoom
             slugname: this.slugname,
             _loggedInUsers: this._loggedInUsers.map((u) => {return u ? u.toDoc() : null}),
             _currentGame: this._currentGame ? this._currentGame.toDoc() : null,
+            _creatorId: this._creatorId,
         }
     }
 
@@ -103,13 +110,11 @@ export default class WaitingRoom
       let waitingRoom;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
       {
-        waitingRoom = new WaitingRoom();
+        waitingRoom = new WaitingRoom(doc['_creatorId']);
         waitingRoom._id = doc['_id'];
         waitingRoom.slugname = doc['slugname'];
         waitingRoom._loggedInUsers = doc['_loggedInUsers'].map((uDoc) => { return LoggedInUser.fromDoc(uDoc); });
-        // console.log("doc['_currentGame']", doc['_currentGame'])
         const game = Game.fromDoc(doc['_currentGame']);
-        // console.log("fromDoc game", game)
         waitingRoom._currentGame = game;
       }
 
