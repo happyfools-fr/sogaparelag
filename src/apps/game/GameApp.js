@@ -32,7 +32,7 @@ export default function GameApp(props) {
   );
 
   const handleClickCreateNewGame = (click) => {
-      let waitingRoom = new WaitingRoom();
+      let waitingRoom = new WaitingRoom(props.user.id);
       waitingRoomController.push(waitingRoom);
       alert('New game created, share this: ' + window.location.origin + '/game/' + waitingRoom.slugname);
       setSlugname(waitingRoom.slugname);
