@@ -161,7 +161,12 @@ export default class Game
 
     _initWaterManagement()
     {
-      if (this._gameTable.playersCount - this._waterManager.inventory > 0)
+        if (this._waterManager.inventory === 0) {
+            this._endOfGame = true
+            this._win = false
+            return
+        }
+      else if (this._gameTable.playersCount - this._waterManager.inventory > 0)
       {
         console.log("Time for Water Vote!");
         this.pollWater = true;
@@ -185,7 +190,12 @@ export default class Game
 
     _initFoodManagement()
     {
-      if (this._gameTable.playersCount - this._foodManager.inventory > 0)
+        if (this._foodManager.inventory === 0) {
+            this._endOfGame = true
+            this._win = false
+            return
+        }
+      else if (this._gameTable.playersCount - this._foodManager.inventory > 0)
       {
           console.log("Time for Food Vote!");
         this.pollFood = true;
