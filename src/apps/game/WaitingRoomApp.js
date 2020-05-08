@@ -69,6 +69,7 @@ export default function WaitingRoomApp(props) {
             return (
                 <WaitingRoomView
                 slugname={waitingRoom.slugname}
+                isCreator={props.user.id == waitingRoom.creatorId}
                 players={waitingRoom._loggedInUsers}
                 onClick={handleStartGame}
                 />

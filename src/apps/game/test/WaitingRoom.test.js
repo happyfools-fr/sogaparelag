@@ -4,16 +4,18 @@ import Game from '../model/Game'
 
 const assert = require('assert');
 
+const MOCK_USER_ID = "id"
+
 describe('WaitingRoom', function()
 {
     it('correctly create round', () =>
     {
-        let waitingRoom = new WaitingRoom()
+        let waitingRoom = new WaitingRoom(MOCK_USER_ID)
     });
 
     it('add user', () =>
     {
-        let waitingRoom = new WaitingRoom()
+        let waitingRoom = new WaitingRoom(MOCK_USER_ID)
         let user = new LoggedInUser("toto", "ToTO")
         waitingRoom.addLoggedInUser(user)
         assert.equal(waitingRoom._loggedInUsers.length, 1)
@@ -22,7 +24,7 @@ describe('WaitingRoom', function()
 
     it('start game with users logged in at this time', () =>
     {
-        let waitingRoom = new WaitingRoom()
+        let waitingRoom = new WaitingRoom(MOCK_USER_ID)
         for(var i = 0; i < MIN_NUMBER_PLAYERS; i++){
           const userId = 'toto' + i;
           const user = new LoggedInUser(userId, "ToTO");
@@ -42,7 +44,7 @@ describe('WaitingRoom', function()
 
     it('game is null before starts', () =>
     {
-        let waitingRoom = new WaitingRoom()
+        let waitingRoom = new WaitingRoom(MOCK_USER_ID)
 
         for(var i = 0; i < MIN_NUMBER_PLAYERS; i++){
           const userId = 'toto' + i;
@@ -57,7 +59,7 @@ describe('WaitingRoom', function()
 
     it('game does not start with less that ' + MIN_NUMBER_PLAYERS + 'players', () =>
     {
-        let waitingRoom = new WaitingRoom()
+        let waitingRoom = new WaitingRoom(MOCK_USER_ID)
 
         assert(waitingRoom._currentGame == null)
 
@@ -71,7 +73,7 @@ describe('WaitingRoom', function()
 
     it('game starts with players between ' + MIN_NUMBER_PLAYERS + ' and ' + MAX_NUMBER_PLAYERS, () =>
     {
-        let waitingRoom = new WaitingRoom()
+        let waitingRoom = new WaitingRoom(MOCK_USER_ID)
 
         assert(waitingRoom._currentGame == null);
         for(var i = 0; i < MAX_NUMBER_PLAYERS; i++){
@@ -86,7 +88,7 @@ describe('WaitingRoom', function()
 
     it('rejects loggedInUser if over quota = ' + MAX_NUMBER_PLAYERS, () =>
     {
-        let waitingRoom = new WaitingRoom()
+        let waitingRoom = new WaitingRoom(MOCK_USER_ID)
 
         assert(waitingRoom._currentGame == null);
         for(var i = 0; i < MAX_NUMBER_PLAYERS; i++){
@@ -102,7 +104,7 @@ describe('WaitingRoom', function()
 
     it('doc convertion is valid', () =>
     {
-        let waitingRoom = new WaitingRoom()
+        let waitingRoom = new WaitingRoom(MOCK_USER_ID)
 
         assert(waitingRoom._currentGame == null);
         for(var i = 0; i < MAX_NUMBER_PLAYERS; i++){
@@ -122,7 +124,7 @@ describe('WaitingRoom', function()
 
     it('intantiate from doc object', () =>
     {
-        let waitingRoom = new WaitingRoom()
+        let waitingRoom = new WaitingRoom(MOCK_USER_ID)
         let listLoggedInUsers = [];
         for(var i = 0; i < MAX_NUMBER_PLAYERS; i++){
           const user = new LoggedInUser(`toto${i}`, "ToTO");
