@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 
-import { Container, Col, Row } from 'react-bootstrap';
-
 import {RoundAction} from '../model/RoundAction'
 
 import ActionModal from './ActionModal';
 import SickModal from './SickModal';
 import ActionResultModal from './ActionResultModal';
 import GameTableView from './GameTableView';
-import GameHistoryView from './GameHistoryView';
+
 
 /**
 *   @param (String) slugname
@@ -73,21 +71,12 @@ export default function DayView(props) {
                     showSick={showSick}
                     handleSick={() => {console.log("test");setShowSick(false);}}
                 />
-                <Container fluid>
-                    <Row>
-                        <Col className="p-2">
-                            <GameTableView
-                                className='mt-5'
-                                slugname={props.slugname}
-                                game={game}
-                                firebaseService={props.firebaseService}
-                            />
-                        </Col>
-                        <Col sm={4} className="p-2">
-                            <GameHistoryView game={game} />
-                        </Col>
-                    </Row>
-                </Container>
+                <GameTableView
+                    className='mt-5'
+                    slugname={props.slugname}
+                    game={game}
+                    firebaseService={props.firebaseService}
+                />
             </div>
         );
 
