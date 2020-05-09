@@ -12,7 +12,7 @@ export default function DeadModal(props) {
     // console.log("is sick :", props.showSick.show)
     // console.log("has click :", props.showSick.click)
 
-    const show = (props.showSick.show && !props.showSick.click)
+    const show = props.showSick
 
     return (
         <Modal show={show} centered onHide={props.handleSick}>

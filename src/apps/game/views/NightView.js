@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 
-import { Container, Col, Row } from 'react-bootstrap';
-
 import DeadModal from './DeadModal';
 import PollModal from './PollModal';
 import PollEndValidationModal from './PollEndValidationModal';
 
 import GameTableView from './GameTableView';
-import GameHistoryView from './GameHistoryView';
 
 import {RoundAction} from '../model/RoundAction'
 
@@ -94,21 +91,12 @@ export default function NightView (props) {
                     show={showDead}
                     handleSpectate={handleSpectate}
                 />
-                <Container fluid>
-                    <Row>
-                        <Col className="p-2">
-                            <GameTableView
-                                className='mt-5'
-                                slugname={props.slugname}
-                                game={game}
-                                firebaseService={props.firebaseService}
-                            />
-                        </Col>
-                        <Col sm={4} className="p-2">
-                            <GameHistoryView game={game} />
-                        </Col>
-                    </Row>
-                </Container>
+                <GameTableView
+                    className='mt-5'
+                    slugname={props.slugname}
+                    game={game}
+                    firebaseService={props.firebaseService}
+                />
             </div>
         );
 

@@ -5,6 +5,10 @@ import React, { useState, useEffect } from 'react';
 import GameController from '../controller/GameController';
 import PlayerController from '../controller/PlayerController';
 
+import { Container, Col, Row } from 'react-bootstrap';
+
+import GameHistoryView from './GameHistoryView';
+
 // View imports
 import DayView from './DayView';
 import NightView from './NightView';
@@ -49,27 +53,35 @@ export default function GameView (props) {
         const thisPlayer = game._gameTable.getPlayerFromId(user.id)
 
         if(!game._endOfGame){
-            if (showNight()) {
-                return (
-                    <NightView
-                        slugname={props.slugname}
-                        game={game}
-                        thisPlayer = {thisPlayer}
-                        updateGameAndPlayers = {updateGameAndPlayers}
-                        firebaseService = {props.firebaseService}
-                    />
-                )
-            } else {
-                return(
-                    <DayView
-                        slugname={props.slugname}
-                        game={game}
-                        thisPlayer = {thisPlayer}
-                        updateGameAndPlayers = {updateGameAndPlayers}
-                        firebaseService = {props.firebaseService}
-                    />
-                )
-            }
+
+            return (
+                <Container fluid>
+                    <Row>
+                        <Col className="p-2">
+                            {
+                                (showNight())
+                                ? <NightView
+                                    slugname={props.slugname}
+                                    game={game}
+                                    thisPlayer = {thisPlayer}
+                                    updateGameAndPlayers = {updateGameAndPlayers}
+                                    firebaseService = {props.firebaseService}
+                                />
+                                : <DayView
+                                    slugname={props.slugname}
+                                    game={game}
+                                    thisPlayer = {thisPlayer}
+                                    updateGameAndPlayers = {updateGameAndPlayers}
+                                    firebaseService = {props.firebaseService}
+                                />
+                            }
+                        </Col>
+                        <Col sm={4} className="p-2">
+                            <GameHistoryView game={game} />
+                        </Col>
+                    </Row>
+                </Container>
+            )
         } else if (game._win){
             return (
               <SavedView

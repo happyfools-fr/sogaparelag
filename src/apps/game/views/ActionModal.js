@@ -10,14 +10,12 @@ ROUND_ACTION_TYPES_MAPPING.set("water", RoundAction.CollectWater)
 ROUND_ACTION_TYPES_MAPPING.set("food", RoundAction.CollectFood)
 ROUND_ACTION_TYPES_MAPPING.set("wood", RoundAction.CollectWood)
 
-export default function TurnModal(props) {
+export default function ActionModal(props) {
 
     const show = props.show
-
-    const onAction = (props.onAction) ? props.onAction : (a ,b) => {console.log(a, b)}
+    const onAction = props.onAction
 
     const [choice, setChoice] = useState()
-
     const [extras, setExtras] = useState(0)
 
     const renderChoice = (choice) => {
@@ -25,7 +23,7 @@ export default function TurnModal(props) {
             case 'water':
                 return (
                     <div className="mt-3 mb-3">
-                        According to the weather, you will get ...!
+                        {"According to the weather, you will get " + props.weather + "!"}
                     </div>
                 );
             case 'wood':

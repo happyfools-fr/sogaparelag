@@ -70,22 +70,25 @@ export default class Game
 
     get woodSupply() { return this._woodManager.inventory; }
 
-    onPlayerActionPerformed(player, selectedAction, additionalRequest)
+    onPlayerActionPerformed(player, selectedAction, actionResult)
     {
         // Push action logs
-        let actionSummary = this.getActionSummary(player, selectedAction, additionalRequest);
+        const actionSummary = this.getActionSummary(player, selectedAction, actionResult);
         this.history.push(
           {
-              type: selectedAction,
+              type: (actionResult) ? selectedAction : "sick",
               value: actionSummary
           }
         );
+        return actionSummary;
+    }
 
+    onPlayerTurnEnded(player)
+    {
         this._gameTable.onPlayerTurnEnded(player)
-        if (!this._gameTable.endOfRound)
-            return;
 
-        this.onActionRoundEnded()
+        if (this._gameTable.endOfRound)
+            this.onActionRoundEnded();
     }
 
     onActionRoundEnded()
@@ -158,7 +161,12 @@ export default class Game
 
     _initWaterManagement()
     {
-      if (this._gameTable.playersCount - this._waterManager.inventory > 0)
+        if (this._waterManager.inventory === 0) {
+            this._endOfGame = true
+            this._win = false
+            return
+        }
+      else if (this._gameTable.playersCount - this._waterManager.inventory > 0)
       {
         console.log("Time for Water Vote!");
         this.pollWater = true;
@@ -182,7 +190,12 @@ export default class Game
 
     _initFoodManagement()
     {
-      if (this._gameTable.playersCount - this._foodManager.inventory > 0)
+        if (this._foodManager.inventory === 0) {
+            this._endOfGame = true
+            this._win = false
+            return
+        }
+      else if (this._gameTable.playersCount - this._foodManager.inventory > 0)
       {
           console.log("Time for Food Vote!");
         this.pollFood = true;
@@ -310,28 +323,24 @@ export default class Game
         return canLeaveWithEnoughWater && canLeaveWithEnoughFood && canLeaveWithEnoughWood
     }
 
-    getActionSummary(player, actionToPerform, additionalRequest=0)
+    getActionSummary(player, actionToPerform, actionResult=0)
     {
-        let actionSummary;
-        let actionSummaryPrefix = `${player.nickname} chose to `;
         switch (actionToPerform)
         {
             case RoundAction.CollectWater:
-                actionSummary = actionSummaryPrefix + "collect some water.";
-                break;
+                return `${player.nickname} collected ${actionResult} water.`;
 
             case RoundAction.CollectFood:
-                actionSummary = actionSummaryPrefix + "collect some food.";
-                break;
+                return `${player.nickname} collected ${actionResult} fish.`;;
 
             case RoundAction.CollectWood:
-                actionSummary = actionSummaryPrefix + `collect some wood with additional request of ${additionalRequest} logs.`;
-                break;
+                return (actionResult)
+                    ? `${player.nickname} collected ${actionResult} logs of wood.`
+                    : `${player.nickname} got sick while collecting wood !`
 
             default :
                 throw new Error('Default case in getActionSummary for player and action', player, actionToPerform);
           }
-          return actionSummary;
     }
 
     toDoc() {

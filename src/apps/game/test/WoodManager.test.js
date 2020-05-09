@@ -39,7 +39,7 @@ describe('WoodManager', function()
         for (let additionalRequest = 0; additionalRequest <= 6 ; additionalRequest++)
         {
             if (additionalRequest <= 3)
-                assert.equal(WoodManager._collectSumary(woods, additionalRequest), additionalRequest)
+                assert.equal(WoodManager._collect(woods, additionalRequest), additionalRequest)
         }
 
     });
@@ -50,7 +50,7 @@ describe('WoodManager', function()
         for (let additionalRequest = 0; additionalRequest <= 6 ; additionalRequest++)
         {
             if (additionalRequest > 3)
-                assert.equal(WoodManager._collectSumary(woods, additionalRequest), 0)
+                assert.equal(WoodManager._collect(woods, additionalRequest), 0)
         }
 
     });
@@ -94,7 +94,7 @@ describe('WoodManager', function()
         }
         throw Error
     });
-    
+
     it('should convert to doc object', () =>
     {
         const _woodManager = new WoodManager()
@@ -102,7 +102,7 @@ describe('WoodManager', function()
         assert.deepEqual(Object.keys(doc), SERDE_KEYS);
         assert.equal(doc['woodSupply'], _woodManager.inventory);
     });
-    
+
     it('should instantiate correctly from doc object', () =>
     {
         const doc = {
