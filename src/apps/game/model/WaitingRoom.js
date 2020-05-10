@@ -7,7 +7,7 @@ import {WoodManager} from "./WoodManager";
 import LoggedInUser from "./LoggedInUser";
 import Utils from "./Utils";
 
-export const SERDE_KEYS = ['_id', 'slugname', '_loggedInUsers', '_currentGame', '_creatorId'];
+export const SERDE_KEYS = ['_id', 'slugname', '_loggedInUsers', '_currentGameId', '_creatorId'];
 /**
  * WaitingRoom
  * - Can add loggedInPlayer only if game has not started (if !this_currentGame)
@@ -43,9 +43,12 @@ export default class WaitingRoom
         this._id = uuidv1();
         this.slugname = this._createSlugname();
         this._loggedInUsers = [];
-        this._currentGame = null;
+        this._currentGameId = null;
         this._creatorId = creatorId;
     }
+
+    get currentGameId() { return this._currentGameId }
+    get creatorId() { return this._creatorId }
 
     hasJoined(user)
     {
@@ -64,27 +67,20 @@ export default class WaitingRoom
         return false;
     }
 
-    startGame()
-    {
+    startGame() {
         let numberOfPlayers = this._loggedInUsers.length;
-        if (numberOfPlayers >= MIN_NUMBER_PLAYERS && numberOfPlayers <= MAX_NUMBER_PLAYERS)
-        {
-            let [initialWater, initialFood] = INITIAL_VALUES[numberOfPlayers-MIN_NUMBER_PLAYERS]
-            let waterManager = new WaterManager(initialWater);
-            let foodManager = new FoodManager(initialFood);
-            let woodManager = new WoodManager(0);
-            let game = new Game(this._loggedInUsers, waterManager, foodManager, woodManager);
-            this._currentGame = game;
+        if (numberOfPlayers >= MIN_NUMBER_PLAYERS && numberOfPlayers <= MAX_NUMBER_PLAYERS) {
+            const [initialWater, initialFood] = INITIAL_VALUES[numberOfPlayers-MIN_NUMBER_PLAYERS]
+            const waterManager = new WaterManager(initialWater);
+            const foodManager = new FoodManager(initialFood);
+            const woodManager = new WoodManager(0);
+            const game = new Game(this._loggedInUsers, waterManager, foodManager, woodManager);
+            this._currentGameId = game.id;
             return game;
         }
 
         return null;
-    }
-
-    get creatorId()
-    {
-        return this._creatorId;
-    }
+    }s
 
     _createSlugname()
     {
@@ -100,7 +96,7 @@ export default class WaitingRoom
             _id: this._id,
             slugname: this.slugname,
             _loggedInUsers: this._loggedInUsers.map((u) => {return u ? u.toDoc() : null}),
-            _currentGame: this._currentGame ? this._currentGame.toDoc() : null,
+            _currentGameId: this._currentGameId,
             _creatorId: this._creatorId,
         }
     }
@@ -114,8 +110,7 @@ export default class WaitingRoom
         waitingRoom._id = doc['_id'];
         waitingRoom.slugname = doc['slugname'];
         waitingRoom._loggedInUsers = doc['_loggedInUsers'].map((uDoc) => { return LoggedInUser.fromDoc(uDoc); });
-        const game = Game.fromDoc(doc['_currentGame']);
-        waitingRoom._currentGame = game;
+        waitingRoom._currentGameId = doc['_currentGameId'];
       }
 
       return waitingRoom;

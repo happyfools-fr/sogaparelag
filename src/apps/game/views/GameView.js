@@ -34,15 +34,8 @@ export default function GameView (props) {
 
     const playerController = new PlayerController(props.firebaseService.ft)
 
-    const showNight = () => {
-        return (game.pollWater || game.pollFood)
-    }
-
     const updateGameAndPlayers = () => {
-        game._gameTable.players.forEach((p, i) => {
-          playerController.update(p)
-        });
-        game._gameTable.killedPlayers.forEach((p, i) => {
+        game.players.forEach((p, i) => {
           playerController.update(p)
         });
         gameController.update(game);
@@ -50,7 +43,7 @@ export default function GameView (props) {
 
     if (game) {
 
-        const thisPlayer = game._gameTable.getPlayerFromId(user.id)
+        const thisPlayer = game.getPlayerFromId(user.id)
 
         if(!game._endOfGame){
 
@@ -59,7 +52,7 @@ export default function GameView (props) {
                     <Row>
                         <Col className="p-2">
                             {
-                                (showNight())
+                                (game.isNight)
                                 ? <NightView
                                     slugname={props.slugname}
                                     game={game}
@@ -85,7 +78,7 @@ export default function GameView (props) {
         } else if (game._win){
             return (
               <SavedView
-                players={game._gameTable.players}
+                players={game.players}
                 slugname={props.slugname}
                 isCreator={props.isCreator}
                 handleClickCreateNextGame={props.handleClickCreateNextGame}

@@ -4,10 +4,10 @@ import Utils from "./Utils";
 export const SERDE_KEYS = ['woodSupply'];
 
 export class WoodManager {
-    constructor()
+    constructor(value)
     {
         this._woods = [false, true, true, true, true, true]
-        this.inventory = 0
+        this.inventory = value ? value : 0;
     }
 
     tryCollect(additionalRequest)
@@ -60,8 +60,7 @@ export class WoodManager {
       let woodManager;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
       {
-        woodManager = new WoodManager();
-        woodManager.inventory = doc['woodSupply'];
+        woodManager = new WoodManager(doc['woodSupply']);
       }
       return woodManager;
     }

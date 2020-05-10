@@ -27,8 +27,7 @@ export default function DayView(props) {
 
     const handleAction = (action, extras) => {
         const intExtras = parseInt(extras);
-        const [result, resultSummary] = thisPlayer.performAction(game, action, intExtras);
-        game.onPlayerTurnEnded(thisPlayer)
+        const [result, resultSummary] = game.playerPerformAction(thisPlayer, action, intExtras)
         props.updateGameAndPlayers()
         if (action===RoundAction.CollectWood && !result) {
             setShowSick(true)
@@ -69,7 +68,7 @@ export default function DayView(props) {
                 />
                 <SickModal
                     showSick={showSick}
-                    handleSick={() => {console.log("test");setShowSick(false);}}
+                    handleSick={() => setShowSick(false)}
                 />
                 <GameTableView
                     className='mt-5'

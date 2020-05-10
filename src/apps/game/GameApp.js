@@ -24,8 +24,10 @@ export default function GameApp(props) {
       () => {
         const unsubscribe = waitingRoomController
                     .listenOnSlugname(slugname,
-                        (waitingRoom) => {setWaitingRoomId(waitingRoom._id);
-                    });
+                        (waitingRoom) => {
+                            setWaitingRoomId(waitingRoom._id)
+                        }
+                    );
         return unsubscribe;
       },
       [slugname, setWaitingRoomId]
@@ -34,7 +36,6 @@ export default function GameApp(props) {
   const handleClickCreateNewGame = (click) => {
       let waitingRoom = new WaitingRoom(props.user.id);
       waitingRoomController.push(waitingRoom);
-      alert('New game created, share this: ' + window.location.origin + '/game/' + waitingRoom.slugname);
       setSlugname(waitingRoom.slugname);
       setWaitingRoomId(waitingRoom._id);
       history.push('/game/' + waitingRoom.slugname)

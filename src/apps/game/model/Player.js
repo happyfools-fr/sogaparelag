@@ -1,4 +1,3 @@
-import {RoundAction} from './RoundAction'
 import LoggedInUser from  './LoggedInUser'
 import Utils from './Utils'
 
@@ -6,7 +5,7 @@ export const SERDE_KEYS = [
   'userId', 'nickname', '_sickenessLevel',
 'isDead', 'currentHand', 'hasPlayedThisRound',
 'waterVote', 'foodVote', 'spectateGame',
-'photoURL',
+'photoURL', 'next', 'previous'
 ];
 /**
  * Player holds player state in game
@@ -18,22 +17,35 @@ export default class Player
     {
         this.userId = loggedInUser._id
         this.nickname = loggedInUser.nickname
+        this.photoURL = loggedInUser.photoURL
+
         this._sickenessLevel = 0
         this.isDead = false
+
         this.currentHand = null
+
         this.hasPlayedThisRound = false
+
         this.waterVote = null
         this.foodVote = null
+
         this.spectateGame = null
 
-        this.photoURL = loggedInUser.photoURL
+        this._previous = null;
+        this._next = null;
     }
 
     get id() { return this.userId; }
-
     get _id() { return this.userId; }
 
+    get previous() { return this._previous; }
+    set previous(value) { this._previous = value; }
+
+    get next() { return this._next; }
+    set next(value) { this._next = value; }
+
     get isSick() { return this._sickenessLevel !== 0; }
+
 
     onGetSick()
     {
@@ -41,123 +53,18 @@ export default class Player
         return 0;
     }
 
-    onRoundEnded()
+
+
+    kill() {
+        this.isDead = true;
+    }
+
+    onRoundStarts()
     {
         this._sickenessLevel --;
         this._sickenessLevel = (this._sickenessLevel < 0) ? 0 : this._sickenessLevel;
     }
 
-    choosePlayerIdToVoteAgainst(players, context)
-    {
-      let chosenPlayerId;
-      switch (context)
-      {
-        case RoundAction.WaterVote:
-            chosenPlayerId = this.waterVote
-            break;
-
-        case RoundAction.FoodVote:
-            chosenPlayerId = this.foodVote
-            break;
-
-        case RoundAction.FinalWaterVote:
-            chosenPlayerId = this.finalWaterVote
-            break;
-
-        case RoundAction.FinalFoodVote:
-            chosenPlayerId = this.finalFoodVote
-            break;
-
-        default :
-              throw new Error('Context error in choosePlayerIdToVoteAgainst with player', this);
-      }
-      return players.filter(p => p.id === chosenPlayerId)[0].id;
-    }
-
-    chooseFinalPlayerIdToVoteAgainst(players)
-    {
-        //TODO
-        return players[0];
-    }
-
-    chooseActionToPerform()
-    {
-        //TODO
-        return RoundAction.CollectFood;
-        //return RoundAction.CollectWood;
-        //return RoundAction.CollectWater;
-    }
-
-    additionalWoodRequest()
-    {
-        return 0
-    }
-
-
-    getListPotentialActionsToPerform(game)
-    {
-      //todo
-      return [
-        RoundAction.Nothing,
-        RoundAction.CollectWater,
-        RoundAction.CollectFood,
-        RoundAction.CollectWood
-      ]
-    }
-
-    performAction(game, selectedAction, additionalRequest=0)
-    {
-        const actionResult = this.playAction(game, selectedAction, additionalRequest);
-        const actionSummary = game.onPlayerActionPerformed(this, selectedAction, actionResult);
-        return [actionResult, actionSummary];
-    }
-
-    playAction(game, actionToPerform, additionalRequest=0)
-    {
-        switch (actionToPerform)
-        {
-            case RoundAction.CollectWater:
-                return game._waterManager.collect();
-
-            case RoundAction.CollectFood:
-                return game._foodManager.collect();
-
-            case RoundAction.CollectWood:
-                return game._woodManager.tryCollect(additionalRequest) || this.onGetSick()
-
-            default :
-                throw new Error('Default case in RoundManager for player', this);
-          }
-    }
-
-    performVote(game, actionToPerform, votedPlayerId)
-    {
-        switch (actionToPerform)
-        {
-            case RoundAction.WaterVote:
-                this.waterVote = votedPlayerId
-                game.onPlayerWaterVote()
-                break;
-
-            case RoundAction.FoodVote:
-                this.foodVote = votedPlayerId
-                game.onPlayerFoodVote()
-                break;
-
-            case RoundAction.FinalWaterVote:
-                this.finalWaterVote = votedPlayerId
-                game.onPlayerFinalWaterVote()
-                break;
-
-            case RoundAction.FinalFoodVote:
-                this.finalFoodVote = votedPlayerId
-                game.onPlayerFinalFoodVote()
-                break;
-
-            default :
-                throw new Error('Default case in RoundManager for player', this);
-          }
-    }
 
     toDoc()
     {
@@ -172,11 +79,14 @@ export default class Player
             foodVote: this.foodVote,
             spectateGame: this.spectateGame,
             photoURL: this.photoURL,
+            previous : this.previous,
+            next : this.next,
         }
     }
 
+
     static fromDoc(doc) {
-      let player = null;
+      let player;
       if(doc && Utils.checker(SERDE_KEYS, Object.keys(doc)))
       {
           const loggedInUser = new LoggedInUser(doc['userId'], doc['nickname'], doc['photoURL']);
@@ -188,9 +98,66 @@ export default class Player
           player.waterVote = doc['waterVote'];
           player.foodVote = doc['foodVote'];
           player.spectateGame = doc['spectateGame'];
-
+          player.previous = doc['previous'];
+          player.next = doc['next'];
+      } else {
+          console.log("Missing value in de-serialization", Object.keys(doc).filter((k) => !SERDE_KEYS.includes(k)))
       }
       return player;
     }
 
 }
+
+    // performAction(game, selectedAction, additionalRequest=0)
+    // {
+    //     let actionResult;
+    //
+    //     switch (actionToPerform)
+    //     {
+    //         case RoundAction.CollectWater:
+    //             actionResult = game._waterManager.collect();
+    //
+    //         case RoundAction.CollectFood:
+    //             actionResult = game._foodManager.collect();
+    //
+    //         case RoundAction.CollectWood:
+    //             actionResult = game._woodManager.tryCollect(additionalRequest) || this.onGetSick()
+    //
+    //         default :
+    //             throw new Error('Default case in RoundManager for player', this);
+    //       }
+    //
+    //     const actionSummary = game.onPlayerActionPerformed(this, selectedAction, actionResult);
+    //     return [actionResult, actionSummary];
+    // }
+    //
+    //
+    // performVote(game, actionToPerform, votedPlayerId)
+    // {
+    //     switch (actionToPerform)
+    //     {
+    //         case RoundAction.WaterVote:
+    //             this.waterVote = votedPlayerId
+    //             game.onPlayerWaterVote()
+    //             break;
+    //
+    //         case RoundAction.FoodVote:
+    //             this.foodVote = votedPlayerId
+    //             game.onPlayerFoodVote()
+    //             break;
+    //
+    //         case RoundAction.FinalWaterVote:
+    //             this.finalWaterVote = votedPlayerId
+    //             game.onPlayerFinalWaterVote()
+    //             break;
+    //
+    //         case RoundAction.FinalFoodVote:
+    //             this.finalFoodVote = votedPlayerId
+    //             game.onPlayerFinalFoodVote()
+    //             break;
+    //
+    //         default :
+    //             throw new Error('Default case in RoundManager for player', this);
+    //       }
+    // }
+    //}

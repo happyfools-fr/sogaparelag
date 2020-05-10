@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 
-import {Modal, ProgressBar} from 'react-bootstrap';
+import {Modal} from 'react-bootstrap';
 
 export default function ActionResultModal(props) {
 
@@ -35,7 +35,6 @@ export default function ActionResultModal(props) {
             </Modal.Header>
             <Modal.Body>
                 {resultSummary}
-                {/*<ProgressBar className="m-4" max={5} variant="secondary" now={timer} />*/}
             </Modal.Body>
         </Modal>
     );

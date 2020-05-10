@@ -21,6 +21,7 @@ export default function WaitingRoomApp(props) {
 
     const playerController = new PlayerController(props.firebaseService.ft);
 
+
     useEffect(
         () => {
             const unsubscribe = waitingRoomController
@@ -41,9 +42,9 @@ export default function WaitingRoomApp(props) {
 
 
     const handleStartGame = (click) => {
-        waitingRoom.startGame();
-        gameController.push(waitingRoom._currentGame);
-        waitingRoom._currentGame._gameTable.players.map(
+        const game = waitingRoom.startGame();
+        gameController.push(game);
+        game.players.map(
             (player) => playerController.push(player)
         );
         waitingRoomController.update(waitingRoom);
@@ -51,12 +52,12 @@ export default function WaitingRoomApp(props) {
 
 
     if(waitingRoom) {
-        if (waitingRoom._currentGame) {
+        if (waitingRoom.currentGameId) {
             return (
                 <GameView
                 slugname={waitingRoom.slugname}
-                isCreator={props.user.id == waitingRoom.creatorId}
-                gameId={waitingRoom._currentGame._id}
+                isCreator={props.user.id === waitingRoom.creatorId}
+                gameId={waitingRoom.currentGameId}
                 user={props.user}
                 firebaseService={props.firebaseService}
                 handleClickCreateNextGame={props.handleClickCreateNextGame}
@@ -69,7 +70,7 @@ export default function WaitingRoomApp(props) {
             return (
                 <WaitingRoomView
                 slugname={waitingRoom.slugname}
-                isCreator={props.user.id == waitingRoom.creatorId}
+                isCreator={props.user.id === waitingRoom.creatorId}
                 players={waitingRoom._loggedInUsers}
                 onClick={handleStartGame}
                 />

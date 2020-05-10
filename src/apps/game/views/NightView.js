@@ -78,7 +78,7 @@ export default function NightView (props) {
             <div style={{"backgroundColor": "#e9ecef"}}>
                 <PollModal
                     show={poll.show}
-                    players={game._gameTable.players.filter(p => !p.isDead)}
+                    players={game.players.filter(p => !p.isDead)}
                     pollType={poll.type}
                     handlePoll={handlePoll}
                 />

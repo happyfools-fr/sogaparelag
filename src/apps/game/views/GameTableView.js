@@ -21,7 +21,7 @@ export default function GameTableView(props) {
             <h5>Welcome to Island of {props.slugname} </h5>
             <Container className='mt-2'>
                 <Row>
-                    <DayComponent day={game._gameTable.roundIndex} />
+                    <DayComponent day={game.roundIndex} />
 
                     <WeatherComponent weather={game._waterManager.currentWeather} />
 
@@ -36,7 +36,7 @@ export default function GameTableView(props) {
                 </Row>
             </Container>
             <AllPlayersView
-                players={game._gameTable.players}
+                players={game.players}
                 currentPlayerId={game.currentPlayerId}
                 headPlayerId={game.headPlayerId}
                 firebaseService={props.firebaseService}
